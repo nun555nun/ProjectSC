@@ -22,13 +22,14 @@ import com.google.firebase.iid.FirebaseInstanceId;
 public class login extends AppCompatActivity {
 
     public static final String NODE_USER = "users";
+    public static final String NODE_fcm = "fcm-token";
 
     private EditText editTextemail;
     private EditText editTextpass;
     private Button buttonlogin;
-    public DatabaseReference testapp;
     public ProgressBar progressBar;
     public FirebaseAuth auth;
+    public String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,14 @@ public class login extends AppCompatActivity {
         editTextpass = findViewById(R.id.epass);
         progressBar = findViewById(R.id.progressBar);
         buttonlogin = findViewById(R.id.buttonlogin);
-        auth = FirebaseAuth.getInstance();
 
+        auth = FirebaseAuth.getInstance();
+        token = FirebaseInstanceId.getInstance().getToken();
         if (auth.getCurrentUser() != null) {
             //Toast.makeText(getApplicationContext(), "OK, you already logged in!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(login.this, MainActivity.class);
+            saveToken(token);
+
+            Intent intent = new Intent(login.this, Main.class);
             startActivity(intent);
             finish();
         }
@@ -71,10 +75,10 @@ public class login extends AppCompatActivity {
                                             Toast.makeText(login.this, "ไม่มี e-mail ในระบบ โปรดสมัคร", Toast.LENGTH_LONG).show();
                                         }
                                     } else {
-                                        String token = FirebaseInstanceId.getInstance().getToken();
+
                                         saveToken(token);
 
-                                        Intent intent = new Intent(login.this, MainActivity.class);
+                                        Intent intent = new Intent(login.this, Main.class);
                                         startActivity(intent);
 
 
@@ -100,17 +104,10 @@ public class login extends AppCompatActivity {
     }
 
     private void saveToken(String token) {
-        String email = auth.getCurrentUser().getEmail();
-        User user = new User(email, token);
-        DatabaseReference dbUser = FirebaseDatabase.getInstance().getReference(NODE_USER);
-        dbUser.child(auth.getCurrentUser().getUid())
-                .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(login.this, "Token Save", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
+        DatabaseReference dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
+        dbUser.child(token).child("token").setValue(token);
+        dbUser = FirebaseDatabase.getInstance().getReference(NODE_USER+"/"+auth.getUid());
+        dbUser.child("token").setValue(token);
     }
 }

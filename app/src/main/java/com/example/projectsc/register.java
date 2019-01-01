@@ -13,6 +13,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import static com.example.projectsc.login.NODE_USER;
+import static com.example.projectsc.login.NODE_fcm;
 
 public class register extends AppCompatActivity {
     private String nameString, emailString, passwordString;
@@ -69,6 +75,22 @@ public class register extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
                             //Success
+                            String token = FirebaseInstanceId.getInstance().getToken();
+                            String email = firebaseAuth.getCurrentUser().getEmail();
+                            User user = new User(email, token,nameString);
+                            DatabaseReference dbUser = FirebaseDatabase.getInstance().getReference(NODE_USER);
+                            dbUser.child(firebaseAuth.getCurrentUser().getUid())
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(register.this, "Token Save", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
+                            dbUser.child(token).child("token").setValue(token);
+
                             Toast.makeText(register.this, "ลงทะเบียนสำเร็จ",
                                     Toast.LENGTH_SHORT).show();
                             register.this.getSupportFragmentManager().popBackStack();
