@@ -1,11 +1,13 @@
 package com.example.projectsc;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -36,7 +38,7 @@ public class Main extends AppCompatActivity
     public DatabaseReference dbRef;
     private FirebaseAuth auth;
     private FirebaseDatabase database;
-
+    public ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,9 @@ public class Main extends AppCompatActivity
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         dbRef = database.getReference();
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading.....");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,15 +76,18 @@ public class Main extends AppCompatActivity
         final TextView Emailtextview = navHeaderView.findViewById(R.id.text_view_email);
         final TextView Userametextview = navHeaderView.findViewById(R.id.text_view_username);
         dbRef = database.getReference("users").child(auth.getUid());
+        progressDialog.show();
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 Map map = (Map) dataSnapshot.getValue();
                 String email = String.valueOf(map.get("email"));
                 String username = String.valueOf(map.get("username"));
 
                 Emailtextview.setText(email);
                 Userametextview.setText(username);
+                progressDialog.cancel();
             }
 
             @Override
@@ -87,6 +95,13 @@ public class Main extends AppCompatActivity
 
             }
         });
+        setTitle("หน้าหลัก");
+        BinFragment fragment = new BinFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fram, fragment);
+        fragmentTransaction.commit();
+
+
     }
 
     @Override
@@ -110,6 +125,8 @@ public class Main extends AppCompatActivity
         } else if (id == R.id.nav_notification) {
 
         } else if (id == R.id.nav_edit_profile) {
+            Intent intent = new Intent(Main.this,Account.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_logout) {
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">โปรเจ็ค</string>
+    <string name="edit">แก้ไข</string>
+    <string name="delete_account">ลบบัญชี</string>
+    <string name="register">ลงทะเบียน</string>
+    <string name="login">เข้าสู่ระบบ</string>
+</resources>

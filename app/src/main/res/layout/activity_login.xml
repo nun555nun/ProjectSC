@@ -4,71 +4,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     tools:context=".login">
-    <EditText
-        android:id="@+id/eemail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:hint="email"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/epass"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
 
-    <EditText
-        android:id="@+id/epass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/buttonlogin"
-        app:layout_constraintEnd_toEndOf="@+id/eemail"
-        app:layout_constraintStart_toStartOf="@+id/eemail"
-        app:layout_constraintTop_toBottomOf="@+id/eemail" />
-
-    <Button
-        android:id="@+id/buttonlogin"
-        android:layout_width="116dp"
-        android:layout_height="39dp"
-        android:text="Button"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="32dp"
+        android:animateLayoutChanges="false"
+        android:background="@drawable/bg_block"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/epass"
-        app:layout_constraintStart_toStartOf="@+id/epass"
-        app:layout_constraintTop_toBottomOf="@+id/epass" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="สมัครสมาชิก"
-        app:layout_constraintEnd_toEndOf="@+id/buttonlogin"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="@+id/buttonlogin"
-        app:layout_constraintTop_toBottomOf="@+id/buttonlogin" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/textView8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonlogin" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/buttonlogin"
+            app:layout_constraintStart_toStartOf="@+id/buttonlogin"
+            app:layout_constraintTop_toBottomOf="@+id/buttonlogin" />
+
+        <EditText
+            android:id="@+id/eemail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:ems="10"
+            android:hint="E-mail"
+            android:inputType="textEmailAddress"
+            app:layout_constraintBottom_toTopOf="@+id/epass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <EditText
+            android:id="@+id/epass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword"
+            app:layout_constraintBottom_toTopOf="@+id/buttonlogin"
+            app:layout_constraintEnd_toEndOf="@+id/eemail"
+            app:layout_constraintStart_toStartOf="@+id/eemail"
+            app:layout_constraintTop_toBottomOf="@+id/eemail" />
+
+        <TextView
+            android:id="@+id/forget_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:text="ลืมรหัสผ่าน"
+            app:layout_constraintBottom_toBottomOf="@+id/textView8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="สมัครสมาชิก"
+            app:layout_constraintEnd_toStartOf="@+id/forget_text_view"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonlogin" />
+
+        <Button
+            android:id="@+id/buttonlogin"
+            android:layout_width="116dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_shape_default"
+            android:text="@string/login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/epass"
+            app:layout_constraintStart_toStartOf="@+id/epass"
+            app:layout_constraintTop_toBottomOf="@+id/epass" />
+
+        <TextView
+            android:id="@+id/pass_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_visibility_off_black_24dp"
+            android:textColor="#00ffffff"
+            app:layout_constraintBottom_toBottomOf="@+id/epass"
+            app:layout_constraintEnd_toEndOf="@+id/epass"
+            app:layout_constraintTop_toTopOf="@+id/epass" />
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>
