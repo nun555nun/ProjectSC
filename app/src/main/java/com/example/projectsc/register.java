@@ -35,6 +35,7 @@ public class register extends AppCompatActivity {
     EditText emailEditText ;
     EditText passwordEditText ;
     TextView tv_pass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,15 +197,15 @@ public class register extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(register.this, "Token Save", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(register.this, "ลงทะเบียนสำเร็จ",
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-                            dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
-                            dbUser.child(token).child("token").setValue(token);
+                           /* dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
+                            dbUser.child(token).child("token").setValue(token);*/
 
-                            Toast.makeText(register.this, "ลงทะเบียนสำเร็จ",
-                                    Toast.LENGTH_SHORT).show();
+
                             register.this.getSupportFragmentManager().popBackStack();
                             finish();
                         } else {

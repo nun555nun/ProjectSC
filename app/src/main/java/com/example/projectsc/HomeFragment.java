@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-        int position = getArguments().getInt("position");
+        String position = getArguments().getString("binID");
 
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
         TextView temptv = view.findViewById(R.id.temp);

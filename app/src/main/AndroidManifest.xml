@@ -40,7 +40,7 @@
 
         <activity android:name=".login"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.FullScreen"/>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".register"
             android:screenOrientation="portrait"
             />

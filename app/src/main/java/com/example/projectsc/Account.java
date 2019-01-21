@@ -28,8 +28,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Map;
+
+import static com.example.projectsc.login.NODE_fcm;
 
 public class Account extends AppCompatActivity {
     public FirebaseAuth auth;
@@ -130,12 +133,14 @@ public class Account extends AppCompatActivity {
             public void onClick(View v) {
                 if (usernameEditText.length() > 0) {
                     usernameEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
                     new AlertDialog.Builder(Account.this)
                             .setTitle("แก้ไข username")
                             .setMessage("ต้องการเปลี่ยน username จาก '" + usernameEditText.getHint() + "' เป็น '" + usernameEditText.getText().toString() + "' ใช่หรือไม่")
                             .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+
                                     changeUsername();
                                 }
                             })
@@ -153,7 +158,7 @@ public class Account extends AppCompatActivity {
         editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 if (!Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches() || emailEditText.getText().toString().length() == 0) {
                     emailEditText.setError("โปรดระบุ email ให้ถูกต้อง");
                     emailEditText.requestFocus();
@@ -194,6 +199,7 @@ emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
                         .show();
             }
         });
+
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -203,6 +209,7 @@ emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
                 emailEditText.setHint(email);
                 usernameEditText.setHint(username);
+                dbRef.removeEventListener(this);
             }
 
             @Override
@@ -211,6 +218,7 @@ emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
             }
         });
     }
+
 
     private void hideKeybord() {
         usernameEditText.setFocusable(false);
@@ -275,7 +283,10 @@ emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
     private void deleteAccount() {
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
-
+            String token = FirebaseInstanceId.getInstance().getToken();
+            dbRef = database.getReference(NODE_fcm + "/bin1").child(token);
+            dbRef.removeValue();
+            final String uid = auth.getCurrentUser().getUid();
             user.delete()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -283,8 +294,12 @@ emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
                             if (task.isSuccessful()) {
                                 Toast.makeText(Account.this, "ลบบัญชีเรียบร้อย", Toast.LENGTH_SHORT).show();
                                 finish();
+                                auth.signOut();
+                                dbRef = database.getReference("users").child(uid);
+                                dbRef.removeValue();
                                 Intent intent = new Intent(Account.this, login.class);
                                 startActivity(intent);
+
 
                             } else {
                                 Toast.makeText(Account.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -299,6 +314,7 @@ emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
             dbRef.child("username").setValue(usernameEditText.getText().toString());
+            usernameEditText.setHint(usernameEditText.getText().toString());
             Toast.makeText(Account.this, "แก้ไข username เป็น " + usernameEditText.getText().toString() + " เรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
             usernameEditText.setText("");
         }

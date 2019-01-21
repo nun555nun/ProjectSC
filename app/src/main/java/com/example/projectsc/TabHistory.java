@@ -32,8 +32,9 @@ public class TabHistory extends Fragment {
         viewPager = view.findViewById(R.id.viewpager_history);
 
         ViewpagerAdapter adapter = new ViewpagerAdapter(getChildFragmentManager());
-        adapter.AddFragment(new HistoryFragment(), "Histroy");
-        //adapter.AddFragment(new Fragment1(), "testFragment");
+        adapter.AddFragment(new HistoryFragment(), "ภายในถัง");
+        adapter.AddFragment(new HistoryFragment(), "ภายนอกถัง");
+        adapter.AddFragment(new HistoryFragment(), "การแจ้งเตือน");
 
 
         viewPager.setAdapter(adapter);

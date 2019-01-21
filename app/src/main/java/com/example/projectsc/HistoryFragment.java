@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +30,7 @@ public class HistoryFragment extends Fragment {
     DatabaseReference dbRef;
     public ProgressDialog progressDialog;
     List<LogDHT> logDHTList;
-
+    LayoutAnimationController controller;
     public HistoryFragment() {
         // Required empty public constructor
     }
@@ -64,6 +66,7 @@ public class HistoryFragment extends Fragment {
     public void setAdaptor(){
 
         progressDialog.show();
+        controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -77,6 +80,8 @@ public class HistoryFragment extends Fragment {
                     progressDialog.cancel();
                     LogDHTList adapter = new LogDHTList(getContext(),logDHTList);
                     listViewLogDHT.setAdapter(adapter);
+                    listViewLogDHT.setLayoutAnimation(controller);
+                    listViewLogDHT.scheduleLayoutAnimation();
                 }
 
             }

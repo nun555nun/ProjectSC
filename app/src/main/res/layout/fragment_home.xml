@@ -11,8 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,7 +38,8 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="320dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground">
 
@@ -60,8 +70,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
-                                android:layout_marginTop="10dp"
-                                android:text="เหลือเวลาอีก"
+                                android:text="หมักมาแล้ว"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -73,6 +82,48 @@
                                 android:layout_marginBottom="10dp"
                                 android:gravity="center"
                                 android:text="5 วัน" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/in"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left|center_horizontal"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:layout_marginTop="10dp"
+                                android:text="ค่าภายในตัวถัง"
+                                android:textStyle="bold" />
+
                         </LinearLayout>
 
                     </LinearLayout>
@@ -96,7 +147,10 @@
                     android:id="@+id/bankcardId"
                     android:layout_width="150dp"
                     android:layout_height="180dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground">
 
@@ -141,7 +195,163 @@
                 <android.support.v7.widget.CardView
                     android:layout_width="150dp"
                     android:layout_height="180dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/circle_bg_yellow"
+                            android:padding="10dp"
+                            android:src="@drawable/humidity_icon" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="ความชื้น"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_margin="10dp"
+                            android:background="@android:color/darker_gray" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="0%"
+                            android:textColor="@android:color/darker_gray" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/out"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left|center_horizontal"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:layout_marginTop="10dp"
+                                android:text="ค่าภายนอกตัวถัง"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout_out"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/linearLayout0"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:clipToPadding="false"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:layout_editor_absoluteX="43dp">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/bankcardId_out"
+                    android:layout_width="150dp"
+                    android:layout_height="180dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/circle_bg_blue"
+                            android:padding="10dp"
+                            android:src="@drawable/thermometer" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="อุณหภูมิ"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_margin="10dp"
+                            android:background="@android:color/darker_gray" />
+
+                        <TextView
+                            android:id="@+id/temp_out"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="0°C"
+                            android:textColor="@android:color/darker_gray" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="150dp"
+                    android:layout_height="180dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground">
 
@@ -204,9 +414,12 @@
                 tools:layout_editor_absoluteY="210dp">
 
                 <android.support.v7.widget.CardView
-                    android:layout_width="270dp"
+                    android:layout_width="250dp"
                     android:layout_height="150dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground">
 
@@ -277,15 +490,22 @@
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
-                <Button
-                    android:id="@+id/button_water"
-                    android:layout_width="66dp"
+                <LinearLayout
+                    android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/circle_bg_green"
-                    android:text="เติม"
-                    android:textColor="@android:color/white" />
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_water"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_bg_green"
+                        android:text="เติม"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -310,9 +530,12 @@
                 tools:layout_editor_absoluteY="210dp">
 
                 <android.support.v7.widget.CardView
-                    android:layout_width="270dp"
+                    android:layout_width="250dp"
                     android:layout_height="150dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground">
 
@@ -383,21 +606,27 @@
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
-                <Button
-                    android:id="@+id/button_air"
+                <LinearLayout
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/circle_bg_violet"
-                    android:text="เติม"
-                    android:textColor="@android:color/white" />
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_air"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_bg_violet"
+                        android:text="เติม"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
 
 
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-
 
 </RelativeLayout>
