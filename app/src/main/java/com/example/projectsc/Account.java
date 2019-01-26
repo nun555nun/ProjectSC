@@ -169,7 +169,7 @@ public class Account extends AppCompatActivity {
                             .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    //Toast.makeText(MainActivity.this,s+ " Logout",Toast.LENGTH_LONG).show();
+
                                     changeEmail();
                                 }
                             })
@@ -191,7 +191,6 @@ public class Account extends AppCompatActivity {
                         .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //Toast.makeText(MainActivity.this,s+ " Logout",Toast.LENGTH_LONG).show();
                                 deleteAccount();
                             }
                         })

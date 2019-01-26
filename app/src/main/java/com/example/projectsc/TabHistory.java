@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +28,17 @@ public class TabHistory extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        String binID = getArguments().getString("binID");
+        Log.v("zxc", "Tab    "+binID);
+
         View view = inflater.inflate(R.layout.fragment_tab_history, container, false);
         tabLayout = view.findViewById(R.id.tablaout_history);
         viewPager = view.findViewById(R.id.viewpager_history);
 
         ViewpagerAdapter adapter = new ViewpagerAdapter(getChildFragmentManager());
-        adapter.AddFragment(new HistoryFragment(), "ภายในถัง");
-        adapter.AddFragment(new HistoryFragment(), "ภายนอกถัง");
-        adapter.AddFragment(new HistoryFragment(), "การแจ้งเตือน");
+
+        adapter.AddBinId(binID);
+        viewPager.setAdapter(adapter);
 
 
         viewPager.setAdapter(adapter);

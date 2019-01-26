@@ -30,7 +30,9 @@ public class HistoryFragment extends Fragment {
     DatabaseReference dbRef;
     public ProgressDialog progressDialog;
     List<LogDHT> logDHTList;
-    LayoutAnimationController controller;
+
+String logDHTType;
+    String binID;
     public HistoryFragment() {
         // Required empty public constructor
     }
@@ -40,16 +42,18 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        binID = getArguments().getString("binID");
+        logDHTType = getArguments().getString("logDHT");
         View view = inflater.inflate(R.layout.fragment_history, container, false);
-        dbRef = FirebaseDatabase.getInstance().getReference("bin/bin1/logDHT");
+        dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/"+logDHTType);
 
         listViewLogDHT = view.findViewById(R.id.list_view_logDHT);
         logDHTList = new ArrayList<>();
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading.....");
         progressDialog.setTitle("กำลังโหลดข้อมูล");
+        progressDialog.show();
         setAdaptor();
-
         return view;
     }
     @Override
@@ -64,25 +68,32 @@ public class HistoryFragment extends Fragment {
         setAdaptor();
     }
     public void setAdaptor(){
-
         progressDialog.show();
-        controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(getContext()==null){
+                    dbRef.removeEventListener(this);
+                }
+                else {
+                    LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
+                    logDHTList.clear();
+                    for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
+                        LogDHT logDHT = logDHTSnapshot.getValue(LogDHT.class);
+                        logDHTList.add(logDHT);
+                    }
+                    if (logDHTList.size() > 0 && getContext() != null) {
+                        progressDialog.dismiss();
+                        LogDHTList adapter = new LogDHTList(getContext(), logDHTList);
 
-                logDHTList.clear();
-                for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
-                    LogDHT logDHT = logDHTSnapshot.getValue(LogDHT.class);
-                    logDHTList.add(logDHT);
+                        listViewLogDHT.setAdapter(adapter);
+                        listViewLogDHT.setLayoutAnimation(controller);
+                        listViewLogDHT.scheduleLayoutAnimation();
+                    }
+                    progressDialog.dismiss();
                 }
-                if(logDHTList.size()>0&&getContext()!=null){
-                    progressDialog.cancel();
-                    LogDHTList adapter = new LogDHTList(getContext(),logDHTList);
-                    listViewLogDHT.setAdapter(adapter);
-                    listViewLogDHT.setLayoutAnimation(controller);
-                    listViewLogDHT.scheduleLayoutAnimation();
-                }
+
+
 
             }
 

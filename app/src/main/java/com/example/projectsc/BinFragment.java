@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,10 +37,11 @@ public class BinFragment extends Fragment {
     public ProgressDialog progressDialog;
     List<UserBin> userBinList;
     FirebaseAuth auth;
-    ArrayList<String> binArrylist;
+    ArrayList<String> binArrayList;
     LayoutAnimationController controller;
     ConstraintLayout cl;
     Intent intent;
+    Boolean a;
     public BinFragment() {
         // Required empty public constructor
     }
@@ -53,8 +53,8 @@ public class BinFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bin, container, false);
         auth = FirebaseAuth.getInstance();
-
-        binArrylist = new ArrayList<>();
+        a = true;
+        binArrayList = new ArrayList<>();
         cl = view.findViewById(R.id.constraint_laout);
         listViewBin = view.findViewById(R.id.bin_list_view);
         userBinList = new ArrayList<>();
@@ -72,18 +72,20 @@ public class BinFragment extends Fragment {
         dbRef = FirebaseDatabase.getInstance().getReference("bin");
 
         dbRef.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userBinList.clear();
                 progressDialog.cancel();
-                for (String bin : binArrylist) {
+
+                for (String bin : binArrayList) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         if (data.getKey().equals(bin)) {
                             Map map = (Map) data.getValue();
                             String binName = String.valueOf(map.get("binName"));
                             String startDate = String.valueOf(map.get("startDate"));
-                            String temperature = String.valueOf(map.get("temperature"));
-                            String humidity = String.valueOf(map.get("humidity"));
+                            String temperature = String.valueOf(map.get("tempIn"));
+                            String humidity = String.valueOf(map.get("humidIn"));
 
                             UserBin ub = new UserBin(binName, bin, temperature, humidity, startDate);
                             //Toast.makeText(getContext(), bin + " add", Toast.LENGTH_SHORT).show();
@@ -96,9 +98,12 @@ public class BinFragment extends Fragment {
                     UserBinList adapter = new UserBinList(getContext(), userBinList);
 
                     listViewBin.setAdapter(adapter);
-                    listViewBin.setLayoutAnimation(controller);
-                    listViewBin.scheduleLayoutAnimation();
-                    controller = null;
+                    if (a) {
+                        listViewBin.setLayoutAnimation(controller);
+                        listViewBin.scheduleLayoutAnimation();
+                        a=false;
+                    }
+
                     for (int i = 0; i < userBinList.size(); i++) {
                         Log.v("test", userBinList.get(i).getBinID());
                     }
@@ -113,8 +118,8 @@ public class BinFragment extends Fragment {
                             startActivity(intent);
                         }
                     });
-
                 }
+
             }
 
 
@@ -132,14 +137,14 @@ public class BinFragment extends Fragment {
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                binArrylist.clear();
+                binArrayList.clear();
 
                 for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
                     Map map = (Map) BinSnapshot.getValue();
                     final String bin = String.valueOf(map.get("binid"));
-                    binArrylist.add(bin);
+                    binArrayList.add(bin);
                 }
-                if (binArrylist.size() > 0) {
+                if (binArrayList.size() > 0) {
                     if (getContext() != null) {
                         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_slide_from_left);
                         cl.setBackgroundResource(R.drawable.bg);

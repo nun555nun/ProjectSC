@@ -22,6 +22,14 @@ public class Navigationbottom extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+            Intent intent = getIntent();
+            binID = intent.getStringExtra("binID");
+            bundle = new Bundle();
+            bundle.putString("binID", binID);
+            String binName = intent.getStringExtra("binName");
+            setTitle(binName);
+
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             Fragment selectedFragment;
             switch (item.getItemId()) {
@@ -40,6 +48,10 @@ public class Navigationbottom extends AppCompatActivity {
                     /*Intent i = new Intent(Navigationbottom.this,listtest.class);
                     startActivity(i);*/
                     selectedFragment =  new TabHistory();
+                    Bundle b = new Bundle();
+                    b.putString("binID",binID);
+                    selectedFragment.setArguments(b);
+
                     fragmentTransaction.replace(R.id.framz, selectedFragment).commit();
 
                     return true;
@@ -57,6 +69,7 @@ public class Navigationbottom extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigationbottom);
+
         Intent intent = getIntent();
         binID = intent.getStringExtra("binID");
         bundle = new Bundle();

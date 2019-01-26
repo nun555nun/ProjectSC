@@ -5,4 +5,10 @@
     <string name="delete_account">ลบบัญชี</string>
     <string name="register">ลงทะเบียน</string>
     <string name="login">เข้าสู่ระบบ</string>
+    <string name="history">ประวัติ</string>
+    <string name="setting">ตั้งค่า</string>
+    <string name="logout">ออกจากระบบ</string>
+    <string name="edit_profile">แก้ไขข้อมูลส่วนตัว</string>
+    <string name="home">หน้าหลัก</string>
+    <string name="notification">การแจ้งเตือน</string>
 </resources>

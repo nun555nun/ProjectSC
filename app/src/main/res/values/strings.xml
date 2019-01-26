@@ -12,10 +12,15 @@
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="title_activity_navigationbottom" translatable="false">Navigationbottom</string>
     <string name="title_home" translatable="false">Home</string>
-    <string name="title_dashboard" translatable="false">Dashboard</string>
     <string name="title_notifications" translatable="false">Notifications</string>
     <string name="edit">edit</string>
     <string name="delete_account">Delete Account</string>
     <string name="register">register</string>
     <string name="login">login</string>
+    <string name="history">History</string>
+    <string name="setting">Setting</string>
+    <string name="logout">Logout</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="notification">Notification</string>
+    <string name="home">Home</string>
 </resources>

@@ -59,6 +59,7 @@ public class Main extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         mDate = Calendar.getInstance();
 
         day = mDate.get(Calendar.DAY_OF_MONTH);
@@ -76,7 +77,7 @@ public class Main extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
-
+        dbRef.keepSynced(true);
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -195,7 +196,7 @@ public class Main extends AppCompatActivity
         etID = mview.findViewById(R.id.et_bin_id);
         tvStartDate = mview.findViewById(R.id.tv_start_date);
 
-        tvStartDate.setText(day + "/" + (month + 1) + "/" + year);
+        tvStartDate.setText(day + "/" + (month + 1) + "/" + (year+543));
 
         tvStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +205,7 @@ public class Main extends AppCompatActivity
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        tvStartDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                        tvStartDate.setText(dayOfMonth + "/" + (month + 1) + "/" + (year+543));
                         tvStartDate.setTextColor(BLACK);
                     }
                 }, year, month, day);
@@ -326,9 +327,14 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
+            setTitle("หน้าหลัก");
+            BinFragment fragment = new BinFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fram, fragment);
+            fragmentTransaction.commit();
         } else if (id == R.id.nav_notification) {
-
+            Intent intent = new Intent(Main.this, MainActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_edit_profile) {
             Intent intent = new Intent(Main.this, Account.class);
             startActivity(intent);
@@ -365,7 +371,7 @@ public class Main extends AppCompatActivity
 
                             //logout
                             String s = auth.getUid();
-                            //Toast.makeText(MainActivity.this,s+ " Logout",Toast.LENGTH_LONG).show();
+
                             Intent intent = new Intent(Main.this, login.class);
                             auth.signOut();
                             startActivity(intent);
