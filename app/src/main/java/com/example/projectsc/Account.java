@@ -47,9 +47,9 @@ public class Account extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account);
+        setContentView(R.layout.activity_edit_account);
 
-        setTitle("ข้อมูลส่วนตัว");
+        setTitle(R.string.profile);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -112,13 +112,13 @@ public class Account extends AppCompatActivity {
 
                     new AlertDialog.Builder(Account.this)
                             .setTitle("คุณต้องการที่จะแก้ไข password ใช่หรือไม่")
-                            .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     changePassword();
                                 }
                             })
-                            .setNegativeButton("ไม่", null)
+                            .setNegativeButton(R.string.no, null)
                             .show();
 
                 } else {
@@ -137,14 +137,14 @@ public class Account extends AppCompatActivity {
                     new AlertDialog.Builder(Account.this)
                             .setTitle("แก้ไข username")
                             .setMessage("ต้องการเปลี่ยน username จาก '" + usernameEditText.getHint() + "' เป็น '" + usernameEditText.getText().toString() + "' ใช่หรือไม่")
-                            .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     changeUsername();
                                 }
                             })
-                            .setNegativeButton("ไม่", null)
+                            .setNegativeButton(R.string.no, null)
                             .show();
 
 
@@ -166,14 +166,14 @@ public class Account extends AppCompatActivity {
                     new AlertDialog.Builder(Account.this)
                             .setTitle("แก้ไข email")
                             .setMessage("ต้องการเปลี่ยน email เป็น " + emailEditText.getText().toString() + " ใช่หรือไม่")
-                            .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     changeEmail();
                                 }
                             })
-                            .setNegativeButton("ไม่", null)
+                            .setNegativeButton(R.string.no, null)
                             .show();
                 }
 
@@ -188,13 +188,13 @@ public class Account extends AppCompatActivity {
                 new AlertDialog.Builder(Account.this)
                         .setTitle("ต้องการลบบัญชีนี้ออกจากระบบใช่หรือไม่")
                         .setMessage("เมื่อกดปุ่ม ใช่ แล้วจะไม่สามารถกู้คืนบัญชีของท่านได้")
-                        .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 deleteAccount();
                             }
                         })
-                        .setNegativeButton("ไม่", null)
+                        .setNegativeButton(R.string.no, null)
                         .show();
             }
         });

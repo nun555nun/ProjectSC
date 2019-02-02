@@ -11,4 +11,35 @@
     <string name="edit_profile">แก้ไขข้อมูลส่วนตัว</string>
     <string name="home">หน้าหลัก</string>
     <string name="notification">การแจ้งเตือน</string>
+    <string name="username">ชื่อผู้ใช้</string>
+    <string name="e_mail">อีเมล์</string>
+    <string name="password">รหัสผ่าน</string>
+    <string name="forgetpassword">ลืมรหัสผ่าน</string>
+    <string name="create_account">สร้างบัญชีผู้ใช้</string>
+    <string name="send">ส่ง</string>
+    <string name="enter_your_email">กรอก อีเมล์ของคุณ</string>
+    <string name="adddevice">เพิ่มถัง</string>
+    <string name="startdate">วันที่เริ่มหมัก</string>
+    <string name="add">เพิ่ม</string>
+    <string name="insidestatus">ค่าภายในตัวถัง</string>
+    <string name="outsidestatus">ค่าภายนอกตัวถัง</string>
+    <string name="temperature">อุณหภูมิ</string>
+    <string name="humidity">ความชื้น</string>
+    <string name="fillwater">เติมน้ำ</string>
+    <string name="fillair">เติมอากาศ</string>
+    <string name="minute">นาที</string>
+    <string name="every">ทุกๆ</string>
+    <string name="day">วัน</string>
+    <string name="datecount">หมักมาแล้ว</string>
+    <string name="devicename">ชื่อของถัง</string>
+    <string name="devicecode">รหัสของถัง</string>
+    <string name="profile">ข้อมูลส่วนตัว</string>
+    <string name="inside">ภายในถัง</string>
+    <string name="outside">ภายนอกถัง</string>
+    <string name="resetpassword">รีเซตรหัสผ่าน</string>
+    <string name="yes">ใช่</string>
+    <string name="no">ไม่</string>
+    <string name="humidityList">ความชื้น :</string>
+    <string name="temperatureList">อุณหภูมิ :</string>
+
 </resources>

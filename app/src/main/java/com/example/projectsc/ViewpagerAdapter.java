@@ -22,8 +22,8 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        // return fragmentListTitle.get(position);
-        switch (position) {
+        return fragmentListTitle.get(position);
+      /*  switch (position) {
             case 0:
                 return "ในถัง";
 
@@ -34,7 +34,7 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
                 return "การแจ้งเตือน";
 
         }
-        return null;
+        return null;*/
     }
 
     @Override
@@ -44,6 +44,7 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
         switch (i) {
             case 0:
                 fragment = new HistoryFragment();
+
                 b = new Bundle();
                 Log.v("zxc","0     "+binID);
                 b.putString("binID", binID);
@@ -82,6 +83,8 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
         fragmentListTitle.add(title);
         fragmentList.add(fragment);
         // binID.add(bin);
-
+    }
+    public void AddTitle(String title) {
+        fragmentListTitle.add(title);
     }
 }

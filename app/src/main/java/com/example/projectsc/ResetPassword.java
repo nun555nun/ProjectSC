@@ -33,7 +33,7 @@ public class ResetPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-        setTitle("รีเซตรหัสผ่าน");
+        setTitle(R.string.resetpassword);
 
         fromBottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom);
 
@@ -45,7 +45,7 @@ public class ResetPassword extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         cl = findViewById(R.id.CL_reset);
         emailEditText = findViewById(R.id.emailEditText);
-        resetEmail = findViewById(R.id.reser_buttom);
+        resetEmail = findViewById(R.id.reset_buttom);
 
         cl.setAnimation(fromBottom);
         emailEditText.setAnimation(fromTop);

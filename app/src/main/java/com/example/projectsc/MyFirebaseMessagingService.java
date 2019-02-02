@@ -46,7 +46,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param data FCM data payload received.
      */
     private void sendNotification(RemoteMessage.Notification notification, Map<String, String> data) {
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_icon);
 
         Intent intent = new Intent(this, Main.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -58,12 +58,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentIntent(pendingIntent)
-                .setContentInfo(notification.getTitle())
+                //.setContentInfo(notification.getTitle())
                 .setLargeIcon(icon)
-                .setColor(Color.RED)
-                .setLights(Color.RED, 1000, 300)
+                .setColor(Color.GREEN)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setSmallIcon(R.mipmap.ic_launcher);
+                .setSmallIcon(R.mipmap.ic_icon);
 
         try {
             String picture_url = data.get("picture_url");
@@ -88,8 +87,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             channel.setDescription("channel description");
             channel.setShowBadge(true);
             channel.canShowBadge();
-            channel.enableLights(true);
-            channel.setLightColor(Color.RED);
             channel.enableVibration(true);
             channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500});
             notificationManager.createNotificationChannel(channel);

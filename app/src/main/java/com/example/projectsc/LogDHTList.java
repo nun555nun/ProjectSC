@@ -46,4 +46,9 @@ public class LogDHTList extends ArrayAdapter<LogDHT> {
 
         return convertView;
     }
+
+   /* @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }*/
 }

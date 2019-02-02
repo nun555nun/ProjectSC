@@ -86,14 +86,14 @@ public class Main extends AppCompatActivity
                 if (dataSnapshot.getChildrenCount() == 0) {
                     new AlertDialog.Builder(Main.this)
                             .setMessage("ตอนนี้คุณไม่ได้ทำการเชื่อมต่อถัง คุณต้องการเพิ่มถังตอนนี้หรือไม่")
-                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     addBin();
                                     // Toast.makeText(Main3Activity.this, "ได้ทำการเพิ่มถังเรียบร้อย", Toast.LENGTH_LONG).show();
                                 }
                             })
-                            .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Toast.makeText(Main.this, "เมื่อคุณต้องการเพิ่มถังสามารถกดปุ่ม + ด้านขวามือเพื่อทำการเพิ่มถัง", Toast.LENGTH_LONG).show();
@@ -154,7 +154,7 @@ public class Main extends AppCompatActivity
 
             }
         });
-        setTitle("หน้าหลัก");
+        setTitle(R.string.home);
         BinFragment fragment = new BinFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fram, fragment);
@@ -327,7 +327,7 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            setTitle("หน้าหลัก");
+            setTitle(R.string.home);
             BinFragment fragment = new BinFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fram, fragment);
@@ -343,7 +343,7 @@ public class Main extends AppCompatActivity
 
             new AlertDialog.Builder(Main.this)
                     .setTitle("ต้องการออกจากระบบใช่หรือไม่")
-                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -356,7 +356,7 @@ public class Main extends AppCompatActivity
                                     Map map = (Map) dataSnapshot.getValue();
                                     String x = String.valueOf(map.get("email"));
 
-                                    Toast.makeText(Main.this, x, Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(Main.this,"ออกจากระบบเรียบร้อย", Toast.LENGTH_LONG).show();
                                 }
 
                                 @Override
@@ -378,7 +378,7 @@ public class Main extends AppCompatActivity
                             finish();
                         }
                     })
-                    .setNegativeButton("no", null)
+                    .setNegativeButton(R.string.no, null)
                     .show();
 
 

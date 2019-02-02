@@ -70,7 +70,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
-                                android:text="หมักมาแล้ว"
+                                android:text="@string/datecount"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -89,7 +89,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="วัน"
+                                android:text="@string/day"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -130,7 +130,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
                                 android:layout_marginTop="10dp"
-                                android:text="ค่าภายในตัวถัง"
+                                android:text="@string/insidestatus"
                                 android:textStyle="bold" />
 
                         </LinearLayout>
@@ -180,7 +180,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="อุณหภูมิ"
+                            android:text="@string/temperature"
                             android:textStyle="bold" />
 
                         <View
@@ -229,7 +229,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="ความชื้น"
+                            android:text="@string/humidity"
                             android:textStyle="bold" />
 
                         <View
@@ -285,7 +285,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
                                 android:layout_marginTop="10dp"
-                                android:text="ค่าภายนอกตัวถัง"
+                                android:text="@string/outsidestatus"
                                 android:textStyle="bold" />
 
 
@@ -336,7 +336,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="อุณหภูมิ"
+                            android:text="@string/temperature"
                             android:textStyle="bold" />
 
                         <View
@@ -384,7 +384,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="ความชื้น"
+                            android:text="@string/humidity"
                             android:textStyle="bold" />
 
                         <View
@@ -455,13 +455,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="เติมน้ำ"
+                            android:text="@string/fillwater"
                             android:textStyle="bold" />
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:layout_margin="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="5dp"
                             android:background="@android:color/darker_gray" />
 
                         <LinearLayout
@@ -471,33 +474,33 @@
 
                             <TextView
                                 android:id="@+id/textView"
-                                android:layout_width="4dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
-                                android:layout_weight="0.4"
-                                android:text="ทุกๆ" />
+                                android:layout_marginLeft="10dp"
+                                android:padding="5dp"
+                                android:text="@string/every" />
 
                             <EditText
                                 android:id="@+id/editWater"
                                 android:layout_width="112dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="2dp"
                                 android:layout_weight="1"
                                 android:background="@null"
                                 android:ems="10"
                                 android:gravity="center"
-                                android:hint="60"
 
+                                android:hint="60"
                                 android:inputType="number"
                                 android:textCursorDrawable="@drawable/cur_color" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
                                 android:gravity="center"
                                 android:padding="5dp"
-                                android:text=" นาที"
-                                android:textColor="@android:color/darker_gray" />
+                                android:text="@string/minute" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -516,7 +519,7 @@
                         android:layout_margin="4dp"
                         android:layout_weight="1"
                         android:background="@drawable/circle_bg_green"
-                        android:text="เติม"
+                        android:text="@string/add"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 
@@ -571,13 +574,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="เติมอากาศ"
+                            android:text="@string/fillair"
                             android:textStyle="bold" />
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:layout_margin="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="5dp"
                             android:background="@android:color/darker_gray" />
 
                         <LinearLayout
@@ -587,33 +593,33 @@
 
                             <TextView
                                 android:id="@+id/textVieww"
-                                android:layout_width="4dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
-                                android:layout_weight="0.4"
-                                android:text="ทุกๆ" />
+                                android:layout_marginLeft="10dp"
+                                android:padding="5dp"
+                                android:text="@string/every" />
 
                             <EditText
                                 android:id="@+id/editAir"
                                 android:layout_width="112dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="2dp"
                                 android:layout_weight="1"
                                 android:background="@null"
                                 android:ems="10"
                                 android:gravity="center"
                                 android:hint="60"
-                                android:inputType="number"
 
-                                android:textCursorDrawable="@drawable/cur_color"/>
+                                android:inputType="number"
+                                android:textCursorDrawable="@drawable/cur_color" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
                                 android:gravity="center"
                                 android:padding="5dp"
-                                android:text=" นาที"
-                                android:textColor="@android:color/darker_gray" />
+                                android:text="@string/minute" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -632,7 +638,7 @@
                         android:layout_margin="4dp"
                         android:layout_weight="1"
                         android:background="@drawable/circle_bg_violet"
-                        android:text="เติม"
+                        android:text="@string/add"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 

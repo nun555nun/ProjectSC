@@ -47,4 +47,5 @@ public class UserBinList extends ArrayAdapter<UserBin> {
 
         return convertView;
     }
+
 }

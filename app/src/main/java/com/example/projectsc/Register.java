@@ -25,9 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import static com.example.projectsc.login.NODE_USER;
-import static com.example.projectsc.login.NODE_fcm;
 
-public class register extends AppCompatActivity {
+public class Register extends AppCompatActivity {
     private String usernameString, emailString, passwordString;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
@@ -40,7 +39,7 @@ public class register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        setTitle("สมัครสมาชิก");
+        setTitle(R.string.register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -174,7 +173,7 @@ public class register extends AppCompatActivity {
 
     private void saveValueToFirebase() {
 
-        progressDialog = new ProgressDialog(register.this);
+        progressDialog = new ProgressDialog(Register.this);
         progressDialog.setTitle("กรุณารอสักครู่ . . .");
         progressDialog.show();
 
@@ -197,7 +196,7 @@ public class register extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(register.this, "ลงทะเบียนสำเร็จ",
+                                        Toast.makeText(Register.this, "ลงทะเบียนสำเร็จ",
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -206,11 +205,11 @@ public class register extends AppCompatActivity {
                             dbUser.child(token).child("token").setValue(token);*/
 
 
-                            register.this.getSupportFragmentManager().popBackStack();
+                            Register.this.getSupportFragmentManager().popBackStack();
                             finish();
                         } else {
                             //Have Error
-                            Toast.makeText(register.this, "Cannot Register Please Try Again Register False Because " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Register.this, "Cannot Register Please Try Again Register False Because " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
                     }

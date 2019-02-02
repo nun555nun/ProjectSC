@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".register">
+    tools:context=".Register">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:ems="10"
-            android:hint="password"
+            android:hint="@string/password"
             android:inputType="textPassword"
             app:layout_constraintBottom_toTopOf="@+id/button5"
             app:layout_constraintEnd_toEndOf="@+id/editemail"
@@ -45,7 +45,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:ems="10"
-            android:hint="username"
+            android:hint="@string/username"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toTopOf="@+id/editemail"
             app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:ems="10"
-            android:hint="email"
+            android:hint="@string/e_mail"
             android:inputType="text"
             app:layout_constraintBottom_toTopOf="@+id/editpass"
             app:layout_constraintEnd_toEndOf="@+id/editname"

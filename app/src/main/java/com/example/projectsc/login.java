@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -89,6 +90,7 @@ public class login extends AppCompatActivity {
         buttonlogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editTextemail.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 final String email = editTextemail.getText().toString();
                 final String password = editTextpass.getText().toString();
 
@@ -138,7 +140,7 @@ public class login extends AppCompatActivity {
         regiter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(login.this, register.class);
+                Intent intent = new Intent(login.this, Register.class);
                 startActivity(intent);
 
             }
