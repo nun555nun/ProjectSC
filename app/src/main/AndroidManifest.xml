@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.projectsc">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".FirebaseHandler"
         android:allowBackup="true"
@@ -10,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".QRMainActivity"></activity>
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
@@ -39,13 +42,15 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <activity android:name=".login"
+        <activity
+            android:name=".login"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".Register"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Register"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Main"
@@ -54,14 +59,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Navigationbottom"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_navigationbottom"></activity>
-        <activity android:name=".ResetPassword"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Account"
-            android:screenOrientation="portrait"
-            />
+            android:label="@string/title_activity_navigationbottom"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ResetPassword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Account"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -48,17 +48,23 @@ public class Main extends AppCompatActivity
     private FirebaseDatabase database;
     public ProgressDialog progressDialog;
     AlertDialog dialog;
-    EditText etID;
+    TextView etID;
     EditText etName;
     TextView tvStartDate;
     private int day, month, year;
     private Calendar mDate;
+    String binIDFromQR;
+    String binName;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent i = getIntent();
+        binIDFromQR = i.getStringExtra("binID");
+        token = FirebaseInstanceId.getInstance().getToken();
 
         mDate = Calendar.getInstance();
 
@@ -77,30 +83,36 @@ public class Main extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
-        dbRef.keepSynced(true);
+        // dbRef.keepSynced(true);
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
                 if (dataSnapshot.getChildrenCount() == 0) {
-                    new AlertDialog.Builder(Main.this)
-                            .setMessage("ตอนนี้คุณไม่ได้ทำการเชื่อมต่อถัง คุณต้องการเพิ่มถังตอนนี้หรือไม่")
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    addBin();
-                                    // Toast.makeText(Main3Activity.this, "ได้ทำการเพิ่มถังเรียบร้อย", Toast.LENGTH_LONG).show();
-                                }
-                            })
-                            .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(Main.this, "เมื่อคุณต้องการเพิ่มถังสามารถกดปุ่ม + ด้านขวามือเพื่อทำการเพิ่มถัง", Toast.LENGTH_LONG).show();
-                                }
-                            })
-                            .show();
                     dbRef.removeEventListener(this);
+                    if (binIDFromQR == null) {
+                        if (Main.this != null) {
+                            new AlertDialog.Builder(Main.this)
+                                    .setMessage("ตอนนี้คุณไม่ได้ทำการเชื่อมต่อถัง คุณต้องการเพิ่มถังตอนนี้หรือไม่")
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent i = new Intent(Main.this, QRMainActivity.class);
+                                            startActivity(i);
+
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Toast.makeText(Main.this, "เมื่อคุณต้องการเพิ่มถังสามารถกดปุ่ม + ด้านขวามือเพื่อทำการเพิ่มถัง", Toast.LENGTH_LONG).show();
+                                        }
+                                    })
+                                    .show();
+
+                        }
+                    }
                 }
             }
 
@@ -114,9 +126,12 @@ public class Main extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addBin();
+
                /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
+                Intent i = new Intent(Main.this, QRMainActivity.class);
+                startActivity(i);
+
             }
         });
 
@@ -130,8 +145,8 @@ public class Main extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View navHeaderView = navigationView.getHeaderView(0);
-        final TextView Emailtextview = navHeaderView.findViewById(R.id.text_view_email);
-        final TextView Userametextview = navHeaderView.findViewById(R.id.text_view_username);
+        final TextView EmailTextView = navHeaderView.findViewById(R.id.text_view_email);
+        final TextView UsernameTextView = navHeaderView.findViewById(R.id.text_view_username);
         dbRef = database.getReference("users").child(auth.getUid());
         progressDialog.show();
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -142,8 +157,8 @@ public class Main extends AppCompatActivity
                     String email = String.valueOf(map.get("email"));
                     String username = String.valueOf(map.get("username"));
 
-                    Emailtextview.setText(email);
-                    Userametextview.setText(username);
+                    EmailTextView.setText(email);
+                    UsernameTextView.setText(username);
                     progressDialog.cancel();
                 }
 
@@ -154,6 +169,11 @@ public class Main extends AppCompatActivity
 
             }
         });
+
+        if (binIDFromQR != null) {
+            checkData();
+        }
+
         setTitle(R.string.home);
         BinFragment fragment = new BinFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -174,29 +194,23 @@ public class Main extends AppCompatActivity
                 return false;
             }
         });
-
-        etID.setFocusable(false);
-        etID.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                etID.setFocusableInTouchMode(true);
-
-                return false;
-            }
-        });
-
     }
 
-    private void addBin() {
+    private void addDataBin() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(Main.this);
         View mview = getLayoutInflater().inflate(R.layout.dialog_add, null);
 
         etName = mview.findViewById(R.id.et_bin_name);
+
+        if (binName != null && binName.length() > 0) {
+            etName.setHint(binName);
+        }
         etID = mview.findViewById(R.id.et_bin_id);
         tvStartDate = mview.findViewById(R.id.tv_start_date);
-
-        tvStartDate.setText(day + "/" + (month + 1) + "/" + (year+543));
+        if (binIDFromQR.length() > 0) {
+            etID.setText(binIDFromQR);
+        }
+        tvStartDate.setText(day + "/" + (month + 1) + "/" + (year + 543));
 
         tvStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,7 +219,7 @@ public class Main extends AppCompatActivity
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        tvStartDate.setText(dayOfMonth + "/" + (month + 1) + "/" + (year+543));
+                        tvStartDate.setText(dayOfMonth + "/" + (month + 1) + "/" + (year + 543));
                         tvStartDate.setTextColor(BLACK);
                     }
                 }, year, month, day);
@@ -219,16 +233,39 @@ public class Main extends AppCompatActivity
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etName.getText().toString().length() > 0 && etID.getText().toString().trim().length() > 0) {
-                    checkData();
-                } else {
-                    Toast.makeText(Main.this, "โปรดใส่ข้อมูลให้ครบ", Toast.LENGTH_SHORT).show();
-                }
+                dialog.dismiss();
+                setUserBin();
             }
         });
         mBuilder.setView(mview);
         dialog = mBuilder.create();
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
+    }
+
+    private void setUserBin() {
+
+        dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Map binId = new HashMap();
+                binId.put("binid", binIDFromQR.trim());
+                binId.put("notificationStatus","on");
+                dbRef.push().setValue(binId);
+
+                dbRef.removeEventListener(this);
+                setBinData();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     private void checkData() {
@@ -240,16 +277,18 @@ public class Main extends AppCompatActivity
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean check = false;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.getKey().equals(etID.getText().toString().trim())) {
+                    if (ds.getKey().equals(binIDFromQR.trim())) {
+                        Map map = (Map) ds.getValue();
+                        binName = String.valueOf(map.get("binName"));
                         check = true;
                         break;
                     }
                 }
                 dbRef.removeEventListener(this);
                 if (check) {
-                    setBinId();
+
+                    checkBinId();
                 } else {
-                    etID.setText("");
                     Toast.makeText(Main.this, "ไม่มี รหัสถังนี้ในระบบ หรือ ถังยังไม่ได้เปิดใช้", Toast.LENGTH_LONG).show();
 
                 }
@@ -263,7 +302,7 @@ public class Main extends AppCompatActivity
         });
     }
 
-    private void setBinId() {
+    private void checkBinId() {
         dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
 
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -274,23 +313,17 @@ public class Main extends AppCompatActivity
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Map map = (Map) ds.getValue();
                     String binID = String.valueOf(map.get("binid"));
-                    if (binID.equals(etID.getText().toString().trim())) {
+                    if (binID.equals(binIDFromQR.trim())) {
                         check = false;
                         break;
                     }
                 }
                 if (check) {
-                    Map binId = new HashMap();
-                    binId.put("binid", etID.getText().toString().trim());
-                    dbRef.push().setValue(binId);
-                    Toast.makeText(Main.this, "เพิ่มถังเรียบร้อย", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
                     dbRef.removeEventListener(this);
-                    setBinData();
+                    addDataBin();
 
                 } else {
                     dbRef.removeEventListener(this);
-                    etID.setText("");
                     Toast.makeText(Main.this, "คุณเคยเพิ่มถังนี้ไปแล้ว", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -304,11 +337,49 @@ public class Main extends AppCompatActivity
 
     }
 
+
     private void setBinData() {
-        dbRef = FirebaseDatabase.getInstance().getReference("bin/" + etID.getText().toString().trim());
-        dbRef.child("binName").setValue(etName.getText().toString());
-        dbRef.child("startDate").setValue(tvStartDate.getText().toString());
+        dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binIDFromQR.trim());
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (etName.getText().toString().length() == 0) {
+                    dbRef.child("binName").setValue(etName.getHint().toString());
+                } else {
+                    dbRef.child("binName").setValue(etName.getText().toString());
+                }
+
+                dbRef.child("startDate").setValue(tvStartDate.getText().toString());
+                Toast.makeText(Main.this, "เพิ่มถังเรียบร้อย", Toast.LENGTH_SHORT).show();
+                dbRef.removeEventListener(this);
+                setUserToken();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+
+    private void setUserToken() {
+
+        dbRef = FirebaseDatabase.getInstance().getReference("fcm-token/" + binIDFromQR.trim());
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dbRef.child(token).child("token").setValue(token);
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -348,34 +419,19 @@ public class Main extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which) {
 
                             //Log.d("Token = ",""+FirebaseInstanceId.getInstance().getToken());
-
-                            dbRef = database.getReference("users").child(auth.getUid());
-                            dbRef.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Map map = (Map) dataSnapshot.getValue();
-                                    String x = String.valueOf(map.get("email"));
-
-                                    //Toast.makeText(Main.this,"ออกจากระบบเรียบร้อย", Toast.LENGTH_LONG).show();
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                            //ลบ token
-                            String token = FirebaseInstanceId.getInstance().getToken();
+                            findUserBin();
+                            /*String token = FirebaseInstanceId.getInstance().getToken();
                             dbRef = database.getReference(NODE_fcm + "/bin1").child(token);
-                            dbRef.removeValue();
+                            dbRef.removeValue();*/
 
                             //logout
                             String s = auth.getUid();
 
                             Intent intent = new Intent(Main.this, login.class);
                             auth.signOut();
-                            startActivity(intent);
                             finish();
+                            startActivity(intent);
+
                         }
                     })
                     .setNegativeButton(R.string.no, null)
@@ -387,5 +443,33 @@ public class Main extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void findUserBin() {
+
+        dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Map map = (Map) ds.getValue();
+                    String binID = String.valueOf(map.get("binid"));
+                    removeToken(binID);
+                }
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void removeToken(String binID) {
+
+        DatabaseReference  dbRef = database.getReference(NODE_fcm + "/"+binID).child(token);
+        dbRef.removeValue();
+
     }
 }

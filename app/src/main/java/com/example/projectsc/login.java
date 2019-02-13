@@ -44,6 +44,7 @@ public class login extends AppCompatActivity {
     TextView regiter;
     TextView tv_pass;
     public ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,11 +81,16 @@ public class login extends AppCompatActivity {
         token = FirebaseInstanceId.getInstance().getToken();
         if (auth.getCurrentUser() != null) {
             //Toast.makeText(getApplicationContext(), "OK, you already logged in!", Toast.LENGTH_SHORT).show();
-            saveToken(token);
+           // saveToken(token);
+            if (auth.getCurrentUser().isEmailVerified()) {
+                Intent intent = new Intent(login.this, Main.class);
+                startActivity(intent);
+                finish();
+            }
+            else{
+                Toast.makeText(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
+            }
 
-            Intent intent = new Intent(login.this, Main.class);
-            startActivity(intent);
-            finish();
         }
 
         buttonlogin.setOnClickListener(new View.OnClickListener() {
@@ -123,12 +129,16 @@ public class login extends AppCompatActivity {
                                         Toast.makeText(login.this, "รหัสผ่าน หรือ  อีเมล์ ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
                                     } else {
 
-                                        saveToken(token);
+                                        if (auth.getCurrentUser().isEmailVerified()) {
+                                            //saveToken(token);
+                                            Intent intent = new Intent(login.this, Main.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                        else{
+                                            Toast.makeText(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
+                                        }
 
-                                        Intent intent = new Intent(login.this, Main.class);
-                                        startActivity(intent);
-
-                                        finish();
                                     }
                                 }
                             });
@@ -182,12 +192,11 @@ public class login extends AppCompatActivity {
         tv_pass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tv_pass.getText().equals("1")){
+                if (tv_pass.getText().equals("1")) {
                     tv_pass.setText("0");
                     editTextpass.setTransformationMethod(null);
                     tv_pass.setBackgroundResource(R.drawable.ic_visibility_black_24dp);
-                }
-                else{
+                } else {
                     tv_pass.setText("1");
                     editTextpass.setTransformationMethod(new PasswordTransformationMethod());
                     tv_pass.setBackgroundResource(R.drawable.ic_visibility_off_black_24dp);
@@ -200,7 +209,7 @@ public class login extends AppCompatActivity {
 
         DatabaseReference dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
         dbUser.child(token).child("token").setValue(token);
-        dbUser = FirebaseDatabase.getInstance().getReference(NODE_USER+"/"+auth.getUid());
+        dbUser = FirebaseDatabase.getInstance().getReference(NODE_USER + "/" + auth.getUid());
         dbUser.child("token").setValue(token);
     }
 

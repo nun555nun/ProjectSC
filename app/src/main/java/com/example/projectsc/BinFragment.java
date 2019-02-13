@@ -22,10 +22,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.projectsc.login.NODE_fcm;
 
 
 /**
@@ -42,6 +45,7 @@ public class BinFragment extends Fragment {
     ConstraintLayout cl;
     Intent intent;
     Boolean a;
+    String token;
     public BinFragment() {
         // Required empty public constructor
     }
@@ -51,6 +55,7 @@ public class BinFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        token = FirebaseInstanceId.getInstance().getToken();
         View view = inflater.inflate(R.layout.fragment_bin, container, false);
         auth = FirebaseAuth.getInstance();
         a = true;
@@ -143,6 +148,15 @@ public class BinFragment extends Fragment {
                     Map map = (Map) BinSnapshot.getValue();
                     final String bin = String.valueOf(map.get("binid"));
                     binArrayList.add(bin);
+
+                    String notificationStatus = String.valueOf(map.get("notificationStatus"));
+
+                    if(notificationStatus.equals("on")){
+                        setUserToken(bin);
+                    }
+                    else{
+                        removeToken(bin);
+                    }
                 }
                 if (binArrayList.size() > 0) {
                     if (getContext() != null) {
@@ -172,6 +186,30 @@ public class BinFragment extends Fragment {
         super.onResume();
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_slide_from_left);
         getbin();
+    }
+
+    private void removeToken(String binID) {
+
+        DatabaseReference  dbRef = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/"+binID).child(token);
+        dbRef.removeValue();
+
+    }
+
+    private void setUserToken(String binID) {
+
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("fcm-token/" + binID);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dbRef.child(token).child("token").setValue(token);
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

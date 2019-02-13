@@ -53,4 +53,6 @@
     <string name="no">no</string>
     <string name="humidityList">Humidity :</string>
     <string name="temperatureList">Temperature :</string>
+    <string name="scanQRCode">scanQRCode</string>
+    <string name="ScanComplete">Scan Complete</string>
 </resources>

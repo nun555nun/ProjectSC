@@ -41,5 +41,7 @@
     <string name="no">ไม่</string>
     <string name="humidityList">ความชื้น :</string>
     <string name="temperatureList">อุณหภูมิ :</string>
+    <string name="scanQRCode">สแกน QRCode</string>
+    <string name="ScanComplete">สแกนเสร็จสิ้น</string>
 
 </resources>

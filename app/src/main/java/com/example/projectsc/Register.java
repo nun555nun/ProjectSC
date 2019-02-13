@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -30,9 +31,9 @@ public class Register extends AppCompatActivity {
     private String usernameString, emailString, passwordString;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
-    EditText usernameEditText ;
-    EditText emailEditText ;
-    EditText passwordEditText ;
+    EditText usernameEditText;
+    EditText emailEditText;
+    EditText passwordEditText;
     TextView tv_pass;
 
     @Override
@@ -65,7 +66,7 @@ public class Register extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-               emailEditText.setFocusableInTouchMode(true);
+                emailEditText.setFocusableInTouchMode(true);
 
                 return false;
             }
@@ -107,12 +108,11 @@ public class Register extends AppCompatActivity {
         tv_pass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tv_pass.getText().equals("1")){
+                if (tv_pass.getText().equals("1")) {
                     tv_pass.setText("0");
                     passwordEditText.setTransformationMethod(null);
                     tv_pass.setBackgroundResource(R.drawable.ic_visibility_black_24dp);
-                }
-                else{
+                } else {
                     tv_pass.setText("1");
                     passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
                     tv_pass.setBackgroundResource(R.drawable.ic_visibility_off_black_24dp);
@@ -196,16 +196,17 @@ public class Register extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(Register.this, "ลงทะเบียนสำเร็จ",
-                                                Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Register.this, "ลงทะเบียนสำเร็จ",Toast.LENGTH_SHORT);
                                     }
                                 }
                             });
                            /* dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
                             dbUser.child(token).child("token").setValue(token);*/
-
+                            sendVerificationEmail();
 
                             Register.this.getSupportFragmentManager().popBackStack();
+
+
                             finish();
                         } else {
                             //Have Error
@@ -215,6 +216,26 @@ public class Register extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void sendVerificationEmail() {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Register.this, "ลงทะเบียนเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Register.this, "ระบบได้ส่งอีเมล์ยืนตัวตนไปที่อีเมล์ "+user.getEmail()+" เรียบร้อยแล้ว โปรดยืนยันตัวตนเพื่อเข้าใช้งาน", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(Register.this, "ระบบผิดพลาดโปรดลองใหม่อีกครั้ง", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+        }
+        firebaseAuth.signOut();
     }
 
     @Override
