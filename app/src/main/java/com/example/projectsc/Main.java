@@ -252,7 +252,7 @@ public class Main extends AppCompatActivity
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Map binId = new HashMap();
                 binId.put("binid", binIDFromQR.trim());
-                binId.put("notificationStatus","on");
+                binId.put("notification","on");
                 dbRef.push().setValue(binId);
 
                 dbRef.removeEventListener(this);

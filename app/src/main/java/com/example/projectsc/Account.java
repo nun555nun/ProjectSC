@@ -65,7 +65,7 @@ public class Account extends AppCompatActivity {
         usernameEditText = findViewById(R.id.username_edit_text);
         emailEditText = findViewById(R.id.email_edit_text);
 
-        hideKeybord();
+        hideKeyBord();
 
         passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -219,7 +219,7 @@ public class Account extends AppCompatActivity {
     }
 
 
-    private void hideKeybord() {
+    private void hideKeyBord() {
         usernameEditText.setFocusable(false);
         usernameEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override

@@ -32,6 +32,8 @@ public class Navigationbottom extends AppCompatActivity {
 
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             Fragment selectedFragment;
+
+            Bundle b = new Bundle();
             switch (item.getItemId()) {
                 case R.id.navigation_home:
 
@@ -48,7 +50,7 @@ public class Navigationbottom extends AppCompatActivity {
                     /*Intent i = new Intent(Navigationbottom.this,listtest.class);
                     startActivity(i);*/
                     selectedFragment =  new TabHistory();
-                    Bundle b = new Bundle();
+
                     b.putString("binID",binID);
                     selectedFragment.setArguments(b);
 
@@ -57,7 +59,14 @@ public class Navigationbottom extends AppCompatActivity {
                     return true;
 
                 case R.id.navigation_notifications:
-                    //setTitle("notification");
+
+                    selectedFragment = new SettingBinFragment();
+
+                    b.putString("binID",binID);
+                    selectedFragment.setArguments(b);
+
+                    fragmentTransaction.replace(R.id.framz, selectedFragment).commit();
+
                     return true;
 
             }

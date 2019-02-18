@@ -55,4 +55,6 @@
     <string name="temperatureList">Temperature :</string>
     <string name="scanQRCode">scanQRCode</string>
     <string name="ScanComplete">Scan Complete</string>
+    <string name="maximum">maximum</string>
+    <string name="minimum">minimum</string>
 </resources>

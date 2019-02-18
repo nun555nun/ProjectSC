@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.projectsc.login.NODE_fcm;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +44,7 @@ public class BinFragment extends Fragment {
     Intent intent;
     Boolean a;
     String token;
+
     public BinFragment() {
         // Required empty public constructor
     }
@@ -106,7 +105,7 @@ public class BinFragment extends Fragment {
                     if (a) {
                         listViewBin.setLayoutAnimation(controller);
                         listViewBin.scheduleLayoutAnimation();
-                        a=false;
+                        a = false;
                     }
 
                     for (int i = 0; i < userBinList.size(); i++) {
@@ -124,7 +123,7 @@ public class BinFragment extends Fragment {
                         }
                     });
                 }
-
+              //  dbRef.removeEventListener(this);
             }
 
 
@@ -136,7 +135,7 @@ public class BinFragment extends Fragment {
 
     }
 
-    public void getbin() {
+    public void getBin() {
 
         dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -149,14 +148,6 @@ public class BinFragment extends Fragment {
                     final String bin = String.valueOf(map.get("binid"));
                     binArrayList.add(bin);
 
-                    String notificationStatus = String.valueOf(map.get("notificationStatus"));
-
-                    if(notificationStatus.equals("on")){
-                        setUserToken(bin);
-                    }
-                    else{
-                        removeToken(bin);
-                    }
                 }
                 if (binArrayList.size() > 0) {
                     if (getContext() != null) {
@@ -172,6 +163,7 @@ public class BinFragment extends Fragment {
                     listViewBin.setAdapter(null);
 
                 }
+               // dbRef.removeEventListener(this);
             }
 
             @Override
@@ -185,31 +177,8 @@ public class BinFragment extends Fragment {
     public void onResume() {
         super.onResume();
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_slide_from_left);
-        getbin();
+        getBin();
     }
 
-    private void removeToken(String binID) {
-
-        DatabaseReference  dbRef = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/"+binID).child(token);
-        dbRef.removeValue();
-
-    }
-
-    private void setUserToken(String binID) {
-
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("fcm-token/" + binID);
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dbRef.child(token).child("token").setValue(token);
-                dbRef.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
 }
