@@ -500,9 +500,9 @@ public class Main extends AppCompatActivity
     }
 
     private void removeToken(String binID) {
-
-        DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID).child(token);
-        dbRef.removeValue();
-
+        for (int i = 1; i <= 8; i++) {
+            DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID+"/"+i).child(token);
+            dbRef.removeValue();
+        }
     }
 }

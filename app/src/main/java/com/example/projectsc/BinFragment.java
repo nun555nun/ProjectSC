@@ -66,8 +66,66 @@ public class BinFragment extends Fragment {
         progressDialog.setMessage("Loading.....");
         progressDialog.setTitle("กำลังโหลดข้อมูล");
         progressDialog.show();
-
+        findUserBinNotification();
         return view;
+    }
+
+    private void findUserBinNotification() {
+       final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
+                    Map map = (Map) BinSnapshot.getValue();
+                    final String bin = String.valueOf(map.get("binid"));
+
+                    String notifyStatus1 = String.valueOf(BinSnapshot.child("notificationStatus").child("1").getValue());
+                    String notifyStatus2 = String.valueOf(BinSnapshot.child("notificationStatus").child("2").getValue());
+                    String notifyStatus3 = String.valueOf(BinSnapshot.child("notificationStatus").child("3").getValue());
+                    String notifyStatus4 = String.valueOf(BinSnapshot.child("notificationStatus").child("4").getValue());
+                    String notifyStatus5 = String.valueOf(BinSnapshot.child("notificationStatus").child("5").getValue());
+                    String notifyStatus6 = String.valueOf(BinSnapshot.child("notificationStatus").child("6").getValue());
+                    String notifyStatus7 = String.valueOf(BinSnapshot.child("notificationStatus").child("7").getValue());
+                    String notifyStatus8 = String.valueOf(BinSnapshot.child("notificationStatus").child("8").getValue());
+
+                    if (notifyStatus1.equals("on")) {
+                        setUserToken(bin, "1");
+                    }
+                    if (notifyStatus2.equals("on")) {
+                        setUserToken(bin, "2");
+                    }
+                    if (notifyStatus3.equals("on")) {
+                        setUserToken(bin, "3");
+                    }
+                    if (notifyStatus4.equals("on")) {
+                        setUserToken(bin, "4");
+                    }
+                    if (notifyStatus5.equals("on")) {
+                        setUserToken(bin, "5");
+                    }
+                    if (notifyStatus6.equals("on")) {
+                        setUserToken(bin, "6");
+                    }
+                    if (notifyStatus7.equals("on")) {
+                        setUserToken(bin, "7");
+                    }
+                    if (notifyStatus8.equals("on")) {
+                        setUserToken(bin, "8");
+                    }
+////////////////////////////////////////////////////
+
+                }
+
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void setAdaptor() {
@@ -94,6 +152,8 @@ public class BinFragment extends Fragment {
                             UserBin ub = new UserBin(binName, bin, temperature, humidity, startDate);
                             //Toast.makeText(getContext(), bin + " add", Toast.LENGTH_SHORT).show();
                             userBinList.add(ub);
+
+
                         }
                     }
                 }
@@ -123,7 +183,7 @@ public class BinFragment extends Fragment {
                         }
                     });
                 }
-              //  dbRef.removeEventListener(this);
+                //  dbRef.removeEventListener(this);
             }
 
 
@@ -163,7 +223,7 @@ public class BinFragment extends Fragment {
                     listViewBin.setAdapter(null);
 
                 }
-               // dbRef.removeEventListener(this);
+                // dbRef.removeEventListener(this);
             }
 
             @Override
@@ -180,5 +240,21 @@ public class BinFragment extends Fragment {
         getBin();
     }
 
+    private void setUserToken(String binID, String typeNotify) {
+
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("fcm-token/" + binID + "/" + typeNotify);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dbRef.child(token).child("token").setValue(token);
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 }

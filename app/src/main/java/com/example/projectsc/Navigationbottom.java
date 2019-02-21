@@ -44,11 +44,7 @@ public class Navigationbottom extends AppCompatActivity {
 
                 case R.id.navigation_history:
 
-                    /*selectedFragment = new HistoryFragment();
-                    fragmentTransaction.replace(R.id.framz, selectedFragment).commit();
 
-                    /*Intent i = new Intent(Navigationbottom.this,listtest.class);
-                    startActivity(i);*/
                     selectedFragment =  new TabHistory();
 
                     b.putString("binID",binID);
