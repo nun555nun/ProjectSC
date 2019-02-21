@@ -88,8 +88,8 @@ public class BinFragment extends Fragment {
                             Map map = (Map) data.getValue();
                             String binName = String.valueOf(map.get("binName"));
                             String startDate = String.valueOf(map.get("startDate"));
-                            String temperature = String.valueOf(map.get("tempIn"));
-                            String humidity = String.valueOf(map.get("humidIn"));
+                            String temperature = String.valueOf(map.get("temp"));
+                            String humidity = String.valueOf(map.get("humid"));
 
                             UserBin ub = new UserBin(binName, bin, temperature, humidity, startDate);
                             //Toast.makeText(getContext(), bin + " add", Toast.LENGTH_SHORT).show();

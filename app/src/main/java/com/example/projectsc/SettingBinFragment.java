@@ -43,6 +43,11 @@ public class SettingBinFragment extends Fragment {
     Switch switch2;
     Switch switch3;
     Switch switch4;
+    Switch switch5;
+    Switch switch6;
+    Switch switch7;
+    Switch switch8;
+
     ConstraintLayout c;
     public DatabaseReference dbRef;
     private FirebaseAuth auth;
@@ -61,7 +66,8 @@ public class SettingBinFragment extends Fragment {
     Button airSettingButton;
     Button tempSettingButton;
     Button humidSettingButton;
-
+    Button resetSettingButton;
+    Button clearDataButton;
 
     public SettingBinFragment() {
         // Required empty public constructor
@@ -88,6 +94,10 @@ public class SettingBinFragment extends Fragment {
         switch2 = view.findViewById(R.id.switch_2);
         switch3 = view.findViewById(R.id.switch_3);
         switch4 = view.findViewById(R.id.switch_4);
+        switch5 = view.findViewById(R.id.switch_5);
+        switch6 = view.findViewById(R.id.switch_6);
+        switch7 = view.findViewById(R.id.switch_7);
+        switch8 = view.findViewById(R.id.switch_8);
 
         editTextFillAir = view.findViewById(R.id.et_fill_air);
         editTextFillWater = view.findViewById(R.id.et_fill_water);
@@ -100,13 +110,14 @@ public class SettingBinFragment extends Fragment {
         waterSettingButton = view.findViewById(R.id.water_setting_button);
         tempSettingButton = view.findViewById(R.id.temp_setting_button);
         humidSettingButton = view.findViewById(R.id.humid_setting_button);
+        resetSettingButton = view.findViewById(R.id.reset_setting);
+        clearDataButton = view.findViewById(R.id.clear_bin_data);
 
         hideKeyBord();
 
         setSwitch();
 
         setHint();
-
 
         onSwitchChange();
 
@@ -132,7 +143,10 @@ public class SettingBinFragment extends Fragment {
                                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+
                                         dbRef.child("delayAir").setValue(Integer.parseInt(editTextFillAir.getText().toString()));
+                                        dbRef.child("statusAir").setValue(1);
+
                                         editTextFillAir.setHint(String.valueOf(Integer.parseInt(editTextFillAir.getText().toString())));
                                         editTextFillAir.setText("");
                                         editTextFillAir.setFocusable(false);
@@ -168,6 +182,9 @@ public class SettingBinFragment extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dbRef.child("delayWater").setValue(Integer.parseInt(editTextFillWater.getText().toString()));
+
+                                        dbRef.child("statusWater").setValue(1);
+
                                         editTextFillWater.setHint(String.valueOf(Integer.parseInt(editTextFillWater.getText().toString())));
                                         editTextFillWater.setText("");
                                         editTextFillWater.setFocusable(false);
@@ -195,31 +212,34 @@ public class SettingBinFragment extends Fragment {
             public void onClick(View v) {
                 String tempMax = editTextTempMax.getText().toString();
                 String tempMin = editTextTempMin.getText().toString();
-                int max ;
+                int max;
                 int min;
                 if (tempMax.length() > 0 && tempMin.length() > 0) {
                     max = Integer.parseInt(editTextTempMax.getText().toString());
                     min = Integer.parseInt(editTextTempMin.getText().toString());
                     if (max > 0 && min > 0) {
-                        if(checkMax(max,min)&&checkMin(max,min)){
+                        if (checkMax(max, min) && checkMin(max, min)) {
                             editTextTempMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
                             editTextTempMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
-                            if(max!=Integer.parseInt(editTextTempMax.getHint().toString())&& min!=Integer.parseInt(editTextTempMin.getHint().toString())){
+                            if (max != Integer.parseInt(editTextTempMax.getHint().toString()) && min != Integer.parseInt(editTextTempMin.getHint().toString())) {
                                 new AlertDialog.Builder(getContext())
-                                        .setTitle("แก้ไข "+getString(R.string.temperature))
-                                        .setMessage("ต้องการเปลี่ยน"+getString(R.string.maximum)+ "จาก " + Integer.parseInt(editTextTempMax.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMax.getText().toString()) + " °C และ "
-                                                +"ต้องการเปลี่ยน"+getString(R.string.minimum)+ "จาก " + Integer.parseInt(editTextTempMin.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMin.getText().toString()) + " °C ใช่หรือไม่"
+                                        .setTitle("แก้ไข " + getString(R.string.temperature))
+                                        .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextTempMax.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMax.getText().toString()) + " °C และ "
+                                                + "ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextTempMin.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMin.getText().toString()) + " °C ใช่หรือไม่"
                                         )
                                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
 
-                                                dbRef.child("tempMax").setValue(Integer.parseInt(editTextTempMax.getText().toString()));
-                                                dbRef.child("tempMin").setValue(Integer.parseInt(editTextTempMin.getText().toString()));
+                                                dbRef.child("tempMax").setValue(Integer.parseInt(editTextTempMax.getText().toString()) + ".00 °C");
+                                                dbRef.child("tempMin").setValue(Integer.parseInt(editTextTempMin.getText().toString()) + ".00 °C");
                                                 editTextTempMax.setHint(String.valueOf(Integer.parseInt(editTextTempMax.getText().toString())));
                                                 editTextTempMin.setHint(String.valueOf(Integer.parseInt(editTextTempMin.getText().toString())));
+
+                                                dbRef.child("statustempMax").setValue(1);
+                                                dbRef.child("statustempMin").setValue(1);
 
                                                 editTextTempMax.setText("");
                                                 editTextTempMin.setText("");
@@ -232,70 +252,58 @@ public class SettingBinFragment extends Fragment {
                                         })
                                         .setNegativeButton(R.string.no, null)
                                         .show();
-                            }else if(max==Integer.parseInt(editTextTempMax.getHint().toString())&& min!=Integer.parseInt(editTextTempMin.getHint().toString())){
+                            } else if (max == Integer.parseInt(editTextTempMax.getHint().toString()) && min != Integer.parseInt(editTextTempMin.getHint().toString())) {
                                 changeTempMin();
-                            }
-                            else if(max!=Integer.parseInt(editTextTempMax.getHint().toString())&& min==Integer.parseInt(editTextTempMin.getHint().toString())){
+                            } else if (max != Integer.parseInt(editTextTempMax.getHint().toString()) && min == Integer.parseInt(editTextTempMin.getHint().toString())) {
                                 changeTempMax();
-                            }
-                            else{
+                            } else {
                                 editTextTempMax.setText("");
                                 editTextTempMin.setText("");
 
                             }
 
-                        }
-                        else if(max==min){
-                            Toast.makeText(getContext(), getString(R.string.minimum)+" ไม่สามารถ เท่ากับ "+getString(R.string.maximum)+" ได้", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!checkMax(max,min)){
-                            Toast.makeText(getContext(), getString(R.string.maximum)+" ไม่สามารถ น้อยกว่า "+getString(R.string.minimum)+" ได้", Toast.LENGTH_SHORT).show();
+                        } else if (max == min) {
+                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                        } else if (!checkMax(max, min)) {
+                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
 
-                        }
-                        else {
-                            Toast.makeText(getContext(), getString(R.string.minimum)+" ไม่สามารถ มากกว่า "+getString(R.string.maximum)+" ได้", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         }
 
-                    }else {
+                    } else {
                         Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
 
-                }
-                else if(tempMax.length() > 0){
+                } else if (tempMax.length() > 0) {
                     max = Integer.parseInt(editTextTempMax.getText().toString());
                     min = Integer.parseInt(editTextTempMin.getHint().toString());
 
-                    if(checkMax(max,min)&&checkMin(max,min)){
-                        if(max!=Integer.parseInt(editTextTempMax.getHint().toString())){
+                    if (checkMax(max, min) && checkMin(max, min)) {
+                        if (max != Integer.parseInt(editTextTempMax.getHint().toString())) {
                             changeTempMax();
-                        }
-                        else {
+                        } else {
                             editTextTempMax.setText("");
 
                         }
-                    }
-                    else if(max==min){
-                        Toast.makeText(getContext(), getString(R.string.minimum)+" ไม่สามารถ เท่ากับ "+getString(R.string.maximum)+" ได้", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(!checkMax(max,min)){
-                        Toast.makeText(getContext(), getString(R.string.minimum)+" ไม่สามารถ มากกว่า "+getString(R.string.maximum)+" ได้", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getContext(), getString(R.string.maximum)+" ไม่สามารถ น้อยกว่า "+getString(R.string.minimum)+" ได้", Toast.LENGTH_SHORT).show();
+                    } else if (max == min) {
+                        Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                    } else if (!checkMax(max, min)) {
+                        Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
                     }
 
-                }
-                else if(tempMin.length() > 0){
+                } else if (tempMin.length() > 0) {
 
                     max = Integer.parseInt(editTextTempMax.getHint().toString());
                     min = Integer.parseInt(editTextTempMin.getText().toString());
                     if (min != 0) {
 
                         if (checkMax(max, min) && checkMin(max, min)) {
-                            if(min!=Integer.parseInt(editTextTempMin.getHint().toString())){
+                            if (min != Integer.parseInt(editTextTempMin.getHint().toString())) {
                                 changeTempMin();
-                            }
-                            else {
+                            } else {
                                 editTextTempMin.setText("");
 
                             }
@@ -306,12 +314,10 @@ public class SettingBinFragment extends Fragment {
                         } else {
                             Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -323,30 +329,33 @@ public class SettingBinFragment extends Fragment {
 
                 String humidMax = editTextHumidMax.getText().toString();
                 String humidMin = editTextHumidMin.getText().toString();
-                int max ;
+                int max;
                 int min;
-                if (humidMax.length() > 0 &&humidMin.length() > 0) {
+                if (humidMax.length() > 0 && humidMin.length() > 0) {
                     max = Integer.parseInt(editTextHumidMax.getText().toString());
                     min = Integer.parseInt(editTextHumidMin.getText().toString());
                     if (max > 0 && min > 0) {
-                        if(checkMax(max,min)&&checkMin(max,min)){
+                        if (checkMax(max, min) && checkMin(max, min)) {
 
-                            if(max!=Integer.parseInt(editTextHumidMax.getHint().toString())&& min!=Integer.parseInt(editTextHumidMin.getHint().toString())){
+                            if (max != Integer.parseInt(editTextHumidMax.getHint().toString()) && min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
                                 editTextHumidMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
                                 editTextHumidMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
                                 new AlertDialog.Builder(getContext())
-                                        .setTitle("แก้ไข "+getString(R.string.humidity))
-                                        .setMessage("ต้องการเปลี่ยน"+getString(R.string.maximum)+ "จาก " + Integer.parseInt(editTextHumidMax.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMax.getText().toString()) + " % และ "
-                                                +"ต้องการเปลี่ยน"+getString(R.string.minimum)+ "จาก " + Integer.parseInt(editTextHumidMin.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMin.getText().toString()) + " % ใช่หรือไม่"
+                                        .setTitle("แก้ไข " + getString(R.string.humidity))
+                                        .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextHumidMax.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMax.getText().toString()) + " % และ "
+                                                + "ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextHumidMin.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMin.getText().toString()) + " % ใช่หรือไม่"
                                         )
                                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
-                                                dbRef.child("humidMax").setValue(Integer.parseInt(editTextHumidMax.getText().toString()));
-                                                dbRef.child("humidMin").setValue(Integer.parseInt(editTextHumidMin.getText().toString()));
+                                                dbRef.child("humidMax").setValue(Integer.parseInt(editTextHumidMax.getText().toString()) + ".00 %");
+                                                dbRef.child("humidMin").setValue(Integer.parseInt(editTextHumidMin.getText().toString()) + ".00 %");
                                                 editTextHumidMax.setHint(String.valueOf(Integer.parseInt(editTextHumidMax.getText().toString())));
                                                 editTextHumidMin.setHint(String.valueOf(Integer.parseInt(editTextHumidMin.getText().toString())));
+
+                                                dbRef.child("statushumidMax").setValue(1);
+                                                dbRef.child("statushumidMin").setValue(1);
 
                                                 editTextHumidMax.setText("");
                                                 editTextHumidMin.setText("");
@@ -360,117 +369,173 @@ public class SettingBinFragment extends Fragment {
                                         })
                                         .setNegativeButton(R.string.no, null)
                                         .show();
-                            }else if(max==Integer.parseInt(editTextHumidMax.getHint().toString())&& min!=Integer.parseInt(editTextHumidMin.getHint().toString())){
+                            } else if (max == Integer.parseInt(editTextHumidMax.getHint().toString()) && min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
                                 changeHumidMin();
-                            }
-                            else if(max!=Integer.parseInt(editTextHumidMax.getHint().toString())&& min==Integer.parseInt(editTextHumidMin.getHint().toString())){
+                            } else if (max != Integer.parseInt(editTextHumidMax.getHint().toString()) && min == Integer.parseInt(editTextHumidMin.getHint().toString())) {
                                 changeHumidMax();
-                            }
-                            else {
+                            } else {
                                 editTextHumidMax.setText("");
                                 editTextHumidMin.setText("");
 
                             }
 
-                        }
-                        else if(max==min){
-                            Toast.makeText(getContext(), getString(R.string.minimum)+" ไม่สามารถ เท่ากับ "+getString(R.string.maximum)+" ได้", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!checkMax(max,min)){
-                            Toast.makeText(getContext(), getString(R.string.maximum)+" ไม่สามารถ น้อยกว่า "+getString(R.string.minimum)+" ได้", Toast.LENGTH_SHORT).show();
+                        } else if (max == min) {
+                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                        } else if (!checkMax(max, min)) {
+                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
 
-                        }
-                        else {
-                            Toast.makeText(getContext(), getString(R.string.minimum)+" ไม่สามารถ มากกว่า "+getString(R.string.maximum)+" ได้", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         }
 
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
 
-                }
-                else if(humidMax.length() > 0){
+                } else if (humidMax.length() > 0) {
                     max = Integer.parseInt(editTextHumidMax.getText().toString());
                     min = Integer.parseInt(editTextHumidMin.getHint().toString());
 
-                    if(checkMax(max,min)&&checkMin(max,min)){
+                    if (checkMax(max, min) && checkMin(max, min)) {
 
-                        if(max!=Integer.parseInt(editTextHumidMax.getHint().toString())){
+                        if (max != Integer.parseInt(editTextHumidMax.getHint().toString())) {
                             changeHumidMax();
-                        }
-                        else {
+                        } else {
                             editTextHumidMax.setText("");
 
                         }
-                    }
-                    else if(max==min){
-                        Toast.makeText(getContext(), getString(R.string.minimum)+" ไม่สามารถ เท่ากับ "+getString(R.string.maximum)+" ได้", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(!checkMax(max,min)){
+                    } else if (max == min) {
+                        Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                    } else if (!checkMax(max, min)) {
 
-                        Toast.makeText(getContext(), getString(R.string.maximum)+" ไม่สามารถ น้อยกว่า "+getString(R.string.minimum)+" ได้", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
 
-                    }
-                    else if(max==Integer.parseInt(editTextHumidMax.getHint().toString())){
+                    } else if (max == Integer.parseInt(editTextHumidMax.getHint().toString())) {
                         editTextHumidMax.setText("");
 
                     }
 
-                }
-                else if(humidMin.length() > 0){
+                } else if (humidMin.length() > 0) {
 
                     max = Integer.parseInt(editTextHumidMax.getHint().toString());
                     min = Integer.parseInt(editTextHumidMin.getText().toString());
                     if (min != 0) {
 
                         if (checkMax(max, min) && checkMin(max, min)) {
-                            if(min!=Integer.parseInt(editTextHumidMin.getHint().toString())){
+                            if (min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
                                 changeHumidMin();
-                            }
-                            else {
+                            } else {
                                 editTextHumidMin.setText("");
 
                             }
                         } else if (max == min) {
                             Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                        }  else if(!checkMax(max,min)){
+                        } else if (!checkMax(max, min)) {
 
-                            Toast.makeText(getContext(), getString(R.string.maximum)+" ไม่สามารถ น้อยกว่า "+getString(R.string.minimum)+" ได้", Toast.LENGTH_SHORT).show();
-                        }else if(min==Integer.parseInt(editTextHumidMin.getHint().toString())){
+                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                        } else if (min == Integer.parseInt(editTextHumidMin.getHint().toString())) {
                             editTextHumidMin.setText("");
 
                         }
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        resetSettingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDefault();
+            }
+        });
+
+        clearDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "ยังไม่ได้ทำจ้า", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setDefault() {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+        new AlertDialog.Builder(getContext())
+                .setTitle("รีเซตการตั้งค่า ")
+                .setMessage("ต้องการรีเซตการตั้งค่า ใช่หรือไม่ ?")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dbRef.child("delayAir").setValue(10);
+                        dbRef.child("delayWater").setValue(1);
+                        dbRef.child("tempMax").setValue("70.00 °C");
+                        dbRef.child("tempMin").setValue("10.00 °C");
+                        dbRef.child("humidMax").setValue("70.00 %");
+                        dbRef.child("humidMin").setValue("40.00 %");
+
+                        dbRef.child("statusAir").setValue(1);
+                        dbRef.child("statusWater").setValue(1);
+                        dbRef.child("statusDefault").setValue(1);
+                        dbRef.child("statustempMax").setValue(1);
+                        dbRef.child("statustempMin").setValue(1);
+                        dbRef.child("statushumidMax").setValue(1);
+                        dbRef.child("statushumidMin").setValue(1);
+
+                        editTextFillAir.setHint("10");
+                        editTextFillWater.setHint("1");
+                        editTextTempMax.setHint("70");
+                        editTextTempMin.setHint("10");
+                        editTextHumidMax.setHint("70");
+                        editTextHumidMin.setHint("40");
+
+                        editTextFillAir.setText("");
+                        editTextFillWater.setText("");
+                        editTextTempMax.setText("");
+                        editTextTempMin.setText("");
+                        editTextHumidMax.setText("");
+                        editTextHumidMin.setText("");
+
+                        switchAll.setChecked(true);
+                        switch1.setChecked(true);
+                        switch2.setChecked(true);
+                        switch3.setChecked(true);
+                        switch4.setChecked(true);
+                        switch5.setChecked(true);
+                        switch6.setChecked(true);
+                        switch7.setChecked(true);
+                        switch8.setChecked(true);
+
+                        Toast.makeText(getContext(), "รีเซตการตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
+
+
     }
 
     private void changeHumidMax() {
         editTextHumidMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
         editTextHumidMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
         new AlertDialog.Builder(getContext())
-                .setTitle("แก้ไข "+getString(R.string.humidity))
-                .setMessage("ต้องการเปลี่ยน"+getString(R.string.maximum)+ "จาก " + Integer.parseInt(editTextHumidMax.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMax.getText().toString()) + " % ใช่หรือไม่"
+                .setTitle("แก้ไข " + getString(R.string.humidity))
+                .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextHumidMax.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMax.getText().toString()) + " % ใช่หรือไม่"
                 )
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        dbRef.child("humidMax").setValue(Integer.parseInt(editTextHumidMax.getText().toString()));
-                        editTextHumidMax.setHint( String.valueOf(Integer.parseInt(editTextHumidMax.getText().toString())));
+                        dbRef.child("humidMax").setValue(Integer.parseInt(editTextHumidMax.getText().toString()) + ".00 %");
+                        editTextHumidMax.setHint(String.valueOf(Integer.parseInt(editTextHumidMax.getText().toString())));
 
+                        dbRef.child("statushumidMax").setValue(1);
 
                         editTextHumidMax.setText("");
                         editTextHumidMin.setText("");
-
 
 
                         editTextHumidMax.setFocusable(false);
@@ -487,19 +552,20 @@ public class SettingBinFragment extends Fragment {
         editTextHumidMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
         editTextHumidMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
         new AlertDialog.Builder(getContext())
-                .setTitle("แก้ไข "+getString(R.string.humidity))
-                .setMessage("ต้องการเปลี่ยน"+getString(R.string.minimum)+ "จาก " + Integer.parseInt(editTextHumidMin.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMin.getText().toString()) + " % ใช่หรือไม่"
+                .setTitle("แก้ไข " + getString(R.string.humidity))
+                .setMessage("ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextHumidMin.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMin.getText().toString()) + " % ใช่หรือไม่"
                 )
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        dbRef.child("humidMin").setValue(Integer.parseInt(editTextHumidMin.getText().toString()));
-                        editTextHumidMin.setHint( String.valueOf(Integer.parseInt(editTextHumidMin.getText().toString())));
+                        dbRef.child("humidMin").setValue(Integer.parseInt(editTextHumidMin.getText().toString()) + ".00 %");
+                        editTextHumidMin.setHint(String.valueOf(Integer.parseInt(editTextHumidMin.getText().toString())));
+
+                        dbRef.child("statushumidMin").setValue(1);
 
                         editTextHumidMax.setText("");
                         editTextHumidMin.setText("");
-
 
 
                         editTextHumidMax.setFocusable(false);
@@ -515,16 +581,17 @@ public class SettingBinFragment extends Fragment {
         editTextTempMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
         editTextTempMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
         new AlertDialog.Builder(getContext())
-                .setTitle("แก้ไข "+getString(R.string.temperature))
-                .setMessage("ต้องการเปลี่ยน"+getString(R.string.maximum)+ "จาก " + Integer.parseInt(editTextTempMax.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMax.getText().toString()) + " °C ใช่หรือไม่"
+                .setTitle("แก้ไข " + getString(R.string.temperature))
+                .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextTempMax.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMax.getText().toString()) + " °C ใช่หรือไม่"
                 )
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dbRef.child("tempMax").setValue(Integer.parseInt(editTextTempMax.getText().toString()) + ".00 °C");
 
-                        dbRef.child("tempMax").setValue(Integer.parseInt(editTextTempMax.getText().toString()));
-                        editTextTempMax.setHint( String.valueOf(Integer.parseInt(editTextTempMax.getText().toString())));
+                        editTextTempMax.setHint(String.valueOf(Integer.parseInt(editTextTempMax.getText().toString())));
 
+                        dbRef.child("statustempMax").setValue(1);
 
                         editTextTempMax.setText("");
                         editTextTempMin.setText("");
@@ -544,15 +611,18 @@ public class SettingBinFragment extends Fragment {
         editTextTempMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
         editTextTempMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
         new AlertDialog.Builder(getContext())
-                .setTitle("แก้ไข "+getString(R.string.temperature))
-                .setMessage("ต้องการเปลี่ยน"+getString(R.string.minimum)+ "จาก " + Integer.parseInt(editTextTempMin.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMin.getText().toString()) + " °C ใช่หรือไม่"
+                .setTitle("แก้ไข " + getString(R.string.temperature))
+                .setMessage("ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextTempMin.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMin.getText().toString()) + " °C ใช่หรือไม่"
                 )
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        dbRef.child("tempMin").setValue(Integer.parseInt(editTextTempMin.getText().toString()));
-                        editTextTempMin.setHint( String.valueOf(Integer.parseInt(editTextTempMin.getText().toString())));
+                        dbRef.child("tempMin").setValue(Integer.parseInt(editTextTempMin.getText().toString()) + ".00 °C");
+
+                        editTextTempMin.setHint(String.valueOf(Integer.parseInt(editTextTempMin.getText().toString())));
+
+                        dbRef.child("statustempMin").setValue(1);
 
                         editTextTempMax.setText("");
                         editTextTempMin.setText("");
@@ -568,19 +638,19 @@ public class SettingBinFragment extends Fragment {
 
     }
 
-    private Boolean checkMin(int max,int min) {
-        if(min<max){
+    private Boolean checkMin(int max, int min) {
+        if (min < max) {
             return true;
         }
-        return  false;
+        return false;
     }
 
-    private Boolean checkMax(int max,int min) {
+    private Boolean checkMax(int max, int min) {
 
-        if(max>min){
+        if (max > min) {
             return true;
         }
-        return  false;
+        return false;
     }
 
     private void onSwitchChange() {
@@ -598,6 +668,10 @@ public class SettingBinFragment extends Fragment {
                     switch2.setChecked(false);
                     switch3.setChecked(false);
                     switch4.setChecked(false);
+                    switch5.setChecked(false);
+                    switch6.setChecked(false);
+                    switch7.setChecked(false);
+                    switch8.setChecked(false);
                     c.setVisibility(View.GONE);
                 }
             }
@@ -661,6 +735,66 @@ public class SettingBinFragment extends Fragment {
                 }
             }
         });
+
+        switch5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+
+                    setStatus("5", "on");
+
+                } else {
+
+                    setStatus("5", "off");
+
+                }
+            }
+        });
+
+        switch6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+
+                    setStatus("6", "on");
+
+                } else {
+
+                    setStatus("6", "off");
+
+                }
+            }
+        });
+
+        switch7.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+
+                    setStatus("7", "on");
+
+                } else {
+
+                    setStatus("7", "off");
+
+                }
+            }
+        });
+
+        switch8.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+
+                    setStatus("8", "on");
+
+                } else {
+
+                    setStatus("8", "off");
+
+                }
+            }
+        });
     }
 
     private void setHint() {
@@ -670,12 +804,21 @@ public class SettingBinFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+
                 editTextFillAir.setHint(String.valueOf(dataSnapshot.child("delayAir").getValue()));
                 editTextFillWater.setHint(String.valueOf(dataSnapshot.child("delayWater").getValue()));
-                editTextTempMax.setHint(String.valueOf(dataSnapshot.child("tempMax").getValue()));
-                editTextTempMin.setHint(String.valueOf(dataSnapshot.child("tempMin").getValue()));
-                editTextHumidMax.setHint(String.valueOf(dataSnapshot.child("humidMax").getValue()));
-                editTextHumidMin.setHint(String.valueOf(dataSnapshot.child("humidMin").getValue()));
+
+                String tempMax = String.valueOf(dataSnapshot.child("tempMax").getValue());
+                String tempMin = String.valueOf(dataSnapshot.child("tempMin").getValue());
+                String humidMax = String.valueOf(dataSnapshot.child("humidMax").getValue());
+                String humidMin = String.valueOf(dataSnapshot.child("humidMin").getValue());
+                if (tempMax != null && tempMin != null && humidMax != null && humidMin != null) {
+                    editTextTempMax.setHint(tempMax.substring(0, tempMax.indexOf(".")));
+                    editTextTempMin.setHint(tempMin.substring(0, tempMin.indexOf(".")));
+                    editTextHumidMax.setHint(humidMax.substring(0, humidMax.indexOf(".")));
+                    editTextHumidMin.setHint(humidMin.substring(0, humidMin.indexOf(".")));
+                }
+
 
                 dbRef.removeEventListener(this);
             }
@@ -707,6 +850,10 @@ public class SettingBinFragment extends Fragment {
                         String notifyStatus2 = String.valueOf(BinSnapshot.child("notificationStatus").child("2").getValue());
                         String notifyStatus3 = String.valueOf(BinSnapshot.child("notificationStatus").child("3").getValue());
                         String notifyStatus4 = String.valueOf(BinSnapshot.child("notificationStatus").child("4").getValue());
+                        String notifyStatus5 = String.valueOf(BinSnapshot.child("notificationStatus").child("5").getValue());
+                        String notifyStatus6 = String.valueOf(BinSnapshot.child("notificationStatus").child("6").getValue());
+                        String notifyStatus7 = String.valueOf(BinSnapshot.child("notificationStatus").child("7").getValue());
+                        String notifyStatus8 = String.valueOf(BinSnapshot.child("notificationStatus").child("8").getValue());
 
 
                         if (notifyStatusAll.equals("off") || (notifyStatus1.equals("off") && notifyStatus2.equals("off") && notifyStatus3.equals("off") && notifyStatus4.equals("off"))) {
@@ -714,7 +861,7 @@ public class SettingBinFragment extends Fragment {
                             dbRef.child(binPart).child("notificationStatus").child("status").setValue("off");
                             switchAll.setChecked(false);
 
-                            for (int i = 1; i <= 4; i++) {
+                            for (int i = 1; i <= 8; i++) {
                                 Log.d("notistaz", binPart);
                                 dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("off");
                             }
@@ -745,6 +892,26 @@ public class SettingBinFragment extends Fragment {
                             } else {
                                 switch4.setChecked(false);
                             }
+                            if (notifyStatus5.equals("on")) {
+                                switch5.setChecked(true);
+                            } else {
+                                switch5.setChecked(false);
+                            }
+                            if (notifyStatus6.equals("on")) {
+                                switch6.setChecked(true);
+                            } else {
+                                switch6.setChecked(false);
+                            }
+                            if (notifyStatus7.equals("on")) {
+                                switch7.setChecked(true);
+                            } else {
+                                switch7.setChecked(false);
+                            }
+                            if (notifyStatus8.equals("on")) {
+                                switch8.setChecked(true);
+                            } else {
+                                switch8.setChecked(false);
+                            }
                         }
                         break;
                     }
@@ -773,15 +940,19 @@ public class SettingBinFragment extends Fragment {
 
                         dbRef.child(binPart).child("notificationStatus").child(typeNotify).setValue(status);
                         if (typeNotify.equals("status") && status.equals("on")) {
-                            setUserToken(binID);
                             dbRef.child(binPart).child("notification").setValue("on");
                             Log.d("inni", "om");
                         } else if (typeNotify.equals("status") && status.equals("off")) {
-                            removeToken(binID);
+
                             dbRef.child(binPart).child("notification").setValue("off");
-                            for (int i = 1; i <= 4; i++) {
+                            for (int i = 1; i <= 8; i++) {
+                                removeToken(binID, i + "");
                                 dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("off");
                             }
+                        } else if (status.equals("on")) {
+                            setUserToken(binID, typeNotify);
+                        } else if (status.equals("off")) {
+                            removeToken(binID, typeNotify);
                         }
                         break;
                     }
@@ -796,16 +967,16 @@ public class SettingBinFragment extends Fragment {
         });
     }
 
-    private void removeToken(String binID) {
+    private void removeToken(String binID, String typeNotify) {
 
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/" + binID).child(token);
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/" + binID + "/" + typeNotify).child(token);
         dbRef.removeValue();
 
     }
 
-    private void setUserToken(String binID) {
+    private void setUserToken(String binID, String typeNotify) {
 
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("fcm-token/" + binID);
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("fcm-token/" + binID + "/" + typeNotify);
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

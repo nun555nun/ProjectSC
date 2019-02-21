@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -252,7 +253,6 @@ public class Main extends AppCompatActivity
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Map binId = new HashMap();
                 binId.put("binid", binIDFromQR.trim());
-                binId.put("notification","on");
                 dbRef.push().setValue(binId);
 
                 dbRef.removeEventListener(this);
@@ -369,7 +369,45 @@ public class Main extends AppCompatActivity
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dbRef.child(token).child("token").setValue(token);
+
+
+                dbRef.child("1").child(token).child("token").setValue(token);
+                dbRef.child("2").child(token).child("token").setValue(token);
+                dbRef.child("3").child(token).child("token").setValue(token);
+                dbRef.child("4").child(token).child("token").setValue(token);
+                dbRef.child("5").child(token).child("token").setValue(token);
+                dbRef.child("6").child(token).child("token").setValue(token);
+                dbRef.child("7").child(token).child("token").setValue(token);
+                dbRef.child("8").child(token).child("token").setValue(token);
+
+                dbRef.removeEventListener(this);
+                setNotificationStatus();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setNotificationStatus() {
+        final String binID = binIDFromQR.trim();
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
+                    Map map = (Map) BinSnapshot.getValue();
+                    final String binid = String.valueOf(map.get("binid"));
+                    String binPart = BinSnapshot.getKey();
+                    if (binid.equals(binID)) {
+                        for (int i = 1; i <= 8; i++) {
+                            dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("on");
+                        }
+                        break;
+                    }
+                }
                 dbRef.removeEventListener(this);
             }
 
@@ -418,13 +456,8 @@ public class Main extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            //Log.d("Token = ",""+FirebaseInstanceId.getInstance().getToken());
                             findUserBin();
-                            /*String token = FirebaseInstanceId.getInstance().getToken();
-                            dbRef = database.getReference(NODE_fcm + "/bin1").child(token);
-                            dbRef.removeValue();*/
 
-                            //logout
                             String s = auth.getUid();
 
                             Intent intent = new Intent(Main.this, login.class);
@@ -468,7 +501,7 @@ public class Main extends AppCompatActivity
 
     private void removeToken(String binID) {
 
-        DatabaseReference  dbRef = database.getReference(NODE_fcm + "/"+binID).child(token);
+        DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID).child(token);
         dbRef.removeValue();
 
     }

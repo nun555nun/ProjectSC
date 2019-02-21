@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment {
         tvHumidOut = view.findViewById(R.id.tv_humid_out);
         tvDateCount = view.findViewById(R.id.tv_date_count);
 
-        setData();
+        /*setData();
 
         editWater = view.findViewById(R.id.editWater);
         editWater.setFocusable(false);
@@ -157,7 +157,7 @@ public class HomeFragment extends Fragment {
                             .show();
                 }
             }
-        });
+        });*/
 
         return view;
     }
@@ -170,10 +170,10 @@ public class HomeFragment extends Fragment {
 
                 Map map = (Map) dataSnapshot.getValue();
 
-                String tempIn = String.valueOf(map.get("tempIn"));
-                String tempOut = String.valueOf(map.get("tempOut"));
-                String humidIn = String.valueOf(map.get("humidIn"));
-                String humidOut = String.valueOf(map.get("humidOut"));
+                String tempIn = String.valueOf(map.get("temp"));
+                String tempOut = String.valueOf(map.get("temp"));
+                String humidIn = String.valueOf(map.get("humid"));
+                String humidOut = String.valueOf(map.get("humid"));
                 String dateCount = String.valueOf(map.get("dateCount"));
                 String fillAir = String.valueOf(map.get("delayAir"));
                 String fillWater = String.valueOf(map.get("delayWater"));
