@@ -15,6 +15,7 @@ public class Navigationbottom extends AppCompatActivity {
 
     Bundle bundle;
     String binID;
+    String startDate;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -25,6 +26,7 @@ public class Navigationbottom extends AppCompatActivity {
 
             Intent intent = getIntent();
             binID = intent.getStringExtra("binID");
+            startDate = intent.getStringExtra("startDate");
             bundle = new Bundle();
             bundle.putString("binID", binID);
             String binName = intent.getStringExtra("binName");
@@ -48,6 +50,7 @@ public class Navigationbottom extends AppCompatActivity {
                     selectedFragment =  new TabHistory();
 
                     b.putString("binID",binID);
+                    b.putString("startDate",startDate);
                     selectedFragment.setArguments(b);
 
                     fragmentTransaction.replace(R.id.framz, selectedFragment).commit();

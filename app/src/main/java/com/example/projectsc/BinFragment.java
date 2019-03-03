@@ -179,11 +179,12 @@ public class BinFragment extends Fragment {
                             Log.v("binName", userBinList.get(position).getBinID());
                             intent.putExtra("binID", userBinList.get(position).getBinID());
                             intent.putExtra("binName", userBinList.get(position).getBinName());
+                            intent.putExtra("startDate",userBinList.get(position).getDate());
                             startActivity(intent);
                         }
                     });
                 }
-                //  dbRef.removeEventListener(this);
+                  dbRef.removeEventListener(this);
             }
 
 
@@ -223,7 +224,7 @@ public class BinFragment extends Fragment {
                     listViewBin.setAdapter(null);
 
                 }
-                // dbRef.removeEventListener(this);
+                 dbRef.removeEventListener(this);
             }
 
             @Override

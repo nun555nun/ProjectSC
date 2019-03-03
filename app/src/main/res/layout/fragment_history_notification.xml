@@ -4,8 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HistoryFragment">
+    android:orientation="vertical"
+    tools:context=".HistoryNotificationFragment">
 
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/bin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/hello_blank_fragment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout3"
@@ -21,57 +33,54 @@
             android:id="@+id/textView25"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="วันที่"
+            android:text="@string/date"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/date_spinner"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/dateN_spinner"
+            app:layout_constraintStart_toStartOf="@+id/textView26"
+            app:layout_constraintTop_toTopOf="@+id/dateN_spinner" />
 
         <Spinner
-            android:id="@+id/date_spinner"
+            android:id="@+id/dateN_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="left"
             android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toStartOf="@+id/time_spinner"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView25" />
+            app:layout_constraintStart_toStartOf="@+id/type_spinner"
+            app:layout_constraintTop_toBottomOf="@+id/type_spinner" />
 
         <TextView
             android:id="@+id/textView26"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="เวลา"
+            android:layout_marginStart="4dp"
+            android:text="@string/notification"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/time_spinner"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/type_spinner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/type_spinner" />
 
         <Spinner
-            android:id="@+id/time_spinner"
-            android:layout_width="wrap_content"
+            android:id="@+id/type_spinner"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="right"
             android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toStartOf="@+id/search_log_button"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/date_spinner"
-            app:layout_constraintTop_toBottomOf="@+id/textView26" />
+            app:layout_constraintStart_toEndOf="@+id/textView26"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/search_log_button"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
+            android:layout_width="75dp"
+            android:layout_height="35dp"
             android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/bg_block"
             android:gravity="center"
             android:text="@android:string/search_go"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/dateN_spinner"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/dateN_spinner" />
     </android.support.constraint.ConstraintLayout>
 
     <ListView
@@ -82,5 +91,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
-
 </android.support.constraint.ConstraintLayout>

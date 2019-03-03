@@ -282,9 +282,8 @@ public class Account extends AppCompatActivity {
     private void deleteAccount() {
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
-            String token = FirebaseInstanceId.getInstance().getToken();
-            dbRef = database.getReference(NODE_fcm + "/bin1").child(token);
-            dbRef.removeValue();
+
+            findUserBin();
             final String uid = auth.getCurrentUser().getUid();
             user.delete()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -343,5 +342,34 @@ public class Account extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void findUserBin() {
+
+        dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Map map = (Map) ds.getValue();
+                    String binID = String.valueOf(map.get("binid"));
+                    removeToken(binID);
+                }
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void removeToken(String binID) {
+        String token = FirebaseInstanceId.getInstance().getToken();
+        for (int i = 1; i <= 8; i++) {
+            DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID+"/"+i).child(token);
+            dbRef.removeValue();
+        }
     }
 }

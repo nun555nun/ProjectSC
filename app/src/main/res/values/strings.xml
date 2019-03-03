@@ -57,4 +57,17 @@
     <string name="ScanComplete">Scan Complete</string>
     <string name="maximum">maximum</string>
     <string name="minimum">minimum</string>
+    <string name="date">date</string>
+
+    <string-array name="notitype">
+        <item>-</item>
+        <item>อุณหภูมิน้อยกว่าที่กำหนด</item>
+        <item>อุณหภูมิมากกว่าที่กำหนด</item>
+        <item>ความชื้นน้อยกว่าที่กำหนด</item>
+        <item>ความชื้นมากกว่าที่กำหนด</item>
+        <item>เริ่มทำการเติมน้ำ</item>
+        <item>เริ่มทำการเติมอากาศ</item>
+        <item>การเติมน้ำเสร็จเรียบร้อย</item>
+        <item>การเติมอากาศเสร็จเรียบร้อย</item>
+    </string-array>
 </resources>

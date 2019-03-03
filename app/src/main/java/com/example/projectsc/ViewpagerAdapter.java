@@ -13,7 +13,8 @@ import java.util.List;
 public class ViewpagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentListTitle = new ArrayList<>();
-    private String binID ="";
+    private String binID = "";
+    private String startDate = "";
 
     public ViewpagerAdapter(FragmentManager fm) {
         super(fm);
@@ -46,23 +47,18 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
                 fragment = new HistoryFragment();
 
                 b = new Bundle();
-                Log.v("zxc","0     "+binID);
+                Log.v("zxc", "0     " + binID);
                 b.putString("binID", binID);
-                b.putString("logDHT","logDHTIn");
+                b.putString("logDHT", "logDHT");
+                b.putString("startDate",startDate);
                 fragment.setArguments(b);
                 break;
             case 1:
-                fragment = new HistoryFragment();
+
+                fragment = new HistoryNotificationFragment();
                 b = new Bundle();
-                Log.v("zxc","1    "+binID);
                 b.putString("binID", binID);
-                b.putString("logDHT","logDHTOut");
-                fragment.setArguments(b);
-                break;
-            case 2:
-                fragment = new HistoryFragment();
-                b = new Bundle();
-                b.putString("binID",binID);
+                b.putString("startDate",startDate);
                 fragment.setArguments(b);
                 break;
         }
@@ -73,10 +69,15 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         //return fragmentListTitle.size();
-        return 3;
+        return 2;
     }
+
     public void AddBinId(String bin) {
-        binID=bin;
+        binID = bin;
+    }
+
+    public void AddBinDtartDate(String start) {
+        startDate = start;
     }
 
     public void AddFragment(Fragment fragment, String title) {
@@ -84,6 +85,7 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
         fragmentList.add(fragment);
         // binID.add(bin);
     }
+
     public void AddTitle(String title) {
         fragmentListTitle.add(title);
     }

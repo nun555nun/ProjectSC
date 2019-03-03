@@ -33,13 +33,12 @@ import java.util.Map;
 public class HomeFragment extends Fragment {
     DatabaseReference dbRef;
     String binID;
-    TextView tvTempIn;
-    TextView tvTempOut;
-    TextView tvHumidIn;
-    TextView tvHumidOut;
+    TextView tvTemp;
+
+    TextView tvHumid;
+
     TextView tvDateCount;
-    EditText editWater;
-    EditText editAir;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -54,110 +53,13 @@ public class HomeFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        tvTempIn = view.findViewById(R.id.tv_temp_in);
-        tvTempOut = view.findViewById(R.id.tv_temp_out);
-        tvHumidIn = view.findViewById(R.id.tv_humid_in);
-        tvHumidOut = view.findViewById(R.id.tv_humid_out);
+        tvTemp = view.findViewById(R.id.tv_temp_in);
+
+        tvHumid = view.findViewById(R.id.tv_humid_in);
+
         tvDateCount = view.findViewById(R.id.tv_date_count);
 
-        /*setData();
-
-        editWater = view.findViewById(R.id.editWater);
-        editWater.setFocusable(false);
-
-        editWater.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                editWater.setFocusableInTouchMode(true);
-
-                return false;
-            }
-        });
-        //hide keybord
-        editAir = view.findViewById(R.id.editAir);
-        editAir.setFocusable(false);
-        editAir.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                editAir.setFocusableInTouchMode(true);
-
-                return false;
-            }
-        });
-
-        Button fillWater = view.findViewById(R.id.button_water);
-        fillWater.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                final String time = editWater.getText().toString();
-                if (time.length() == 0 || time.startsWith("0")) {
-                    Toast.makeText(getContext(), "กรุณากรอกตัวเลขตั้งแต่1ขึ้นไป", Toast.LENGTH_SHORT).show();
-                } else {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("ต้องการตั้งเวลาเติมน้ำเป็นเวลา " + time + " นาที ใช่หรือไม่?")
-                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    Calendar calendar = Calendar.getInstance();
-                                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-                                    String currentTime = format.format(calendar.getTime());
-
-                                    dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
-                                    dbRef.child("delayWater").setValue(Integer.parseInt(time));
-                                    dbRef.child("delayWaterTime").setValue(currentTime);
-                                    dbRef.child("statusWater").setValue(1);
-                                    editWater.setText("");
-                                    editWater.setFocusable(false);
-                                    Toast.makeText(getContext(), "ตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .setNegativeButton("no", null)
-                            .show();
-
-
-                }
-            }
-        });
-
-
-        Button fillAir = view.findViewById(R.id.button_air);
-
-        fillAir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editAir.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                final String time = editAir.getText().toString();
-                if (time.length() == 0 || time.startsWith("0")) {
-                    Toast.makeText(getContext(), "กรุณากรอกตัวเลขตั้งแต่1ขึ้นไป", Toast.LENGTH_SHORT).show();
-                } else {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("ต้องการตั้งเวลาเติมอากาศเป็นเวลา " + time + " นาที ใช่หรือไม่?")
-                            .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    Calendar calendar = Calendar.getInstance();
-                                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-                                    String currentTime = format.format(calendar.getTime());
-
-                                    dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
-                                    dbRef.child("delayAir").setValue(Integer.parseInt(time));
-                                    dbRef.child("statusAir").setValue(1);
-                                    dbRef.child("delayAirTime").setValue(currentTime);
-                                    editAir.setText("");
-                                    editAir.setFocusable(false);
-                                    Toast.makeText(getContext(), "ตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .setNegativeButton("no", null)
-                            .show();
-                }
-            }
-        });*/
+        setData();
 
         return view;
     }
@@ -170,21 +72,17 @@ public class HomeFragment extends Fragment {
 
                 Map map = (Map) dataSnapshot.getValue();
 
-                String tempIn = String.valueOf(map.get("temp"));
-                String tempOut = String.valueOf(map.get("temp"));
-                String humidIn = String.valueOf(map.get("humid"));
-                String humidOut = String.valueOf(map.get("humid"));
-                String dateCount = String.valueOf(map.get("dateCount"));
-                String fillAir = String.valueOf(map.get("delayAir"));
-                String fillWater = String.valueOf(map.get("delayWater"));
+                String temp = String.valueOf(map.get("temp"));
 
-                tvTempIn.setText(tempIn);
-                tvTempOut.setText(tempOut);
+                String humid = String.valueOf(map.get("humid"));
+
+                String dateCount = String.valueOf(map.get("dateCount"));
+
+
+                tvTemp.setText(temp);
                 tvDateCount.setText(dateCount);
-                tvHumidIn.setText(humidIn);
-                tvHumidOut.setText(humidOut);
-                editAir.setHint(fillAir);
-                editWater.setHint(fillWater);
+                tvHumid.setText(humid);
+
             }
 
             @Override
