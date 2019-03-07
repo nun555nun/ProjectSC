@@ -46,15 +46,27 @@
     <string name="maximum">ค่าสูงสุด</string>
     <string name="minimum">ค่าต่ำสุด</string>
     <string name="date">วันที่</string>
+    <string name="reset_bin">เริ่มการหมักใหม่</string>
+    <string name="reset_setting">รีเซตการตั้งค่า</string>
 
     <string-array name="notitype">
-        <item>-</item>
         <item>อุณหภูมิน้อยกว่าที่กำหนด</item>
         <item>อุณหภูมิมากกว่าที่กำหนด</item>
         <item>ความชื้นน้อยกว่าที่กำหนด</item>
         <item>ความชื้นมากกว่าที่กำหนด</item>
         <item>เริ่มทำการเติมน้ำ</item>
         <item>เริ่มทำการเติมอากาศ</item>
+        <item>การเติมน้ำเสร็จเรียบร้อย</item>
+        <item>การเติมอากาศเสร็จเรียบร้อย</item>
+    </string-array>
+
+    <string-array name="notitype2">
+        <item>เริ่มทำการเติมน้ำ</item>
+        <item>เริ่มทำการเติมอากาศ</item>
+        <item>อุณหภูมิมากกว่าที่กำหนด</item>
+        <item>ความชื้นน้อยกว่าที่กำหนด</item>
+        <item>อุณหภูมิน้อยกว่าที่กำหนด</item>
+        <item>ความชื้นมากกว่าที่กำหนด</item>
         <item>การเติมน้ำเสร็จเรียบร้อย</item>
         <item>การเติมอากาศเสร็จเรียบร้อย</item>
     </string-array>

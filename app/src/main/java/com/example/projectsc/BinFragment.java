@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class BinFragment extends Fragment {
     Intent intent;
     Boolean a;
     String token;
-
+String binN;
     public BinFragment() {
         // Required empty public constructor
     }
@@ -66,12 +67,79 @@ public class BinFragment extends Fragment {
         progressDialog.setMessage("Loading.....");
         progressDialog.setTitle("กำลังโหลดข้อมูล");
         progressDialog.show();
-        findUserBinNotification();
+        //removeLogNotification();
+        //findUserBinNotification();
+        controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_slide_from_left);
+        getBin();
         return view;
     }
 
+    private void removeLogNotification() {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
+        dbRef.removeValue();
+    }
+
+    private void findLogNotification(final String bin) {
+        getbinName(bin);
+        for (int i = 1; i <= 8; i++) {
+
+            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("notification/" + bin + "/" + String.valueOf(i));
+
+            final int finalI = i;
+            dbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String[] type = getResources().getStringArray(R.array.notitype2);
+                    for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
+                        LogNotification logNotification = logDHTSnapshot.getValue(LogNotification.class);
+
+                        Map binId = new HashMap();
+                        binId.put("binName",binN);
+                        binId.put("binId", bin);
+                        binId.put("date", logNotification.getDate());
+                        binId.put("time", logNotification.getTime());
+                        binId.put("type", type[finalI - 1]);
+
+                        saveLogNotification(binId);
+
+                    }
+                    dbRef.removeEventListener(this);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+    }
+
+    private void getbinName(String bin) {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + bin + "/" + "binName");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                binN =  dataSnapshot.getValue(String.class);
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void saveLogNotification(Map binId) {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
+        dbRef.push().setValue(binId);
+    }
+
     private void findUserBinNotification() {
-       final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -80,7 +148,7 @@ public class BinFragment extends Fragment {
                 for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
                     Map map = (Map) BinSnapshot.getValue();
                     final String bin = String.valueOf(map.get("binid"));
-
+                    findLogNotification(bin);
                     String notifyStatus1 = String.valueOf(BinSnapshot.child("notificationStatus").child("1").getValue());
                     String notifyStatus2 = String.valueOf(BinSnapshot.child("notificationStatus").child("2").getValue());
                     String notifyStatus3 = String.valueOf(BinSnapshot.child("notificationStatus").child("3").getValue());
@@ -179,12 +247,20 @@ public class BinFragment extends Fragment {
                             Log.v("binName", userBinList.get(position).getBinID());
                             intent.putExtra("binID", userBinList.get(position).getBinID());
                             intent.putExtra("binName", userBinList.get(position).getBinName());
-                            intent.putExtra("startDate",userBinList.get(position).getDate());
+                            intent.putExtra("startDate", userBinList.get(position).getDate());
                             startActivity(intent);
                         }
                     });
+                   /* listViewBin.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+
+                            return false;
+                        }
+                    });*/
+
                 }
-                  dbRef.removeEventListener(this);
+                dbRef.removeEventListener(this);
             }
 
 
@@ -224,7 +300,7 @@ public class BinFragment extends Fragment {
                     listViewBin.setAdapter(null);
 
                 }
-                 dbRef.removeEventListener(this);
+                dbRef.removeEventListener(this);
             }
 
             @Override
@@ -237,8 +313,9 @@ public class BinFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_slide_from_left);
-        getBin();
+
+        removeLogNotification();
+        findUserBinNotification();
     }
 
     private void setUserToken(String binID, String typeNotify) {

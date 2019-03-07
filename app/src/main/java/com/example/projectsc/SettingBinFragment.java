@@ -449,72 +449,105 @@ public class SettingBinFragment extends Fragment {
         resetSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setDefault();
+                new AlertDialog.Builder(getContext())
+                        .setTitle("รีเซตการตั้งค่า ")
+                        .setMessage("ต้องการรีเซตการตั้งค่า ใช่หรือไม่ ?")
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setDefault();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+
             }
         });
 
         clearDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "ยังไม่ได้ทำจ้า", Toast.LENGTH_SHORT).show();
+                clearData();
+                //Toast.makeText(getContext(), "ยังไม่ได้ทำจ้า", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void setDefault() {
+    private void clearData() {
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
         new AlertDialog.Builder(getContext())
-                .setTitle("รีเซตการตั้งค่า ")
-                .setMessage("ต้องการรีเซตการตั้งค่า ใช่หรือไม่ ?")
+                .setTitle("เริ่มการหมักใหม่")
+                .setMessage("ต้องการรีเซตการตั้งค่าทั้งหมด และ ล้างประวัติทั้งหมด ใช่หรือไม่ ?")
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        dbRef.child("delayAir").setValue(10);
-                        dbRef.child("delayWater").setValue(1);
-                        dbRef.child("tempMax").setValue("70.00 °C");
-                        dbRef.child("tempMin").setValue("10.00 °C");
-                        dbRef.child("humidMax").setValue("70.00 %");
-                        dbRef.child("humidMin").setValue("40.00 %");
+                        dbRef.child("statusTurnback").setValue(1);
+                        dbRef.child("temp").setValue("-");
+                        dbRef.child("humid").setValue("-");
+                        dbRef.child("time").setValue("-");
 
-                        dbRef.child("statusAir").setValue(1);
-                        dbRef.child("statusWater").setValue(1);
-                        dbRef.child("statusDefault").setValue(1);
-                        dbRef.child("statustempMax").setValue(1);
-                        dbRef.child("statustempMin").setValue(1);
-                        dbRef.child("statushumidMax").setValue(1);
-                        dbRef.child("statushumidMin").setValue(1);
-
-                        editTextFillAir.setHint("10");
-                        editTextFillWater.setHint("1");
-                        editTextTempMax.setHint("70");
-                        editTextTempMin.setHint("10");
-                        editTextHumidMax.setHint("70");
-                        editTextHumidMin.setHint("40");
-
-                        editTextFillAir.setText("");
-                        editTextFillWater.setText("");
-                        editTextTempMax.setText("");
-                        editTextTempMin.setText("");
-                        editTextHumidMax.setText("");
-                        editTextHumidMin.setText("");
-
-                        switchAll.setChecked(true);
-                        switch1.setChecked(true);
-                        switch2.setChecked(true);
-                        switch3.setChecked(true);
-                        switch4.setChecked(true);
-                        switch5.setChecked(true);
-                        switch6.setChecked(true);
-                        switch7.setChecked(true);
-                        switch8.setChecked(true);
-
-                        Toast.makeText(getContext(), "รีเซตการตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
+                        removeHistory();
+                        setDefault();
+                        Toast.makeText(getContext(), "รีเซตถังเรียบร้อย", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
                 .show();
+    }
 
+    private void removeHistory() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date");
+        dbRef.removeValue();
+        dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date_time");
+        dbRef.removeValue();
+        dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID);
+        dbRef.removeValue();
+    }
+
+    private void setDefault() {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+
+        dbRef.child("delayAir").setValue(10);
+        dbRef.child("delayWater").setValue(1);
+        dbRef.child("tempMax").setValue("70.00 °C");
+        dbRef.child("tempMin").setValue("10.00 °C");
+        dbRef.child("humidMax").setValue("70.00 %");
+        dbRef.child("humidMin").setValue("40.00 %");
+
+        dbRef.child("statusAir").setValue(0);
+        dbRef.child("statusWater").setValue(0);
+        dbRef.child("statusDefault").setValue(1);
+        dbRef.child("statustempMax").setValue(0);
+        dbRef.child("statustempMin").setValue(0);
+        dbRef.child("statushumidMax").setValue(0);
+        dbRef.child("statushumidMin").setValue(0);
+
+        editTextFillAir.setHint("10");
+        editTextFillWater.setHint("1");
+        editTextTempMax.setHint("70");
+        editTextTempMin.setHint("10");
+        editTextHumidMax.setHint("70");
+        editTextHumidMin.setHint("40");
+
+        editTextFillAir.setText("");
+        editTextFillWater.setText("");
+        editTextTempMax.setText("");
+        editTextTempMin.setText("");
+        editTextHumidMax.setText("");
+        editTextHumidMin.setText("");
+
+        switchAll.setChecked(true);
+        switch1.setChecked(true);
+        switch2.setChecked(true);
+        switch3.setChecked(true);
+        switch4.setChecked(true);
+        switch5.setChecked(true);
+        switch6.setChecked(true);
+        switch7.setChecked(true);
+        switch8.setChecked(true);
+
+        Toast.makeText(getContext(), "รีเซตการตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
 
     }
 

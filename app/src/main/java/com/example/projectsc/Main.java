@@ -57,7 +57,7 @@ public class Main extends AppCompatActivity
     String binIDFromQR;
     String binName;
     String token;
-
+private String startDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,7 +172,9 @@ public class Main extends AppCompatActivity
         });
 
         if (binIDFromQR != null) {
+            getStartDate();
             checkData();
+
         }
 
         setTitle(R.string.home);
@@ -211,7 +213,14 @@ public class Main extends AppCompatActivity
         if (binIDFromQR.length() > 0) {
             etID.setText(binIDFromQR);
         }
-        tvStartDate.setText(day + "/" + (month + 1) + "/" + (year + 543));
+
+
+        if(startDate==null){
+            tvStartDate.setText(day + "/" + (month + 1) + "/" + (year + 543));
+        }
+       else {
+           tvStartDate.setText(startDate);
+        }
 
         tvStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,6 +252,24 @@ public class Main extends AppCompatActivity
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
+    private void getStartDate() {
+
+            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binIDFromQR + "/" + "startDate");
+            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    startDate =  dataSnapshot.getValue(String.class);
+                    dbRef.removeEventListener(this);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
 
     private void setUserBin() {
 
