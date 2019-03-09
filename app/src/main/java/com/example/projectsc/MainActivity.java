@@ -82,9 +82,12 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 if (logDHTList.size() > 0) {
-
+                    sortTime();
+                    //Collections.reverse(logDHTList);
                     sortDate();
                     Collections.reverse(logDHTList);
+
+
                     progressDialog.cancel();
                     LogAllbinNotificationList adapter = new LogAllbinNotificationList(MainActivity.this, logDHTList);
                     listViewLogDHT.setAdapter(adapter);
@@ -118,7 +121,22 @@ dbRef.removeEventListener(this);
             }
         });
     }
+    private void sortTime() {
 
+        Collections.sort(logDHTList, new Comparator<LogAllbinNotification>() {
+            DateFormat f = new SimpleDateFormat("HH:mm:ss");
+
+            @Override
+            public int compare(LogAllbinNotification o1, LogAllbinNotification o2) {
+                try {
+                    return f.parse(o1.getTime()).compareTo(f.parse(o2.getTime()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

@@ -2,6 +2,7 @@ package com.example.projectsc;
 
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -22,8 +23,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -38,8 +42,11 @@ public class HomeFragment extends Fragment {
     TextView tvHumid;
 
     TextView tvDateCount;
-
-
+    TextView tvTime;
+    TextView tvStatusAir;
+    TextView tvStatusWater;
+    private int day, month, year;
+    private Calendar mDate;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -53,12 +60,17 @@ public class HomeFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        tvTemp = view.findViewById(R.id.tv_temp_in);
-
-        tvHumid = view.findViewById(R.id.tv_humid_in);
-
+        tvTemp = view.findViewById(R.id.tv_temp);
+        tvHumid = view.findViewById(R.id.tv_humid);
         tvDateCount = view.findViewById(R.id.tv_date_count);
+        tvTime = view.findViewById(R.id.tv_time);
+        tvStatusAir = view.findViewById(R.id.tv_air_status);
+        tvStatusWater = view.findViewById(R.id.tv_water_status);
 
+        mDate = Calendar.getInstance();
+        day = mDate.get(Calendar.DAY_OF_MONTH);
+        month = mDate.get(Calendar.MONTH);
+        year = mDate.get(Calendar.YEAR);
         setData();
 
         return view;
@@ -70,18 +82,42 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+
                 Map map = (Map) dataSnapshot.getValue();
 
                 String temp = String.valueOf(map.get("temp"));
-
                 String humid = String.valueOf(map.get("humid"));
 
-                String dateCount = String.valueOf(map.get("dateCount"));
+                String time = String.valueOf(map.get("time"));
+                String statusAir = String.valueOf(map.get("statusAir"));
+                String statusWater = String.valueOf(map.get("statusWater"));
 
+                String startDate = String.valueOf(map.get("startDate"));
+                String endDate = String.valueOf(day + "/" + (month + 1) + "/" + (year + 543));
+                int dayDiff = dateDiff(startDate,endDate);
+                dbRef.child("dateCount").setValue(dayDiff);
+
+                String dateCount = String.valueOf(map.get("dateCount"));
 
                 tvTemp.setText(temp);
                 tvDateCount.setText(dateCount);
                 tvHumid.setText(humid);
+                tvTime.setText(time);
+                if(statusAir.equals("2")){
+                    tvStatusAir.setText("กำลังทำงานอยู่");
+                    tvStatusAir.setTextColor(Color.parseColor("#97CA02"));
+                }else {
+                    tvStatusAir.setText("ปิดอยู่");
+                    tvStatusAir.setTextColor(Color.LTGRAY);
+                }
+
+                if(statusWater.equals("2")){
+                    tvStatusWater.setText("กำลังทำงานอยู่");
+                    tvStatusWater.setTextColor(Color.parseColor("#97CA02"));
+                }else {
+                    tvStatusWater.setText("ปิดอยู่");
+                    tvStatusWater.setTextColor(Color.LTGRAY);
+                }
 
             }
 
@@ -92,5 +128,25 @@ public class HomeFragment extends Fragment {
         });
 
     }
+    public  int dateDiff(String startDate,String endDate)
+    {
 
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date startdate = df.parse(startDate);
+            Date enddate = df.parse(endDate);
+
+            long diff = enddate.getTime() - startdate.getTime();
+
+            int dayDiff = (int) (diff / (24 * 60 * 60 * 1000));
+
+            return dayDiff;
+
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

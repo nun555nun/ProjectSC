@@ -46,6 +46,7 @@ public class BinFragment extends Fragment {
     Boolean a;
     String token;
 String binN;
+    String[] type;
     public BinFragment() {
         // Required empty public constructor
     }
@@ -55,6 +56,7 @@ String binN;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        type = getResources().getStringArray(R.array.notitype2);
         token = FirebaseInstanceId.getInstance().getToken();
         View view = inflater.inflate(R.layout.fragment_bin, container, false);
         auth = FirebaseAuth.getInstance();
@@ -67,6 +69,7 @@ String binN;
         progressDialog.setMessage("Loading.....");
         progressDialog.setTitle("กำลังโหลดข้อมูล");
         progressDialog.show();
+
         //removeLogNotification();
         //findUserBinNotification();
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_slide_from_left);
@@ -89,7 +92,7 @@ String binN;
             dbRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String[] type = getResources().getStringArray(R.array.notitype2);
+
                     for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
                         LogNotification logNotification = logDHTSnapshot.getValue(LogNotification.class);
 
@@ -103,7 +106,7 @@ String binN;
                         saveLogNotification(binId);
 
                     }
-                    dbRef.removeEventListener(this);
+                    //dbRef.removeEventListener(this);
                 }
 
                 @Override
@@ -134,8 +137,11 @@ String binN;
     }
 
     private void saveLogNotification(Map binId) {
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
-        dbRef.push().setValue(binId);
+        if(auth.getCurrentUser()!=null){
+            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
+            dbRef.push().setValue(binId);
+        }
+
     }
 
     private void findUserBinNotification() {
@@ -144,7 +150,7 @@ String binN;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-
+                removeLogNotification();
                 for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
                     Map map = (Map) BinSnapshot.getValue();
                     final String bin = String.valueOf(map.get("binid"));
@@ -300,7 +306,7 @@ String binN;
                     listViewBin.setAdapter(null);
 
                 }
-                dbRef.removeEventListener(this);
+                //dbRef.removeEventListener(this);
             }
 
             @Override
@@ -314,7 +320,7 @@ String binN;
     public void onResume() {
         super.onResume();
 
-        removeLogNotification();
+
         findUserBinNotification();
     }
 

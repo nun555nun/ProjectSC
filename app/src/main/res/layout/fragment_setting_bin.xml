@@ -27,7 +27,6 @@
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
-                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -138,7 +137,6 @@
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
-                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/water_constraintLayout">
@@ -249,7 +247,6 @@
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
-                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/air_constraintLayout">
@@ -397,7 +394,6 @@
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
-                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/temp_constraintLayout">
@@ -593,12 +589,14 @@
 
                 <TextView
                     android:id="@+id/tv_type_all"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/notification"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@+id/switch_all"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/line_notify" />
 
@@ -616,7 +614,7 @@
                     android:id="@+id/notify_constranlayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -625,10 +623,13 @@
 
                     <TextView
                         android:id="@+id/tv_type_1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="แบบที่ 1"
-                        android:textSize="18sp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="เริ่มทำการเติมน้ำ"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -639,8 +640,7 @@
                         android:layout_marginEnd="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_type_1"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_type_1"
-                        app:layout_constraintVertical_bias="1.0" />
+                        app:layout_constraintTop_toTopOf="@+id/tv_type_1" />
 
                     <Switch
                         android:id="@+id/switch_3"
@@ -649,16 +649,17 @@
                         android:layout_marginEnd="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_type_3"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_type_3"
-                        app:layout_constraintVertical_bias="0.125" />
+                        app:layout_constraintTop_toTopOf="@+id/tv_type_3" />
 
                     <TextView
                         android:id="@+id/tv_type_3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="แบบที่ 3"
-                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="อุณหภูมิมากกว่าที่กำหนด"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_3"
                         app:layout_constraintStart_toStartOf="@+id/tv_type_1"
                         app:layout_constraintTop_toBottomOf="@+id/tv_type_2" />
 
@@ -670,28 +671,31 @@
                         android:gravity="center"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_type_2"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_type_2"
-                        app:layout_constraintVertical_bias="1.0" />
+                        app:layout_constraintTop_toTopOf="@+id/tv_type_2" />
 
                     <TextView
                         android:id="@+id/tv_type_2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="แบบที่ 2"
-                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="เริ่มทำการเติมอากาศ"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_2"
                         app:layout_constraintStart_toStartOf="@+id/tv_type_1"
                         app:layout_constraintTop_toBottomOf="@+id/tv_type_1" />
 
                     <TextView
                         android:id="@+id/tv_type_4"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="แบบที่ 4"
-                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="ความชื้นน้อยกว่าที่กำหนด"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_4"
                         app:layout_constraintStart_toStartOf="@+id/tv_type_1"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_type_3" />
+                        app:layout_constraintTop_toBottomOf="@+id/tv_type_6" />
 
                     <Switch
                         android:id="@+id/switch_4"
@@ -700,46 +704,53 @@
                         android:layout_marginEnd="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_type_4"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_type_4"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintTop_toTopOf="@+id/tv_type_4" />
 
                     <TextView
                         android:id="@+id/tv_type_5"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="แบบที่ 5"
-                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="อุณหภูมิน้อยกว่าที่กำหนด"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_5"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_type_4" />
+                        app:layout_constraintTop_toBottomOf="@+id/tv_type_3" />
 
                     <TextView
                         android:id="@+id/tv_type_6"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="แบบที่ 6"
-                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="ความชื้นมากกว่าที่กำหนด"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_6"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_type_5" />
 
                     <TextView
                         android:id="@+id/tv_type_7"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="แบบที่ 7"
-                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="การเติมน้ำเสร็จเรียบร้อย"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_7"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_type_6" />
+                        app:layout_constraintTop_toBottomOf="@+id/tv_type_4" />
 
                     <TextView
                         android:id="@+id/tv_type_8"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="แบบที่ 8"
-                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="การเติมอากาศเสร็จเรียบร้อย"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/switch_8"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_type_7" />
 

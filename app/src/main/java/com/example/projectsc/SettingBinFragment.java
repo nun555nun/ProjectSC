@@ -973,11 +973,11 @@ public class SettingBinFragment extends Fragment {
 
                         dbRef.child(binPart).child("notificationStatus").child(typeNotify).setValue(status);
                         if (typeNotify.equals("status") && status.equals("on")) {
-                            dbRef.child(binPart).child("notification").setValue("on");
+                           // dbRef.child(binPart).child("notification").setValue("on");
                             Log.d("inni", "om");
                         } else if (typeNotify.equals("status") && status.equals("off")) {
 
-                            dbRef.child(binPart).child("notification").setValue("off");
+                           // dbRef.child(binPart).child("notification").setValue("off");
                             for (int i = 1; i <= 8; i++) {
                                 removeToken(binID, i + "");
                                 dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("off");

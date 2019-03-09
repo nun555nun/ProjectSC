@@ -82,8 +82,9 @@ private String startDate;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+        if (auth.getCurrentUser() != null) {
+            dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+        }
         // dbRef.keepSynced(true);
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
