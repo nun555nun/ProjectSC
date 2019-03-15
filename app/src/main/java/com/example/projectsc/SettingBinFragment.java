@@ -2,7 +2,9 @@ package com.example.projectsc;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -17,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -69,6 +72,13 @@ public class SettingBinFragment extends Fragment {
     Button resetSettingButton;
     Button clearDataButton;
 
+
+    ConstraintLayout cs;
+    ScrollView sv;
+
+
+    int countOn ;
+    int countCheckOn;
     public SettingBinFragment() {
         // Required empty public constructor
     }
@@ -82,6 +92,27 @@ public class SettingBinFragment extends Fragment {
         binID = getArguments().getString("binID");
         Log.d("binID", binID);
 
+        cs = view.findViewById(R.id.not_connect_cl);
+        sv = view.findViewById(R.id.scrollview_setting);
+        if (isNetworkConnected()) {
+            sv.setVisibility(View.VISIBLE);
+            cs.setVisibility(View.GONE);
+        } else {
+            sv.setVisibility(View.GONE);
+            cs.setVisibility(View.VISIBLE);
+        }
+        cs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    sv.setVisibility(View.VISIBLE);
+                    cs.setVisibility(View.GONE);
+                } else {
+                    sv.setVisibility(View.GONE);
+                    cs.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         dbRef = database.getReference();
@@ -129,196 +160,209 @@ public class SettingBinFragment extends Fragment {
     private void onButtonClick() {
 
 
-        dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
         airSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    if (editTextFillAir.getText().length() > 0 && Integer.parseInt(editTextFillAir.getText().toString()) > 0) {
+                        if (!editTextFillAir.getText().toString().equals(editTextFillAir.getHint().toString())) {
+                            editTextFillAir.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle("แก้ไข ระยะเวลาในการเติมอากาศ")
+                                    .setMessage("ต้องการเปลี่ยน จาก " + editTextFillAir.getHint() + " นาที เป็น " + Integer.parseInt(editTextFillAir.getText().toString()) + " นาที ใช่หรือไม่")
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                if (editTextFillAir.getText().length() > 0 && Integer.parseInt(editTextFillAir.getText().toString()) > 0) {
-                    if (!editTextFillAir.getText().toString().equals(editTextFillAir.getHint().toString())) {
-                        editTextFillAir.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                        new AlertDialog.Builder(getContext())
-                                .setTitle("แก้ไข ระยะเวลาในการเติมอากาศ")
-                                .setMessage("ต้องการเปลี่ยน จาก " + editTextFillAir.getHint() + " นาที เป็น " + Integer.parseInt(editTextFillAir.getText().toString()) + " นาที ใช่หรือไม่")
-                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                            dbRef.child("delayAir").setValue(Integer.parseInt(editTextFillAir.getText().toString()));
+                                            dbRef.child("statusAir").setValue(1);
 
-                                        dbRef.child("delayAir").setValue(Integer.parseInt(editTextFillAir.getText().toString()));
-                                        dbRef.child("statusAir").setValue(1);
-
-                                        editTextFillAir.setHint(String.valueOf(Integer.parseInt(editTextFillAir.getText().toString())));
-                                        editTextFillAir.setText("");
-                                        editTextFillAir.setFocusable(false);
-                                        Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton(R.string.no, null)
-                                .show();
+                                            editTextFillAir.setHint(String.valueOf(Integer.parseInt(editTextFillAir.getText().toString())));
+                                            editTextFillAir.setText("");
+                                            editTextFillAir.setFocusable(false);
+                                            Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.no, null)
+                                    .show();
 
 
+                        } else {
+                            editTextFillAir.setText("");
+                            editTextFillAir.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+                        }
                     } else {
-                        editTextFillAir.setText("");
-                        editTextFillAir.onEditorAction(EditorInfo.IME_ACTION_DONE);
-
+                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
         waterSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    if (editTextFillWater.getText().length() > 0 && Integer.parseInt(editTextFillWater.getText().toString()) > 0) {
+                        if (!editTextFillWater.getText().toString().equals(editTextFillWater.getHint().toString())) {
+                            editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle("แก้ไข ระยะเวลาในการเติมน้ำ")
+                                    .setMessage("ต้องการเปลี่ยน จาก " + editTextFillWater.getHint() + " นาที เป็น " + Integer.parseInt(editTextFillWater.getText().toString()) + " นาที ใช่หรือไม่")
+                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dbRef.child("delayWater").setValue(Integer.parseInt(editTextFillWater.getText().toString()));
 
-                if (editTextFillWater.getText().length() > 0 && Integer.parseInt(editTextFillWater.getText().toString()) > 0) {
-                    if (!editTextFillWater.getText().toString().equals(editTextFillWater.getHint().toString())) {
-                        editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                        new AlertDialog.Builder(getContext())
-                                .setTitle("แก้ไข ระยะเวลาในการเติมน้ำ")
-                                .setMessage("ต้องการเปลี่ยน จาก " + editTextFillWater.getHint() + " นาที เป็น " + Integer.parseInt(editTextFillWater.getText().toString()) + " นาที ใช่หรือไม่")
-                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dbRef.child("delayWater").setValue(Integer.parseInt(editTextFillWater.getText().toString()));
+                                            dbRef.child("statusWater").setValue(1);
 
-                                        dbRef.child("statusWater").setValue(1);
-
-                                        editTextFillWater.setHint(String.valueOf(Integer.parseInt(editTextFillWater.getText().toString())));
-                                        editTextFillWater.setText("");
-                                        editTextFillWater.setFocusable(false);
-                                        Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton(R.string.no, null)
-                                .show();
+                                            editTextFillWater.setHint(String.valueOf(Integer.parseInt(editTextFillWater.getText().toString())));
+                                            editTextFillWater.setText("");
+                                            editTextFillWater.setFocusable(false);
+                                            Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.no, null)
+                                    .show();
 
 
+                        } else {
+                            editTextFillWater.setText("");
+
+                            editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+                        }
                     } else {
-                        editTextFillWater.setText("");
-
-                        editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
-
+                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
         tempSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tempMax = editTextTempMax.getText().toString();
-                String tempMin = editTextTempMin.getText().toString();
-                int max;
-                int min;
-                if (tempMax.length() > 0 && tempMin.length() > 0) {
-                    max = Integer.parseInt(editTextTempMax.getText().toString());
-                    min = Integer.parseInt(editTextTempMin.getText().toString());
-                    if (max > 0 && min > 0) {
+                if (isNetworkConnected()) {
+                    String tempMax = editTextTempMax.getText().toString();
+                    String tempMin = editTextTempMin.getText().toString();
+                    int max;
+                    int min;
+                    if (tempMax.length() > 0 && tempMin.length() > 0) {
+                        max = Integer.parseInt(editTextTempMax.getText().toString());
+                        min = Integer.parseInt(editTextTempMin.getText().toString());
+                        if (max > 0 && min > 0) {
+                            if (checkMax(max, min) && checkMin(max, min)) {
+                                editTextTempMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                                editTextTempMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+                                if (max != Integer.parseInt(editTextTempMax.getHint().toString()) && min != Integer.parseInt(editTextTempMin.getHint().toString())) {
+                                    new AlertDialog.Builder(getContext())
+                                            .setTitle("แก้ไข " + getString(R.string.temperature))
+                                            .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextTempMax.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMax.getText().toString()) + " °C และ "
+                                                    + "ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextTempMin.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMin.getText().toString()) + " °C ใช่หรือไม่"
+                                            )
+                                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+
+                                                    dbRef.child("tempMax").setValue(Integer.parseInt(editTextTempMax.getText().toString()) + ".00 °C");
+                                                    dbRef.child("tempMin").setValue(Integer.parseInt(editTextTempMin.getText().toString()) + ".00 °C");
+                                                    editTextTempMax.setHint(String.valueOf(Integer.parseInt(editTextTempMax.getText().toString())));
+                                                    editTextTempMin.setHint(String.valueOf(Integer.parseInt(editTextTempMin.getText().toString())));
+
+                                                    dbRef.child("statustempMax").setValue(1);
+                                                    dbRef.child("statustempMin").setValue(1);
+
+                                                    editTextTempMax.setText("");
+                                                    editTextTempMin.setText("");
+
+                                                    editTextTempMax.setFocusable(false);
+                                                    editTextTempMin.setFocusable(false);
+
+                                                    Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .setNegativeButton(R.string.no, null)
+                                            .show();
+                                } else if (max == Integer.parseInt(editTextTempMax.getHint().toString()) && min != Integer.parseInt(editTextTempMin.getHint().toString())) {
+                                    changeTempMin();
+                                } else if (max != Integer.parseInt(editTextTempMax.getHint().toString()) && min == Integer.parseInt(editTextTempMin.getHint().toString())) {
+                                    changeTempMax();
+                                } else {
+                                    editTextTempMax.setText("");
+                                    editTextTempMin.setText("");
+
+                                }
+
+                            } else if (max == min) {
+                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            } else if (!checkMax(max, min)) {
+                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else if (tempMax.length() > 0) {
+                        max = Integer.parseInt(editTextTempMax.getText().toString());
+                        min = Integer.parseInt(editTextTempMin.getHint().toString());
+
                         if (checkMax(max, min) && checkMin(max, min)) {
-                            editTextTempMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                            editTextTempMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
-
-                            if (max != Integer.parseInt(editTextTempMax.getHint().toString()) && min != Integer.parseInt(editTextTempMin.getHint().toString())) {
-                                new AlertDialog.Builder(getContext())
-                                        .setTitle("แก้ไข " + getString(R.string.temperature))
-                                        .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextTempMax.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMax.getText().toString()) + " °C และ "
-                                                + "ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextTempMin.getHint().toString()) + " °C เป็น " + Integer.parseInt(editTextTempMin.getText().toString()) + " °C ใช่หรือไม่"
-                                        )
-                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-
-
-                                                dbRef.child("tempMax").setValue(Integer.parseInt(editTextTempMax.getText().toString()) + ".00 °C");
-                                                dbRef.child("tempMin").setValue(Integer.parseInt(editTextTempMin.getText().toString()) + ".00 °C");
-                                                editTextTempMax.setHint(String.valueOf(Integer.parseInt(editTextTempMax.getText().toString())));
-                                                editTextTempMin.setHint(String.valueOf(Integer.parseInt(editTextTempMin.getText().toString())));
-
-                                                dbRef.child("statustempMax").setValue(1);
-                                                dbRef.child("statustempMin").setValue(1);
-
-                                                editTextTempMax.setText("");
-                                                editTextTempMin.setText("");
-
-                                                editTextTempMax.setFocusable(false);
-                                                editTextTempMin.setFocusable(false);
-
-                                                Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                        .setNegativeButton(R.string.no, null)
-                                        .show();
-                            } else if (max == Integer.parseInt(editTextTempMax.getHint().toString()) && min != Integer.parseInt(editTextTempMin.getHint().toString())) {
-                                changeTempMin();
-                            } else if (max != Integer.parseInt(editTextTempMax.getHint().toString()) && min == Integer.parseInt(editTextTempMin.getHint().toString())) {
+                            if (max != Integer.parseInt(editTextTempMax.getHint().toString())) {
                                 changeTempMax();
                             } else {
                                 editTextTempMax.setText("");
-                                editTextTempMin.setText("");
 
                             }
-
                         } else if (max == min) {
                             Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         } else if (!checkMax(max, min)) {
-                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
-
-                        } else {
                             Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else {
-                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
-                    }
-
-                } else if (tempMax.length() > 0) {
-                    max = Integer.parseInt(editTextTempMax.getText().toString());
-                    min = Integer.parseInt(editTextTempMin.getHint().toString());
-
-                    if (checkMax(max, min) && checkMin(max, min)) {
-                        if (max != Integer.parseInt(editTextTempMax.getHint().toString())) {
-                            changeTempMax();
                         } else {
-                            editTextTempMax.setText("");
-
+                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
                         }
-                    } else if (max == min) {
-                        Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                    } else if (!checkMax(max, min)) {
-                        Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
-                    }
 
-                } else if (tempMin.length() > 0) {
+                    } else if (tempMin.length() > 0) {
 
-                    max = Integer.parseInt(editTextTempMax.getHint().toString());
-                    min = Integer.parseInt(editTextTempMin.getText().toString());
-                    if (min != 0) {
+                        max = Integer.parseInt(editTextTempMax.getHint().toString());
+                        min = Integer.parseInt(editTextTempMin.getText().toString());
+                        if (min != 0) {
 
-                        if (checkMax(max, min) && checkMin(max, min)) {
-                            if (min != Integer.parseInt(editTextTempMin.getHint().toString())) {
-                                changeTempMin();
+                            if (checkMax(max, min) && checkMin(max, min)) {
+                                if (min != Integer.parseInt(editTextTempMin.getHint().toString())) {
+                                    changeTempMin();
+                                } else {
+                                    editTextTempMin.setText("");
+
+                                }
+                            } else if (max == min) {
+                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            } else if (!checkMax(max, min)) {
+                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             } else {
-                                editTextTempMin.setText("");
-
+                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
                             }
-                        } else if (max == min) {
-                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                        } else if (!checkMax(max, min)) {
-                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
+
                 } else {
-                    Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -326,140 +370,149 @@ public class SettingBinFragment extends Fragment {
         humidSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    String humidMax = editTextHumidMax.getText().toString();
+                    String humidMin = editTextHumidMin.getText().toString();
+                    int max;
+                    int min;
+                    if (humidMax.length() > 0 && humidMin.length() > 0) {
+                        max = Integer.parseInt(editTextHumidMax.getText().toString());
+                        min = Integer.parseInt(editTextHumidMin.getText().toString());
+                        if (max > 0 && min > 0) {
+                            if (checkMax(max, min) && checkMin(max, min)) {
 
-                String humidMax = editTextHumidMax.getText().toString();
-                String humidMin = editTextHumidMin.getText().toString();
-                int max;
-                int min;
-                if (humidMax.length() > 0 && humidMin.length() > 0) {
-                    max = Integer.parseInt(editTextHumidMax.getText().toString());
-                    min = Integer.parseInt(editTextHumidMin.getText().toString());
-                    if (max > 0 && min > 0) {
+                                if (max != Integer.parseInt(editTextHumidMax.getHint().toString()) && min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
+                                    editTextHumidMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                                    editTextHumidMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                                    new AlertDialog.Builder(getContext())
+                                            .setTitle("แก้ไข " + getString(R.string.humidity))
+                                            .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextHumidMax.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMax.getText().toString()) + " % และ "
+                                                    + "ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextHumidMin.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMin.getText().toString()) + " % ใช่หรือไม่"
+                                            )
+                                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    dbRef.child("humidMax").setValue(Integer.parseInt(editTextHumidMax.getText().toString()) + ".00 %");
+                                                    dbRef.child("humidMin").setValue(Integer.parseInt(editTextHumidMin.getText().toString()) + ".00 %");
+                                                    editTextHumidMax.setHint(String.valueOf(Integer.parseInt(editTextHumidMax.getText().toString())));
+                                                    editTextHumidMin.setHint(String.valueOf(Integer.parseInt(editTextHumidMin.getText().toString())));
+
+                                                    dbRef.child("statushumidMax").setValue(1);
+                                                    dbRef.child("statushumidMin").setValue(1);
+
+                                                    editTextHumidMax.setText("");
+                                                    editTextHumidMin.setText("");
+
+
+                                                    editTextHumidMax.setFocusable(false);
+                                                    editTextHumidMin.setFocusable(false);
+
+                                                    Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .setNegativeButton(R.string.no, null)
+                                            .show();
+                                } else if (max == Integer.parseInt(editTextHumidMax.getHint().toString()) && min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
+                                    changeHumidMin();
+                                } else if (max != Integer.parseInt(editTextHumidMax.getHint().toString()) && min == Integer.parseInt(editTextHumidMin.getHint().toString())) {
+                                    changeHumidMax();
+                                } else {
+                                    editTextHumidMax.setText("");
+                                    editTextHumidMin.setText("");
+
+                                }
+
+                            } else if (max == min) {
+                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            } else if (!checkMax(max, min)) {
+                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else if (humidMax.length() > 0) {
+                        max = Integer.parseInt(editTextHumidMax.getText().toString());
+                        min = Integer.parseInt(editTextHumidMin.getHint().toString());
+
                         if (checkMax(max, min) && checkMin(max, min)) {
 
-                            if (max != Integer.parseInt(editTextHumidMax.getHint().toString()) && min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
-                                editTextHumidMax.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                                editTextHumidMin.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                                new AlertDialog.Builder(getContext())
-                                        .setTitle("แก้ไข " + getString(R.string.humidity))
-                                        .setMessage("ต้องการเปลี่ยน" + getString(R.string.maximum) + "จาก " + Integer.parseInt(editTextHumidMax.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMax.getText().toString()) + " % และ "
-                                                + "ต้องการเปลี่ยน" + getString(R.string.minimum) + "จาก " + Integer.parseInt(editTextHumidMin.getHint().toString()) + " % เป็น " + Integer.parseInt(editTextHumidMin.getText().toString()) + " % ใช่หรือไม่"
-                                        )
-                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-
-                                                dbRef.child("humidMax").setValue(Integer.parseInt(editTextHumidMax.getText().toString()) + ".00 %");
-                                                dbRef.child("humidMin").setValue(Integer.parseInt(editTextHumidMin.getText().toString()) + ".00 %");
-                                                editTextHumidMax.setHint(String.valueOf(Integer.parseInt(editTextHumidMax.getText().toString())));
-                                                editTextHumidMin.setHint(String.valueOf(Integer.parseInt(editTextHumidMin.getText().toString())));
-
-                                                dbRef.child("statushumidMax").setValue(1);
-                                                dbRef.child("statushumidMin").setValue(1);
-
-                                                editTextHumidMax.setText("");
-                                                editTextHumidMin.setText("");
-
-
-                                                editTextHumidMax.setFocusable(false);
-                                                editTextHumidMin.setFocusable(false);
-
-                                                Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                        .setNegativeButton(R.string.no, null)
-                                        .show();
-                            } else if (max == Integer.parseInt(editTextHumidMax.getHint().toString()) && min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
-                                changeHumidMin();
-                            } else if (max != Integer.parseInt(editTextHumidMax.getHint().toString()) && min == Integer.parseInt(editTextHumidMin.getHint().toString())) {
+                            if (max != Integer.parseInt(editTextHumidMax.getHint().toString())) {
                                 changeHumidMax();
                             } else {
                                 editTextHumidMax.setText("");
-                                editTextHumidMin.setText("");
 
                             }
-
                         } else if (max == min) {
                             Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         } else if (!checkMax(max, min)) {
+
                             Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
 
-                        } else {
-                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else {
-                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
-                    }
-
-                } else if (humidMax.length() > 0) {
-                    max = Integer.parseInt(editTextHumidMax.getText().toString());
-                    min = Integer.parseInt(editTextHumidMin.getHint().toString());
-
-                    if (checkMax(max, min) && checkMin(max, min)) {
-
-                        if (max != Integer.parseInt(editTextHumidMax.getHint().toString())) {
-                            changeHumidMax();
-                        } else {
+                        } else if (max == Integer.parseInt(editTextHumidMax.getHint().toString())) {
                             editTextHumidMax.setText("");
 
                         }
-                    } else if (max == min) {
-                        Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                    } else if (!checkMax(max, min)) {
 
-                        Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                    } else if (humidMin.length() > 0) {
 
-                    } else if (max == Integer.parseInt(editTextHumidMax.getHint().toString())) {
-                        editTextHumidMax.setText("");
+                        max = Integer.parseInt(editTextHumidMax.getHint().toString());
+                        min = Integer.parseInt(editTextHumidMin.getText().toString());
+                        if (min != 0) {
 
-                    }
+                            if (checkMax(max, min) && checkMin(max, min)) {
+                                if (min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
+                                    changeHumidMin();
+                                } else {
+                                    editTextHumidMin.setText("");
 
-                } else if (humidMin.length() > 0) {
+                                }
+                            } else if (max == min) {
+                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            } else if (!checkMax(max, min)) {
 
-                    max = Integer.parseInt(editTextHumidMax.getHint().toString());
-                    min = Integer.parseInt(editTextHumidMin.getText().toString());
-                    if (min != 0) {
-
-                        if (checkMax(max, min) && checkMin(max, min)) {
-                            if (min != Integer.parseInt(editTextHumidMin.getHint().toString())) {
-                                changeHumidMin();
-                            } else {
+                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                            } else if (min == Integer.parseInt(editTextHumidMin.getHint().toString())) {
                                 editTextHumidMin.setText("");
 
                             }
-                        } else if (max == min) {
-                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
-                        } else if (!checkMax(max, min)) {
-
-                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
-                        } else if (min == Integer.parseInt(editTextHumidMin.getHint().toString())) {
-                            editTextHumidMin.setText("");
-
+                        } else {
+                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
         resetSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(getContext())
-                        .setTitle("รีเซตการตั้งค่า ")
-                        .setMessage("ต้องการรีเซตการตั้งค่า ใช่หรือไม่ ?")
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                setDefault();
-                            }
-                        })
-                        .setNegativeButton(R.string.no, null)
-                        .show();
+                if(isNetworkConnected()){
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("รีเซตการตั้งค่า ")
+                            .setMessage("ต้องการรีเซตการตั้งค่า ใช่หรือไม่ ?")
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setDefault();
+                                }
+                            })
+                            .setNegativeButton(R.string.no, null)
+                            .show();
+                }
+                else {
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -467,8 +520,11 @@ public class SettingBinFragment extends Fragment {
         clearDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearData();
-                //Toast.makeText(getContext(), "ยังไม่ได้ทำจ้า", Toast.LENGTH_SHORT).show();
+                if(isNetworkConnected()){
+                    clearData();
+                }else {
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -483,6 +539,9 @@ public class SettingBinFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
 
                         dbRef.child("statusTurnback").setValue(1);
+                        dbRef.child("statusWaterWork").setValue(0);
+                        dbRef.child("statusAirWork").setValue(0);
+
                         dbRef.child("temp").setValue("-");
                         dbRef.child("humid").setValue("-");
                         dbRef.child("time").setValue("-");
@@ -690,51 +749,70 @@ public class SettingBinFragment extends Fragment {
         switchAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
 
-                    setStatus("status", "on");
-                    c.setVisibility(View.VISIBLE);
-                } else {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("status", "off");
-                    switch1.setChecked(false);
-                    switch2.setChecked(false);
-                    switch3.setChecked(false);
-                    switch4.setChecked(false);
-                    switch5.setChecked(false);
-                    switch6.setChecked(false);
-                    switch7.setChecked(false);
-                    switch8.setChecked(false);
-                    c.setVisibility(View.GONE);
+                        setStatus("status", "on");
+                        c.setVisibility(View.VISIBLE);
+                    } else {
+
+                        setStatus("status", "off");
+                        switch1.setChecked(false);
+                        switch2.setChecked(false);
+                        switch3.setChecked(false);
+                        switch4.setChecked(false);
+                        switch5.setChecked(false);
+                        switch6.setChecked(false);
+                        switch7.setChecked(false);
+                        switch8.setChecked(false);
+                        c.setVisibility(View.GONE);
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
+
             }
         });
 
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("1", "on");
+                        setStatus("1", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("1", "off");
+                        setStatus("1", "off");
+
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
 
                 }
+
             }
         });
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("2", "on");
+                        setStatus("2", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("2", "off");
+                        setStatus("2", "off");
 
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
             }
         });
@@ -742,14 +820,19 @@ public class SettingBinFragment extends Fragment {
         switch3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("3", "on");
+                        setStatus("3", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("3", "off");
+                        setStatus("3", "off");
 
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
             }
         });
@@ -757,14 +840,19 @@ public class SettingBinFragment extends Fragment {
         switch4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("4", "on");
+                        setStatus("4", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("4", "off");
+                        setStatus("4", "off");
 
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
             }
         });
@@ -772,14 +860,19 @@ public class SettingBinFragment extends Fragment {
         switch5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("5", "on");
+                        setStatus("5", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("5", "off");
+                        setStatus("5", "off");
 
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
             }
         });
@@ -787,14 +880,19 @@ public class SettingBinFragment extends Fragment {
         switch6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("6", "on");
+                        setStatus("6", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("6", "off");
+                        setStatus("6", "off");
 
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
             }
         });
@@ -802,14 +900,19 @@ public class SettingBinFragment extends Fragment {
         switch7.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("7", "on");
+                        setStatus("7", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("7", "off");
+                        setStatus("7", "off");
 
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
             }
         });
@@ -817,17 +920,28 @@ public class SettingBinFragment extends Fragment {
         switch8.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if(isNetworkConnected()){
+                    if (isChecked) {
 
-                    setStatus("8", "on");
+                        setStatus("8", "on");
 
-                } else {
+                    } else {
 
-                    setStatus("8", "off");
+                        setStatus("8", "off");
 
+                    }
+                }else {
+                    countCheckOn+=1;
+                    checkOn();
                 }
             }
         });
+    }
+
+    private void checkOn() {
+        if(countCheckOn>countOn){
+            Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setHint() {
@@ -901,46 +1015,54 @@ public class SettingBinFragment extends Fragment {
                             c.setVisibility(View.GONE);
                         } else {
                             switchAll.setChecked(true);
-
+                            countOn+=1;
                             if (notifyStatus1.equals("on")) {
+                                countOn+=1;
                                 switch1.setChecked(true);
                             } else {
                                 switch1.setChecked(false);
                             }
 
                             if (notifyStatus2.equals("on")) {
+                                countOn+=1;
                                 switch2.setChecked(true);
                             } else {
                                 switch2.setChecked(false);
                             }
 
                             if (notifyStatus3.equals("on")) {
+                                countOn+=1;
                                 switch3.setChecked(true);
                             } else {
                                 switch3.setChecked(false);
                             }
 
                             if (notifyStatus4.equals("on")) {
+                                countOn+=1;
                                 switch4.setChecked(true);
                             } else {
                                 switch4.setChecked(false);
                             }
                             if (notifyStatus5.equals("on")) {
+                                countOn+=1;
                                 switch5.setChecked(true);
                             } else {
                                 switch5.setChecked(false);
                             }
                             if (notifyStatus6.equals("on")) {
+                                countOn+=1;
                                 switch6.setChecked(true);
                             } else {
                                 switch6.setChecked(false);
                             }
                             if (notifyStatus7.equals("on")) {
+                                countOn+=1;
                                 switch7.setChecked(true);
                             } else {
                                 switch7.setChecked(false);
                             }
                             if (notifyStatus8.equals("on")) {
+                                countOn+=1;
                                 switch8.setChecked(true);
                             } else {
                                 switch8.setChecked(false);
@@ -973,11 +1095,11 @@ public class SettingBinFragment extends Fragment {
 
                         dbRef.child(binPart).child("notificationStatus").child(typeNotify).setValue(status);
                         if (typeNotify.equals("status") && status.equals("on")) {
-                           // dbRef.child(binPart).child("notification").setValue("on");
+                            // dbRef.child(binPart).child("notification").setValue("on");
                             Log.d("inni", "om");
                         } else if (typeNotify.equals("status") && status.equals("off")) {
 
-                           // dbRef.child(binPart).child("notification").setValue("off");
+                            // dbRef.child(binPart).child("notification").setValue("off");
                             for (int i = 1; i <= 8; i++) {
                                 removeToken(binID, i + "");
                                 dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("off");
@@ -1092,4 +1214,12 @@ public class SettingBinFragment extends Fragment {
             }
         });
     }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+
 }

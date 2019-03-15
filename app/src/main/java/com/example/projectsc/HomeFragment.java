@@ -1,19 +1,18 @@
 package com.example.projectsc;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +46,18 @@ public class HomeFragment extends Fragment {
     TextView tvStatusWater;
     private int day, month, year;
     private Calendar mDate;
+
+    TextView tvST;
+    TextView tvSD;
+    TextView tvLT;
+    TextView tvLD;
+
+    Button buttonAirClose;
+    Button buttonWaterClose;
+
+    Button buttonAirOpen;
+    Button buttonWaterOpen;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -67,16 +78,149 @@ public class HomeFragment extends Fragment {
         tvStatusAir = view.findViewById(R.id.tv_air_status);
         tvStatusWater = view.findViewById(R.id.tv_water_status);
 
+        buttonAirClose = view.findViewById(R.id.button_air_close);
+        buttonWaterClose = view.findViewById(R.id.button_water_close);
+        buttonAirOpen = view.findViewById(R.id.button_air_open);
+        buttonWaterOpen = view.findViewById(R.id.button_water_open);
+
+        buttonAirClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("ต้องการปิดปั้มอากาศใช่หรือไม่")
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setStatusButtonClose("statusAir");
+                                    Toast.makeText(getContext(), "ปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton(R.string.no, null)
+                            .show();
+                } else {
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+        buttonWaterClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("ต้องการปิดปั้มน้ำใช่หรือไม่")
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setStatusButtonClose("statusWater");
+                                    Toast.makeText(getContext(), "ปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton(R.string.no, null)
+                            .show();
+                } else {
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+        buttonAirOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("ต้องการเปิดปั้มอากาศใช่หรือไม่")
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setStatusButtonOpen("statusAir");
+                                    Toast.makeText(getContext(), "เปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton(R.string.no, null)
+                            .show();
+                } else {
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+        buttonWaterOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("ต้องการเปิดปั้มอากาศใช่หรือไม่")
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setStatusButtonOpen("statusWater");
+                                    Toast.makeText(getContext(), "เปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton(R.string.no, null)
+                            .show();
+                } else {
+                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+
         mDate = Calendar.getInstance();
         day = mDate.get(Calendar.DAY_OF_MONTH);
         month = mDate.get(Calendar.MONTH);
         year = mDate.get(Calendar.YEAR);
         setData();
 
+        tvSD = view.findViewById(R.id.tv_sd);
+        tvST = view.findViewById(R.id.tv_st);
+        tvLD = view.findViewById(R.id.tv_ld);
+        tvLT = view.findViewById(R.id.tv_lt);
+
         return view;
     }
+
+    private void setStatusButtonOpen(final String status) {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dbRef.child(status).setValue(3);
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void setStatusButtonClose(final String status) {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dbRef.child(status).setValue(2);
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void setData() {
-        dbRef = FirebaseDatabase.getInstance().getReference("bin/"+binID);
+        dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,12 +233,12 @@ public class HomeFragment extends Fragment {
                 String humid = String.valueOf(map.get("humid"));
 
                 String time = String.valueOf(map.get("time"));
-                String statusAir = String.valueOf(map.get("statusAir"));
-                String statusWater = String.valueOf(map.get("statusWater"));
+                String statusAir = String.valueOf(map.get("statusAirWork"));
+                String statusWater = String.valueOf(map.get("statusWaterWork"));
 
                 String startDate = String.valueOf(map.get("startDate"));
                 String endDate = String.valueOf(day + "/" + (month + 1) + "/" + (year + 543));
-                int dayDiff = dateDiff(startDate,endDate);
+                int dayDiff = dateDiff(startDate, endDate);
                 dbRef.child("dateCount").setValue(dayDiff);
 
                 String dateCount = String.valueOf(map.get("dateCount"));
@@ -103,22 +247,30 @@ public class HomeFragment extends Fragment {
                 tvDateCount.setText(dateCount);
                 tvHumid.setText(humid);
                 tvTime.setText(time);
-                if(statusAir.equals("2")){
+                if (statusAir.equals("1")) {
                     tvStatusAir.setText("กำลังทำงานอยู่");
                     tvStatusAir.setTextColor(Color.parseColor("#97CA02"));
-                }else {
+                } else {
                     tvStatusAir.setText("ปิดอยู่");
                     tvStatusAir.setTextColor(Color.LTGRAY);
                 }
 
-                if(statusWater.equals("2")){
+                if (statusWater.equals("1")) {
                     tvStatusWater.setText("กำลังทำงานอยู่");
                     tvStatusWater.setTextColor(Color.parseColor("#97CA02"));
-                }else {
+                } else {
                     tvStatusWater.setText("ปิดอยู่");
                     tvStatusWater.setTextColor(Color.LTGRAY);
                 }
+                String st = String.valueOf(map.get("boardTime"));
+                String sd = String.valueOf(map.get("boardDate"));
+                String lt = String.valueOf(map.get("loopTime"));
+                String ld = String.valueOf(map.get("loopDate"));
 
+                tvST.setText(st);
+                tvSD.setText(sd);
+                tvLT.setText(lt);
+                tvLD.setText(ld);
             }
 
             @Override
@@ -128,8 +280,8 @@ public class HomeFragment extends Fragment {
         });
 
     }
-    public  int dateDiff(String startDate,String endDate)
-    {
+
+    public int dateDiff(String startDate, String endDate) {
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -148,5 +300,11 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 }

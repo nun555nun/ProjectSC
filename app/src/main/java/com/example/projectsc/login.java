@@ -1,7 +1,9 @@
 package com.example.projectsc;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -97,52 +99,58 @@ public class login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editTextemail.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                final String email = editTextemail.getText().toString();
-                final String password = editTextpass.getText().toString();
+                if (isNetworkConnected()){
+                    final String email = editTextemail.getText().toString();
+                    final String password = editTextpass.getText().toString();
 
 
-                if (email.isEmpty()) {
-                    editTextemail.setError("โปรดกรอก email");
-                    editTextemail.requestFocus();
-                }
-                if (password.isEmpty()) {
-                    editTextpass.setError("ตัวอักษรอย่างน้อย6ตัวขึ้นไป");
-                    editTextpass.requestFocus();
-                }
-                if (password.length() < 6) {
-                    editTextpass.setError("ตัวอักษรอย่างน้อย6ตัวขึ้นไป");
-                    editTextpass.requestFocus();
-                }
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    editTextemail.setError("โปรดระบุ email ให้ถูกต้อง");
-                    editTextemail.requestFocus();
-                }
-                if (!email.isEmpty() && password.length() >= 6) {
-                    progressDialog.show();
-                    auth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(login.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (email.isEmpty()) {
+                        editTextemail.setError("โปรดกรอก email");
+                        editTextemail.requestFocus();
+                    }
+                    if (password.isEmpty()) {
+                        editTextpass.setError("ตัวอักษรอย่างน้อย6ตัวขึ้นไป");
+                        editTextpass.requestFocus();
+                    }
+                    if (password.length() < 6) {
+                        editTextpass.setError("ตัวอักษรอย่างน้อย6ตัวขึ้นไป");
+                        editTextpass.requestFocus();
+                    }
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        editTextemail.setError("โปรดระบุ email ให้ถูกต้อง");
+                        editTextemail.requestFocus();
+                    }
+                    if (!email.isEmpty() && password.length() >= 6) {
+                        progressDialog.show();
+                        auth.signInWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(login.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                    progressDialog.cancel();
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(login.this, "รหัสผ่าน หรือ  อีเมล์ ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
-                                    } else {
+                                        progressDialog.cancel();
+                                        if (!task.isSuccessful()) {
+                                            Toast.makeText(login.this, "รหัสผ่าน หรือ  อีเมล์ ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
+                                        } else {
 
-                                        if (auth.getCurrentUser().isEmailVerified()) {
-                                            //saveToken(token);
-                                            Intent intent = new Intent(login.this, Main.class);
-                                            startActivity(intent);
-                                            finish();
+                                            if (auth.getCurrentUser().isEmailVerified()) {
+                                                //saveToken(token);
+                                                Intent intent = new Intent(login.this, Main.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                            else{
+                                                Toast.makeText(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
+                                            }
+
                                         }
-                                        else{
-                                            Toast.makeText(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
-                                        }
-
                                     }
-                                }
-                            });
+                                });
+                    }
                 }
+                else {
+                    Toast.makeText(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -237,5 +245,10 @@ public class login extends AppCompatActivity {
             }
         });
 
+    }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) login.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 }

@@ -34,12 +34,13 @@
         android:id="@+id/textView_time_list"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
+        android:layout_marginTop="8dp"
         android:text="11:11:11"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView_date_list"
-        app:layout_constraintTop_toTopOf="@+id/textView_date_list" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView_temp_list"
@@ -77,6 +78,7 @@
         android:layout_marginTop="8dp"
         android:text="01/01/01 "
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/textView_time_list"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

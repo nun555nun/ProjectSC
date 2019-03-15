@@ -1,7 +1,9 @@
 package com.example.projectsc;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -107,23 +109,29 @@ public class Account extends AppCompatActivity {
         editPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (passwordEditText.length() >= 6) {
-                    passwordEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
-                    new AlertDialog.Builder(Account.this)
-                            .setTitle("คุณต้องการที่จะแก้ไข password ใช่หรือไม่")
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    changePassword();
-                                }
-                            })
-                            .setNegativeButton(R.string.no, null)
-                            .show();
+                if (isNetworkConnected()) {
+                    if (passwordEditText.length() >= 6) {
+                        passwordEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
+                        new AlertDialog.Builder(Account.this)
+                                .setTitle("คุณต้องการที่จะแก้ไข password ใช่หรือไม่")
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        changePassword();
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null)
+                                .show();
+
+                    } else {
+                        Toast.makeText(Account.this, "กรุณากรอกรหัสผ่าน 6 ตัวอักษรขึ้นไป", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(Account.this, "กรุณากรอกรหัสผ่าน 6 ตัวอักษรขึ้นไป", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -131,26 +139,31 @@ public class Account extends AppCompatActivity {
         editUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (usernameEditText.length() > 0) {
-                    usernameEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                if (isNetworkConnected()){
+                    if (usernameEditText.length() > 0) {
+                        usernameEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
-                    new AlertDialog.Builder(Account.this)
-                            .setTitle("แก้ไข username")
-                            .setMessage("ต้องการเปลี่ยน username จาก '" + usernameEditText.getHint() + "' เป็น '" + usernameEditText.getText().toString() + "' ใช่หรือไม่")
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                        new AlertDialog.Builder(Account.this)
+                                .setTitle("แก้ไข username")
+                                .setMessage("ต้องการเปลี่ยน username จาก '" + usernameEditText.getHint() + "' เป็น '" + usernameEditText.getText().toString() + "' ใช่หรือไม่")
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                    changeUsername();
-                                }
-                            })
-                            .setNegativeButton(R.string.no, null)
-                            .show();
+                                        changeUsername();
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null)
+                                .show();
 
 
-                } else {
-                    Toast.makeText(Account.this, "กรุณากรอก Username", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Account.this, "กรุณากรอก Username", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -159,23 +172,29 @@ public class Account extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                if (!Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches() || emailEditText.getText().toString().length() == 0) {
-                    emailEditText.setError("โปรดระบุ email ให้ถูกต้อง");
-                    emailEditText.requestFocus();
-                } else {
-                    new AlertDialog.Builder(Account.this)
-                            .setTitle("แก้ไข email")
-                            .setMessage("ต้องการเปลี่ยน email เป็น " + emailEditText.getText().toString() + " ใช่หรือไม่")
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
 
-                                    changeEmail();
-                                }
-                            })
-                            .setNegativeButton(R.string.no, null)
-                            .show();
+                if(isNetworkConnected()){
+                    if (!Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches() || emailEditText.getText().toString().length() == 0) {
+                        emailEditText.setError("โปรดระบุ email ให้ถูกต้อง");
+                        emailEditText.requestFocus();
+                    } else {
+                        new AlertDialog.Builder(Account.this)
+                                .setTitle("แก้ไข email")
+                                .setMessage("ต้องการเปลี่ยน email เป็น " + emailEditText.getText().toString() + " ใช่หรือไม่")
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        changeEmail();
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null)
+                                .show();
+                    }
+                }else {
+                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
+
 
 
             }
@@ -185,17 +204,22 @@ public class Account extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(Account.this)
-                        .setTitle("ต้องการลบบัญชีนี้ออกจากระบบใช่หรือไม่")
-                        .setMessage("เมื่อกดปุ่ม ใช่ แล้วจะไม่สามารถกู้คืนบัญชีของท่านได้")
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteAccount();
-                            }
-                        })
-                        .setNegativeButton(R.string.no, null)
-                        .show();
+                if(isNetworkConnected()){
+                    new AlertDialog.Builder(Account.this)
+                            .setTitle("ต้องการลบบัญชีนี้ออกจากระบบใช่หรือไม่")
+                            .setMessage("เมื่อกดปุ่ม ใช่ แล้วจะไม่สามารถกู้คืนบัญชีของท่านได้")
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deleteAccount();
+                                }
+                            })
+                            .setNegativeButton(R.string.no, null)
+                            .show();
+                }else {
+                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -371,5 +395,10 @@ public class Account extends AppCompatActivity {
             DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID+"/"+i).child(token);
             dbRef.removeValue();
         }
+    }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) Account.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 }

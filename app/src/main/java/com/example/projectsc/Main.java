@@ -2,8 +2,10 @@ package com.example.projectsc;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -57,7 +59,8 @@ public class Main extends AppCompatActivity
     String binIDFromQR;
     String binName;
     String token;
-private String startDate;
+    private String startDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,8 +134,15 @@ private String startDate;
 
                /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
-                Intent i = new Intent(Main.this, QRMainActivity.class);
-                startActivity(i);
+                if (isNetworkConnected()) {
+                    Intent i = new Intent(Main.this, QRMainActivity.class);
+                    startActivity(i);
+                } else {
+                    Snackbar.make(view, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    //Toast.makeText(Main.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
@@ -216,11 +226,10 @@ private String startDate;
         }
 
 
-        if(startDate==null){
+        if (startDate == null) {
             tvStartDate.setText(day + "/" + (month + 1) + "/" + (year + 543));
-        }
-       else {
-           tvStartDate.setText(startDate);
+        } else {
+            tvStartDate.setText(startDate);
         }
 
         tvStartDate.setOnClickListener(new View.OnClickListener() {
@@ -256,21 +265,21 @@ private String startDate;
 
     private void getStartDate() {
 
-            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binIDFromQR + "/" + "startDate");
-            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    startDate =  dataSnapshot.getValue(String.class);
-                    dbRef.removeEventListener(this);
-                }
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binIDFromQR + "/" + "startDate");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                startDate = dataSnapshot.getValue(String.class);
+                dbRef.removeEventListener(this);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
+            }
+        });
 
-        }
+    }
 
     private void setUserBin() {
 
@@ -477,26 +486,57 @@ private String startDate;
             startActivity(intent);
 
         } else if (id == R.id.nav_logout) {
+            if (!isNetworkConnected()) {
+                new AlertDialog.Builder(Main.this)
+                        .setTitle("ไม่มีการเชื่อมต่ออินเตอร์เน็ต")
+                        .setMessage("ขณะนี้ท่านไม่ได้มีการเชื่อมต่ออินเตอร์เน็ตอยู่ หากท่านออกจากระบบตอนนี้ อาจยังทำให้ท่านได้รับการแจ้งเตือนต่างๆอยู่ หากท่านไม่ต้องการรับการแจ้งเตือน กรุณาเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน")
+                        .setPositiveButton("ต่อไป", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new AlertDialog.Builder(Main.this)
+                                        .setTitle("ต้องการออกจากระบบใช่หรือไม่")
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
 
-            new AlertDialog.Builder(Main.this)
-                    .setTitle("ต้องการออกจากระบบใช่หรือไม่")
-                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                                                findUserBin();
 
-                            findUserBin();
+                                                String s = auth.getUid();
 
-                            String s = auth.getUid();
+                                                Intent intent = new Intent(Main.this, login.class);
+                                                auth.signOut();
+                                                finish();
+                                                startActivity(intent);
 
-                            Intent intent = new Intent(Main.this, login.class);
-                            auth.signOut();
-                            finish();
-                            startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.no, null)
+                                        .show();
+                            }
+                        })
+                        .setNegativeButton("ยกเลิก", null)
+                        .show();
+            } else {
+                new AlertDialog.Builder(Main.this)
+                        .setTitle("ต้องการออกจากระบบใช่หรือไม่")
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    })
-                    .setNegativeButton(R.string.no, null)
-                    .show();
+                                findUserBin();
+
+                                String s = auth.getUid();
+
+                                Intent intent = new Intent(Main.this, login.class);
+                                auth.signOut();
+                                finish();
+                                startActivity(intent);
+
+                            }
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+            }
 
 
         }
@@ -529,8 +569,14 @@ private String startDate;
 
     private void removeToken(String binID) {
         for (int i = 1; i <= 8; i++) {
-            DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID+"/"+i).child(token);
+            DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID + "/" + i).child(token);
             dbRef.removeValue();
         }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) Main.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 }
