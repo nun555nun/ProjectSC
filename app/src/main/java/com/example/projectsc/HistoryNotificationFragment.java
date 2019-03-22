@@ -98,7 +98,13 @@ public class HistoryNotificationFragment extends Fragment {
                 } else if (!typeSpinner.getSelectedItem().toString().equals("-") && !dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptor();
                 }
-                Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() + "' วันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+
+                if(dateSpinner.getSelectedItem().toString().equals("-")){
+                    Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() , Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() + "' วันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 

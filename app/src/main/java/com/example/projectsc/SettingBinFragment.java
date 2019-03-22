@@ -4,6 +4,7 @@ package com.example.projectsc;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -79,6 +81,9 @@ public class SettingBinFragment extends Fragment {
 
     int countOn ;
     int countCheckOn;
+
+    AnimationDrawable networkAnimation;
+
     public SettingBinFragment() {
         // Required empty public constructor
     }
@@ -91,6 +96,11 @@ public class SettingBinFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setting_bin, container, false);
         binID = getArguments().getString("binID");
         Log.d("binID", binID);
+
+        ImageView imageView = view.findViewById(R.id.iv_wifi);
+        imageView.setBackgroundResource(R.drawable.animation);
+        networkAnimation = (AnimationDrawable) imageView.getBackground();
+        networkAnimation.start();
 
         cs = view.findViewById(R.id.not_connect_cl);
         sv = view.findViewById(R.id.scrollview_setting);

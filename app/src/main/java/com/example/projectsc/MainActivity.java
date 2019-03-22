@@ -43,21 +43,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mai);
-
+        Intent i = getIntent();
         setTitle(R.string.notification);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        auth =FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
-
+        String check = i.getStringExtra("check");
         listViewLogDHT = findViewById(R.id.list_all_noti);
         logDHTList = new ArrayList<>();
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("Loading.....");
         progressDialog.setTitle("กำลังโหลดข้อมูล");
-        setAdaptor();
+        if (check.equals("ok")) {
+            setAdaptor();
+        }
+
     }
-    @Override
+   /* @Override
     public void onStart() {
         super.onStart();
         setAdaptor();
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         setAdaptor();
-    }
+    }*/
 
     public void setAdaptor() {
         // dbRef.orderByChild("time").limitToLast(10).addValueEventListener(new ValueEventListener() {
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     listViewLogDHT.setLayoutAnimation(controller);
                     listViewLogDHT.scheduleLayoutAnimation();
                 }
-dbRef.removeEventListener(this);
+                dbRef.removeEventListener(this);
             }
 
             @Override
@@ -121,6 +124,7 @@ dbRef.removeEventListener(this);
             }
         });
     }
+
     private void sortTime() {
 
         Collections.sort(logDHTList, new Comparator<LogAllbinNotification>() {
@@ -137,6 +141,7 @@ dbRef.removeEventListener(this);
             }
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

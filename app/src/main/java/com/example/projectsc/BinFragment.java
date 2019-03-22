@@ -2,11 +2,15 @@ package com.example.projectsc;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.projectsc.login.NODE_fcm;
 
 
 /**
@@ -45,8 +52,9 @@ public class BinFragment extends Fragment {
     Intent intent;
     Boolean a;
     String token;
-String binN;
+    String binN;
     String[] type;
+
     public BinFragment() {
         // Required empty public constructor
     }
@@ -70,8 +78,6 @@ String binN;
         progressDialog.setTitle("กำลังโหลดข้อมูล");
         progressDialog.show();
 
-        //removeLogNotification();
-        //findUserBinNotification();
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_slide_from_left);
         getBin();
         return view;
@@ -97,7 +103,7 @@ String binN;
                         LogNotification logNotification = logDHTSnapshot.getValue(LogNotification.class);
 
                         Map binId = new HashMap();
-                        binId.put("binName",binN);
+                        binId.put("binName", binN);
                         binId.put("binId", bin);
                         binId.put("date", logNotification.getDate());
                         binId.put("time", logNotification.getTime());
@@ -124,7 +130,7 @@ String binN;
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                binN =  dataSnapshot.getValue(String.class);
+                binN = dataSnapshot.getValue(String.class);
                 dbRef.removeEventListener(this);
             }
 
@@ -137,7 +143,7 @@ String binN;
     }
 
     private void saveLogNotification(Map binId) {
-        if(auth.getCurrentUser()!=null){
+        if (auth.getCurrentUser() != null) {
             final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
             dbRef.push().setValue(binId);
         }
@@ -150,11 +156,11 @@ String binN;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                removeLogNotification();
+                //removeLogNotification();
                 for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
                     Map map = (Map) BinSnapshot.getValue();
                     final String bin = String.valueOf(map.get("binid"));
-                    findLogNotification(bin);
+                    //findLogNotification(bin);
                     String notifyStatus1 = String.valueOf(BinSnapshot.child("notificationStatus").child("1").getValue());
                     String notifyStatus2 = String.valueOf(BinSnapshot.child("notificationStatus").child("2").getValue());
                     String notifyStatus3 = String.valueOf(BinSnapshot.child("notificationStatus").child("3").getValue());
@@ -257,13 +263,31 @@ String binN;
                             startActivity(intent);
                         }
                     });
-                   /* listViewBin.setOnLongClickListener(new View.OnLongClickListener() {
+                    listViewBin.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
-                        public boolean onLongClick(View v) {
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                            if (isNetworkConnected()) {
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle("ลบถัง")
+                                        .setMessage("ต้องการลบถัง " + userBinList.get(position).getBinName()
+                                                + " (" + userBinList.get(position).getBinID() + ")ใช่หรือไม่")
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                deleteBin(userBinList.get(position).getBinID());
+                                                Toast.makeText(getContext(), "ลบถังเรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.no, null)
+                                        .show();
+                            } else {
+                                Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                            }
 
-                            return false;
+
+                            return true;
                         }
-                    });*/
+                    });
 
                 }
                 dbRef.removeEventListener(this);
@@ -276,6 +300,46 @@ String binN;
             }
         });
 
+    }
+
+    private void deleteBin(final String userBin) {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String binPart = ds.getKey();
+                    Map map = (Map) ds.getValue();
+                    String binID = String.valueOf(map.get("binid"));
+                    if (binID.equals(userBin)) {
+                        deleteUserBin(binPart);
+                        removeToken(userBin);
+                        break;
+                    }
+                }
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void deleteUserBin(String binPart) {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin").child(binPart);
+        dbRef.removeValue();
+    }
+
+    private void removeToken(String binID) {
+        for (int i = 1; i <= 8; i++) {
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/" + binID + "/" + i).child(token);
+            dbRef.removeValue();
+        }
     }
 
     public void getBin() {
@@ -304,7 +368,6 @@ String binN;
                     cl.setBackgroundResource(R.drawable.bg_block);
                     progressDialog.cancel();
                     listViewBin.setAdapter(null);
-
                 }
                 //dbRef.removeEventListener(this);
             }
@@ -319,7 +382,6 @@ String binN;
     @Override
     public void onResume() {
         super.onResume();
-
 
         findUserBinNotification();
     }
@@ -341,4 +403,9 @@ String binN;
         });
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
 }

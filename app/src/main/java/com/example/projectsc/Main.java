@@ -137,6 +137,7 @@ public class Main extends AppCompatActivity
                 if (isNetworkConnected()) {
                     Intent i = new Intent(Main.this, QRMainActivity.class);
                     startActivity(i);
+                    finish();
                 } else {
                     Snackbar.make(view, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
@@ -183,6 +184,7 @@ public class Main extends AppCompatActivity
         });
 
         if (binIDFromQR != null) {
+
             getStartDate();
             checkData();
 
@@ -254,7 +256,13 @@ public class Main extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                setUserBin();
+                if(isNetworkConnected()){
+                    setUserBin();
+                }
+                else {
+                    Toast.makeText(Main.this, "ไม่มี รหัสถังนี้ในระบบ หรือ ถังยังไม่ได้เปิดใช้", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
         mBuilder.setView(mview);
@@ -479,7 +487,7 @@ public class Main extends AppCompatActivity
             fragmentTransaction.replace(R.id.fram, fragment);
             fragmentTransaction.commit();
         } else if (id == R.id.nav_notification) {
-            Intent intent = new Intent(Main.this, MainActivity.class);
+            Intent intent = new Intent(Main.this, SaveNotificationAll.class);
             startActivity(intent);
         } else if (id == R.id.nav_edit_profile) {
             Intent intent = new Intent(Main.this, Account.class);
@@ -507,6 +515,7 @@ public class Main extends AppCompatActivity
                                                 auth.signOut();
                                                 finish();
                                                 startActivity(intent);
+                                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                                             }
                                         })
@@ -531,6 +540,7 @@ public class Main extends AppCompatActivity
                                 auth.signOut();
                                 finish();
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                             }
                         })

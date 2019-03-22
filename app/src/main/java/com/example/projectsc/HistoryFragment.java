@@ -95,7 +95,12 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 setAdaptor();
-                Toast.makeText(getContext(), "ค้นหาวันที่ " + dateSpinner.getSelectedItem().toString() + " ช่วงเวลา " + timeSpinner.getSelectedItem().toString()+" โมง", Toast.LENGTH_SHORT).show();
+                if(timeSpinner.getSelectedItem().toString().equals("-")){
+                    Toast.makeText(getContext(), "ค้นหาวันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getContext(), "ค้นหาวันที่ " + dateSpinner.getSelectedItem().toString() + " ช่วงเวลา " + timeSpinner.getSelectedItem().toString()+" นาฬิกา", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

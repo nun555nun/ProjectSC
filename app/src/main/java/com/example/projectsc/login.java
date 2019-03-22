@@ -136,6 +136,7 @@ public class login extends AppCompatActivity {
                                                 //saveToken(token);
                                                 Intent intent = new Intent(login.this, Main.class);
                                                 startActivity(intent);
+                                                overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out);
                                                 finish();
                                             }
                                             else{
@@ -158,8 +159,14 @@ public class login extends AppCompatActivity {
         regiter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(login.this, Register.class);
-                startActivity(intent);
+                if(isNetworkConnected()){
+                    Intent intent = new Intent(login.this, Register.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                }else {
+                    Toast.makeText(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
@@ -167,8 +174,15 @@ public class login extends AppCompatActivity {
         forgetText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(login.this, ResetPassword.class);
-                startActivity(i);
+
+                if(isNetworkConnected()){
+                    Intent i = new Intent(login.this, ResetPassword.class);
+                    startActivity(i);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }else {
+                    Toast.makeText(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });

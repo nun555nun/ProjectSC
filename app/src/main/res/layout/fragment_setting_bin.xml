@@ -873,7 +873,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_no_internet_connection_sign_of_phone_interface"
             app:layout_constraintBottom_toTopOf="@+id/tv_internet"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -242,11 +243,27 @@ public class HomeFragment extends Fragment {
                 dbRef.child("dateCount").setValue(dayDiff);
 
                 String dateCount = String.valueOf(map.get("dateCount"));
+                if (temp.equals("null")) {
+                    tvTemp.setText("-");
+                } else {
+                    tvTemp.setText(temp);
+                }
+                if (dateCount.equals("null")) {
+                    tvDateCount.setText("-");
+                } else {
+                    tvDateCount.setText(dateCount);
+                }
+                if (humid.equals("null")) {
+                    tvHumid.setText("-");
+                } else {
+                    tvHumid.setText(humid);
+                }
+                if (time.equals("null")) {
+                    tvTime.setText("-");
+                } else {
+                    tvTime.setText(time);
+                }
 
-                tvTemp.setText(temp);
-                tvDateCount.setText(dateCount);
-                tvHumid.setText(humid);
-                tvTime.setText(time);
                 if (statusAir.equals("1")) {
                     tvStatusAir.setText("กำลังทำงานอยู่");
                     tvStatusAir.setTextColor(Color.parseColor("#97CA02"));
@@ -267,10 +284,29 @@ public class HomeFragment extends Fragment {
                 String lt = String.valueOf(map.get("loopTime"));
                 String ld = String.valueOf(map.get("loopDate"));
 
-                tvST.setText(st);
-                tvSD.setText(sd);
-                tvLT.setText(lt);
-                tvLD.setText(ld);
+
+
+                if (st.equals("null")) {
+                    tvST.setText("-");
+                } else {
+                    tvST.setText(st);
+                }
+                if (sd.equals("null")) {
+                    tvSD.setText("-");
+                } else {
+                    tvSD.setText(sd);
+                }
+                if (lt.equals("null")) {
+                    tvLT.setText("-");
+                } else {
+                    tvLT.setText(lt);
+                }
+                if (ld.equals("null")) {
+                    tvLD.setText("-");
+                } else {
+                    tvLD.setText(ld);
+                }
+
             }
 
             @Override
