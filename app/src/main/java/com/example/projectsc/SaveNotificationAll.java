@@ -1,5 +1,6 @@
 package com.example.projectsc;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -23,15 +24,19 @@ public class SaveNotificationAll extends AppCompatActivity {
     String[] type;
     FirebaseAuth auth;
     String token;
-
+    public ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_notification_all);
+        setTitle("กำลังโหลดข้อมูล");
         type = getResources().getStringArray(R.array.notitype2);
         token = FirebaseInstanceId.getInstance().getToken();
         auth = FirebaseAuth.getInstance();
-
+        progressDialog = new ProgressDialog(SaveNotificationAll.this);
+        progressDialog.setMessage("Loading.....");
+        progressDialog.setTitle("กำลังโหลดข้อมูล");
+        progressDialog.show();
         findUserBinNotification();
     }
     private void removeLogNotification() {
@@ -73,7 +78,9 @@ public class SaveNotificationAll extends AppCompatActivity {
                 }
             });
         }
+
         finish();
+        progressDialog.dismiss();
     }
 
     private void getbinName(String bin) {

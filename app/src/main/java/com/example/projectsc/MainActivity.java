@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setAdaptor() {
         // dbRef.orderByChild("time").limitToLast(10).addValueEventListener(new ValueEventListener() {
-        dbRef.orderByChild("date").limitToLast(30).addValueEventListener(new ValueEventListener() {
+        dbRef.orderByChild("date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(MainActivity.this, R.anim.layout_fall_down);
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     sortDate();
                     Collections.reverse(logDHTList);
 
-
+                    logDHTList=logDHTList.subList(0, 10);
                     progressDialog.cancel();
                     LogAllbinNotificationList adapter = new LogAllbinNotificationList(MainActivity.this, logDHTList);
                     listViewLogDHT.setAdapter(adapter);

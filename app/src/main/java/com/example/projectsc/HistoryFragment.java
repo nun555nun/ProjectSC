@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -50,6 +51,11 @@ public class HistoryFragment extends Fragment {
     ArrayList<String> date;
     String startDate;
     String binID;
+
+    TextView tv_tMax;
+    TextView tv_tMin;
+    TextView tv_hMax;
+    TextView tv_hMin;
     public HistoryFragment() {
         // Required empty public constructor
     }
@@ -63,6 +69,11 @@ public class HistoryFragment extends Fragment {
         startDate = getArguments().getString("startDate");
         Log.d("asdf", startDate + "   <------------------");
         View view = inflater.inflate(R.layout.fragment_history, container, false);
+
+        tv_tMax = view.findViewById(R.id.tv_tMax);
+        tv_tMin = view.findViewById(R.id.tv_tMin);
+        tv_hMax = view.findViewById(R.id.tv_hMax);
+        tv_hMin = view.findViewById(R.id.tv_hMin);
 
         dateSpinner = view.findViewById(R.id.date_spinner);
         timeSpinner = view.findViewById(R.id.time_spinner);
@@ -95,11 +106,10 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 setAdaptor();
-                if(timeSpinner.getSelectedItem().toString().equals("-")){
+                if (timeSpinner.getSelectedItem().toString().equals("-")) {
                     Toast.makeText(getContext(), "ค้นหาวันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(getContext(), "ค้นหาวันที่ " + dateSpinner.getSelectedItem().toString() + " ช่วงเวลา " + timeSpinner.getSelectedItem().toString()+" นาฬิกา", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "ค้นหาวันที่ " + dateSpinner.getSelectedItem().toString() + " ช่วงเวลา " + timeSpinner.getSelectedItem().toString() + " นาฬิกา", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -120,6 +130,7 @@ public class HistoryFragment extends Fragment {
 
         Collections.sort(date, new Comparator<String>() {
             DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+
             @Override
             public int compare(String o1, String o2) {
                 try {
@@ -155,11 +166,10 @@ public class HistoryFragment extends Fragment {
         datePart = datePart.replace("/", "_");
 
         String timePart = timeSpinner.getSelectedItem().toString();
-        if(timePart.equals("-")){
-            dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date/"+datePart+ "/" + logDHTType);
-        }
-        else {
-            dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date_time/"+datePart+"/"+timePart+ "/" + logDHTType);
+        if (timePart.equals("-")) {
+            dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date/" + datePart + "/" + logDHTType);
+        } else {
+            dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date_time/" + datePart + "/" + timePart + "/" + logDHTType);
         }
 
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -168,11 +178,32 @@ public class HistoryFragment extends Fragment {
                 if (getContext() == null) {
                     dbRef.removeEventListener(this);
                 } else {
+                    String tempMax = "0.0";
+                    String tempMin = "1000.0";
+                    String humidMax = "0.0";
+                    String humidMin = "1000.0";
                     LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
                     logDHTList.clear();
                     for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
                         LogDHT logDHT = logDHTSnapshot.getValue(LogDHT.class);
                         logDHTList.add(logDHT);
+                        String temp = logDHT.getTemperature();
+                        String humid = logDHT.getHumidity();
+                        temp = temp.substring(0, temp.indexOf(" "));
+                        humid = humid.substring(0, humid.indexOf(" "));
+
+                        if (Double.parseDouble(tempMax) < Double.parseDouble(temp)) {
+                            tempMax = temp;
+                        }
+                        if (Double.parseDouble(tempMin) > Double.parseDouble(temp)) {
+                            tempMin = temp;
+                        }
+                        if (Double.parseDouble(humidMax) < Double.parseDouble(humid)) {
+                            humidMax = humid;
+                        }
+                        if (Double.parseDouble(humidMin) > Double.parseDouble(humid)) {
+                            humidMin = humid;
+                        }
                     }
                     if (logDHTList.size() > 0 && getContext() != null) {
                         progressDialog.dismiss();
@@ -181,6 +212,11 @@ public class HistoryFragment extends Fragment {
                         listViewLogDHT.setAdapter(adapter);
                         listViewLogDHT.setLayoutAnimation(controller);
                         listViewLogDHT.scheduleLayoutAnimation();
+
+                        tv_tMax.setText(tempMax+" °C");
+                        tv_tMin.setText(tempMin+" °C");
+                        tv_hMax.setText(humidMax+" %");
+                        tv_hMin.setText(humidMin+" %");
                     }
                     progressDialog.dismiss();
                 }

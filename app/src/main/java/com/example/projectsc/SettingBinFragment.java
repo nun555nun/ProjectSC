@@ -110,6 +110,7 @@ public class SettingBinFragment extends Fragment {
         } else {
             sv.setVisibility(View.GONE);
             cs.setVisibility(View.VISIBLE);
+            c.setClickable(false);
         }
         cs.setOnClickListener(new View.OnClickListener() {
             @Override
