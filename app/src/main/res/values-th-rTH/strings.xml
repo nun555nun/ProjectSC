@@ -48,6 +48,7 @@
     <string name="date">วันที่</string>
     <string name="reset_bin">เริ่มการหมักใหม่</string>
     <string name="reset_setting">รีเซตการตั้งค่า</string>
+    <string name="new_password">รหัสผ่านใหม่</string>
 
     <string-array name="notitype">
         <item>อุณหภูมิน้อยกว่าที่กำหนด</item>

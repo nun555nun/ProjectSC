@@ -89,8 +89,10 @@ public class MainActivity extends AppCompatActivity {
                     //Collections.reverse(logDHTList);
                     sortDate();
                     Collections.reverse(logDHTList);
+                    if (logDHTList.size() >= 20) {
+                        logDHTList = logDHTList.subList(0, 20);
+                    }
 
-                    logDHTList=logDHTList.subList(0, 10);
                     progressDialog.cancel();
                     LogAllbinNotificationList adapter = new LogAllbinNotificationList(MainActivity.this, logDHTList);
                     listViewLogDHT.setAdapter(adapter);

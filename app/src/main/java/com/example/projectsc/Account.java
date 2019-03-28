@@ -1,8 +1,10 @@
 package com.example.projectsc;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +27,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,11 +51,16 @@ public class Account extends AppCompatActivity {
 
     private FirebaseDatabase database;
     public DatabaseReference dbRef;
+    public ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_account);
+
+        progressDialog = new ProgressDialog(Account.this);
+        progressDialog.setMessage("Loading.....");
+        progressDialog.setTitle("กำลังโหลดข้อมูล");
 
         setTitle(R.string.profile);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -114,16 +125,94 @@ public class Account extends AppCompatActivity {
                     if (passwordEditText.length() >= 6) {
                         passwordEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
-                        new AlertDialog.Builder(Account.this)
-                                .setTitle("คุณต้องการที่จะแก้ไข password ใช่หรือไม่")
-                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        changePassword();
-                                    }
-                                })
-                                .setNegativeButton(R.string.no, null)
-                                .show();
+                        AlertDialog.Builder builder =
+                                new AlertDialog.Builder(Account.this);
+                        LayoutInflater inflater = getLayoutInflater();
+
+                        View view = inflater.inflate(R.layout.custom_login_dialog, null);
+                        builder.setView(view);
+
+                        final EditText username = (EditText) view.findViewById(R.id.username);
+                        final EditText password = (EditText) view.findViewById(R.id.password);
+
+                        final TextView tv_visible = view.findViewById(R.id.pass_visible);
+                        final TextView tv_publish = view.findViewById(R.id.tv_publish);
+
+                        password.setHint(password.getHint()+"(เดิม)");
+                        password.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                if (password.getText().length() > 0) {
+                                    tv_visible.setVisibility(View.VISIBLE);
+                                } else {
+                                    tv_visible.setVisibility(View.GONE);
+                                }
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+
+                            }
+                        });
+
+                        tv_visible.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (tv_visible.getText().equals("1")) {
+                                    tv_visible.setText("0");
+                                    password.setTransformationMethod(null);
+                                    tv_visible.setBackgroundResource(R.drawable.ic_visibility_black_24dp);
+                                } else {
+                                    tv_visible.setText("1");
+                                    password.setTransformationMethod(new PasswordTransformationMethod());
+                                    tv_visible.setBackgroundResource(R.drawable.ic_visibility_off_black_24dp);
+                                }
+                            }
+                        });
+
+                        builder.setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Check username password
+                                if (!username.getText().toString().trim().isEmpty() && Patterns.EMAIL_ADDRESS.matcher(username.getText().toString().trim()).matches() && password.getText().toString().trim().length() >= 6) {
+                                    AuthCredential credential = EmailAuthProvider
+                                            .getCredential(username.getText().toString(), password.getText().toString());
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    user.reauthenticate(credential)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Log.d("test", "User re-authenticated.");
+                                                    progressDialog.show();
+                                                    if (task.isSuccessful()) {
+                                                        changePassword();
+                                                    } else {
+                                                        progressDialog.dismiss();
+                                                        Toast.makeText(Account.this, "อีเมล์หรือรหัสผ่านไม่ถูกต้อง", Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                }
+                                            });
+                                }
+                                else {
+                                    Toast.makeText(Account.this,"กรุณากรอกข้อมูลให้ถูกต้อง",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                passwordEditText.setText("");
+                            }
+                        });
+
+                        builder.show();
+
 
                     } else {
                         Toast.makeText(Account.this, "กรุณากรอกรหัสผ่าน 6 ตัวอักษรขึ้นไป", Toast.LENGTH_SHORT).show();
@@ -139,7 +228,7 @@ public class Account extends AppCompatActivity {
         editUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (usernameEditText.length() > 0) {
                         usernameEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
@@ -160,7 +249,7 @@ public class Account extends AppCompatActivity {
                     } else {
                         Toast.makeText(Account.this, "กรุณากรอก Username", Toast.LENGTH_SHORT).show();
                     }
-                }else {
+                } else {
                     Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
@@ -173,7 +262,7 @@ public class Account extends AppCompatActivity {
             public void onClick(View v) {
                 emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (!Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches() || emailEditText.getText().toString().length() == 0) {
                         emailEditText.setError("โปรดระบุ email ให้ถูกต้อง");
                         emailEditText.requestFocus();
@@ -191,10 +280,9 @@ public class Account extends AppCompatActivity {
                                 .setNegativeButton(R.string.no, null)
                                 .show();
                     }
-                }else {
+                } else {
                     Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
-
 
 
             }
@@ -204,8 +292,8 @@ public class Account extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkConnected()){
-                    new AlertDialog.Builder(Account.this)
+                if (isNetworkConnected()) {
+                    /*new AlertDialog.Builder(Account.this)
                             .setTitle("ต้องการลบบัญชีนี้ออกจากระบบใช่หรือไม่")
                             .setMessage("เมื่อกดปุ่ม ใช่ แล้วจะไม่สามารถกู้คืนบัญชีของท่านได้")
                             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -215,8 +303,98 @@ public class Account extends AppCompatActivity {
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
-                            .show();
-                }else {
+                            .show();*/
+
+                    AlertDialog.Builder builder =
+                            new AlertDialog.Builder(Account.this);
+                    LayoutInflater inflater = getLayoutInflater();
+
+                    View view = inflater.inflate(R.layout.custom_login_dialog, null);
+                    builder.setView(view);
+
+                    final EditText username = (EditText) view.findViewById(R.id.username);
+                    final EditText password = (EditText) view.findViewById(R.id.password);
+
+                    final TextView tv_visible = view.findViewById(R.id.pass_visible);
+                    final TextView tv_publish = view.findViewById(R.id.tv_publish);
+
+                    tv_publish.setText("เมื่อลบบัญชีแล้วจะไม่สามารถกู้คืนได้ ต้องการลบบัญชีออกจากระบบใช่หรือไม่ หากใช่โปรดกรอก อีเมล์และรหัสผ่าน เพื่อดำเนินการ");
+                    tv_publish.setTextColor(Color.RED);
+                    password.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (password.getText().length() > 0) {
+                                tv_visible.setVisibility(View.VISIBLE);
+                            } else {
+                                tv_visible.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+
+                    tv_visible.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (tv_visible.getText().equals("1")) {
+                                tv_visible.setText("0");
+                                password.setTransformationMethod(null);
+                                tv_visible.setBackgroundResource(R.drawable.ic_visibility_black_24dp);
+                            } else {
+                                tv_visible.setText("1");
+                                password.setTransformationMethod(new PasswordTransformationMethod());
+                                tv_visible.setBackgroundResource(R.drawable.ic_visibility_off_black_24dp);
+                            }
+                        }
+                    });
+
+                    builder.setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Check username password
+                            if (!username.getText().toString().trim().isEmpty() && Patterns.EMAIL_ADDRESS.matcher(username.getText().toString().trim()).matches() && password.getText().toString().trim().length() >= 6) {
+                                AuthCredential credential = EmailAuthProvider
+                                        .getCredential(username.getText().toString(), password.getText().toString());
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                user.reauthenticate(credential)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Log.d("test", "User re-authenticated.");
+                                                progressDialog.show();
+                                                if (task.isSuccessful()) {
+                                                    deleteAccount();
+                                                } else {
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(Account.this, "อีเมล์หรือรหัสผ่านไม่ถูกต้อง", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            }
+                                        });
+                            }
+                            else {
+                                Toast.makeText(Account.this,"กรุณากรอกข้อมูลให้ถูกต้อง",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            passwordEditText.setText("");
+                        }
+                    });
+
+                    builder.show();
+
+                } else {
                     Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
@@ -315,6 +493,7 @@ public class Account extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(Account.this, "ลบบัญชีเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
                                 finish();
                                 auth.signOut();
                                 dbRef = database.getReference("users").child(uid);
@@ -349,12 +528,14 @@ public class Account extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
+
                             if (task.isSuccessful()) {
                                 passwordEditText.setText("");
                                 Toast.makeText(Account.this, "เปลี่ยนรหัสเรียบร้อย", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(Account.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
+                            progressDialog.dismiss();
                         }
                     });
         }
@@ -392,10 +573,11 @@ public class Account extends AppCompatActivity {
     private void removeToken(String binID) {
         String token = FirebaseInstanceId.getInstance().getToken();
         for (int i = 1; i <= 8; i++) {
-            DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID+"/"+i).child(token);
+            DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID + "/" + i).child(token);
             dbRef.removeValue();
         }
     }
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) Account.this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
