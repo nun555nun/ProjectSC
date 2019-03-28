@@ -32,6 +32,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,13 +90,13 @@ public class HistoryNotificationFragment extends Fragment {
             public void onClick(View v) {
                 if (typeSpinner.getSelectedItem().toString().equals("-") && dateSpinner.getSelectedItem().toString().equals("-")) {
                     /*setAdaptorAll();*/
-                    Toast.makeText(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
+                    Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
                 } else if (!typeSpinner.getSelectedItem().toString().equals("-") && dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptorType();
                 } else if (typeSpinner.getSelectedItem().toString().equals("-") && !dateSpinner.getSelectedItem().toString().equals("-")) {
                      /*String datePart = dateSpinner.getSelectedItem().toString();
                     setAdaptorDate(datePart);*/
-                    Toast.makeText(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
+                    Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
                 } else if (!typeSpinner.getSelectedItem().toString().equals("-") && !dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptor();
                 }

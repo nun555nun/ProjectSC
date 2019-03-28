@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import es.dmoral.toasty.Toasty;
+
 import static com.example.projectsc.login.NODE_USER;
 
 public class Register extends AppCompatActivity {
@@ -196,7 +198,7 @@ public class Register extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(Register.this, "ลงทะเบียนสำเร็จ",Toast.LENGTH_SHORT);
+                                        Toasty.success(Register.this, "ลงทะเบียนสำเร็จ",Toast.LENGTH_SHORT);
                                     }
                                 }
                             });
@@ -210,7 +212,7 @@ public class Register extends AppCompatActivity {
                             finish();
                         } else {
                             //Have Error
-                            Toast.makeText(Register.this, "Cannot Register Please Try Again Register False Because " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toasty.error(Register.this, "Cannot Register Please Try Again Register False Because " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
                     }
@@ -226,10 +228,10 @@ public class Register extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(Register.this, "ลงทะเบียนเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(Register.this, "ระบบได้ส่งอีเมล์ยืนตัวตนไปที่อีเมล์ "+user.getEmail()+" เรียบร้อยแล้ว โปรดยืนยันตัวตนเพื่อเข้าใช้งาน", Toast.LENGTH_LONG).show();
+                                Toasty.success(Register.this, "ลงทะเบียนเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                Toasty.info(Register.this, "ระบบได้ส่งอีเมล์ยืนตัวตนไปที่อีเมล์ "+user.getEmail()+" เรียบร้อยแล้ว โปรดยืนยันตัวตนเพื่อเข้าใช้งาน", Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(Register.this, "ระบบผิดพลาดโปรดลองใหม่อีกครั้ง", Toast.LENGTH_SHORT).show();
+                                Toasty.error(Register.this, "ระบบผิดพลาดโปรดลองใหม่อีกครั้ง", Toast.LENGTH_SHORT).show();
                             }
 
                         }

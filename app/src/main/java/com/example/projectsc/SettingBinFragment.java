@@ -35,6 +35,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 import static com.example.projectsc.login.NODE_fcm;
 
 
@@ -192,7 +194,7 @@ public class SettingBinFragment extends Fragment {
                                             editTextFillAir.setHint(String.valueOf(Integer.parseInt(editTextFillAir.getText().toString())));
                                             editTextFillAir.setText("");
                                             editTextFillAir.setFocusable(false);
-                                            Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                            Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                                         }
                                     })
                                     .setNegativeButton(R.string.no, null)
@@ -205,10 +207,10 @@ public class SettingBinFragment extends Fragment {
 
                         }
                     } else {
-                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                        Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -234,7 +236,7 @@ public class SettingBinFragment extends Fragment {
                                             editTextFillWater.setHint(String.valueOf(Integer.parseInt(editTextFillWater.getText().toString())));
                                             editTextFillWater.setText("");
                                             editTextFillWater.setFocusable(false);
-                                            Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                            Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                                         }
                                     })
                                     .setNegativeButton(R.string.no, null)
@@ -248,10 +250,10 @@ public class SettingBinFragment extends Fragment {
 
                         }
                     } else {
-                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                        Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -298,7 +300,7 @@ public class SettingBinFragment extends Fragment {
                                                     editTextTempMax.setFocusable(false);
                                                     editTextTempMin.setFocusable(false);
 
-                                                    Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                                    Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                                                 }
                                             })
                                             .setNegativeButton(R.string.no, null)
@@ -314,16 +316,16 @@ public class SettingBinFragment extends Fragment {
                                 }
 
                             } else if (max == min) {
-                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             } else if (!checkMax(max, min)) {
-                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
 
                             } else {
-                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
-                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                         }
 
                     } else if (tempMax.length() > 0) {
@@ -338,11 +340,11 @@ public class SettingBinFragment extends Fragment {
 
                             }
                         } else if (max == min) {
-                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         } else if (!checkMax(max, min)) {
-                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
                         }
 
                     } else if (tempMin.length() > 0) {
@@ -359,21 +361,21 @@ public class SettingBinFragment extends Fragment {
 
                                 }
                             } else if (max == min) {
-                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             } else if (!checkMax(max, min)) {
-                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                        Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -419,7 +421,7 @@ public class SettingBinFragment extends Fragment {
                                                     editTextHumidMax.setFocusable(false);
                                                     editTextHumidMin.setFocusable(false);
 
-                                                    Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                                    Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                                                 }
                                             })
                                             .setNegativeButton(R.string.no, null)
@@ -435,16 +437,16 @@ public class SettingBinFragment extends Fragment {
                                 }
 
                             } else if (max == min) {
-                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             } else if (!checkMax(max, min)) {
-                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
 
                             } else {
-                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ มากกว่า " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
-                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                         }
 
                     } else if (humidMax.length() > 0) {
@@ -460,10 +462,10 @@ public class SettingBinFragment extends Fragment {
 
                             }
                         } else if (max == min) {
-                            Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                         } else if (!checkMax(max, min)) {
 
-                            Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
 
                         } else if (max == Integer.parseInt(editTextHumidMax.getHint().toString())) {
                             editTextHumidMax.setText("");
@@ -484,22 +486,22 @@ public class SettingBinFragment extends Fragment {
 
                                 }
                             } else if (max == min) {
-                                Toast.makeText(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.minimum) + " ไม่สามารถ เท่ากับ " + getString(R.string.maximum) + " ได้", Toast.LENGTH_SHORT).show();
                             } else if (!checkMax(max, min)) {
 
-                                Toast.makeText(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), getString(R.string.maximum) + " ไม่สามารถ น้อยกว่า " + getString(R.string.minimum) + " ได้", Toast.LENGTH_SHORT).show();
                             } else if (min == Integer.parseInt(editTextHumidMin.getHint().toString())) {
                                 editTextHumidMin.setText("");
 
                             }
                         } else {
-                            Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
+                        Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -522,7 +524,7 @@ public class SettingBinFragment extends Fragment {
                             .show();
                 }
                 else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -534,7 +536,7 @@ public class SettingBinFragment extends Fragment {
                 if(isNetworkConnected()){
                     clearData();
                 }else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -559,7 +561,7 @@ public class SettingBinFragment extends Fragment {
 
                         removeHistory();
                         setDefault();
-                        Toast.makeText(getContext(), "รีเซตถังเรียบร้อย", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getContext(), "รีเซตถังเรียบร้อย", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
@@ -617,7 +619,7 @@ public class SettingBinFragment extends Fragment {
         switch7.setChecked(true);
         switch8.setChecked(true);
 
-        Toast.makeText(getContext(), "รีเซตการตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
+        Toasty.success(getContext(), "รีเซตการตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -644,7 +646,7 @@ public class SettingBinFragment extends Fragment {
                         editTextHumidMax.setFocusable(false);
                         editTextHumidMin.setFocusable(false);
 
-                        Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
@@ -673,7 +675,7 @@ public class SettingBinFragment extends Fragment {
 
                         editTextHumidMax.setFocusable(false);
                         editTextHumidMin.setFocusable(false);
-                        Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
@@ -703,7 +705,7 @@ public class SettingBinFragment extends Fragment {
                         editTextTempMax.setFocusable(false);
                         editTextTempMin.setFocusable(false);
 
-                        Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
@@ -733,7 +735,7 @@ public class SettingBinFragment extends Fragment {
                         editTextTempMax.setFocusable(false);
                         editTextTempMin.setFocusable(false);
 
-                        Toast.makeText(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
@@ -951,7 +953,7 @@ public class SettingBinFragment extends Fragment {
 
     private void checkOn() {
         if(countCheckOn>countOn){
-            Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+            Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
         }
     }
 

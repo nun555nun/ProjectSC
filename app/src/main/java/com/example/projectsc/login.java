@@ -30,6 +30,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import es.dmoral.toasty.Toasty;
+
 public class login extends AppCompatActivity {
 
     public static final String NODE_USER = "users";
@@ -88,10 +90,11 @@ public class login extends AppCompatActivity {
                 Intent intent = new Intent(login.this, Main.class);
                 startActivity(intent);
                 finish();
+
             }
-            else{
-                Toast.makeText(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
-            }
+           /* else{
+                Toasty.warning(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน"+auth.getCurrentUser().getEmail(),Toast.LENGTH_SHORT).show();
+            }*/
 
         }
 
@@ -129,7 +132,7 @@ public class login extends AppCompatActivity {
 
                                         progressDialog.cancel();
                                         if (!task.isSuccessful()) {
-                                            Toast.makeText(login.this, "รหัสผ่าน หรือ  อีเมล์ ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
+                                            Toasty.error(login.this, "รหัสผ่าน หรือ  อีเมล์ ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
                                         } else {
 
                                             if (auth.getCurrentUser().isEmailVerified()) {
@@ -140,7 +143,7 @@ public class login extends AppCompatActivity {
                                                 finish();
                                             }
                                             else{
-                                                Toast.makeText(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
+                                                Toasty.warning(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
                                             }
 
                                         }
@@ -149,7 +152,7 @@ public class login extends AppCompatActivity {
                     }
                 }
                 else {
-                    Toast.makeText(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.warning(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -164,7 +167,7 @@ public class login extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 }else {
-                    Toast.makeText(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.warning(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -180,7 +183,7 @@ public class login extends AppCompatActivity {
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }else {
-                    Toast.makeText(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.warning(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 

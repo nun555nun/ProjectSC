@@ -40,6 +40,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 import static com.example.projectsc.login.NODE_fcm;
 
 public class Account extends AppCompatActivity {
@@ -193,14 +195,14 @@ public class Account extends AppCompatActivity {
                                                         changePassword();
                                                     } else {
                                                         progressDialog.dismiss();
-                                                        Toast.makeText(Account.this, "อีเมล์หรือรหัสผ่านไม่ถูกต้อง", Toast.LENGTH_SHORT).show();
+                                                        Toasty.error(Account.this, "อีเมล์หรือรหัสผ่านไม่ถูกต้อง", Toast.LENGTH_SHORT).show();
 
                                                     }
                                                 }
                                             });
                                 }
                                 else {
-                                    Toast.makeText(Account.this,"กรุณากรอกข้อมูลให้ถูกต้อง",Toast.LENGTH_SHORT).show();
+                                    Toasty.warning(Account.this,"กรุณากรอกข้อมูลให้ถูกต้อง",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -215,10 +217,10 @@ public class Account extends AppCompatActivity {
 
 
                     } else {
-                        Toast.makeText(Account.this, "กรุณากรอกรหัสผ่าน 6 ตัวอักษรขึ้นไป", Toast.LENGTH_SHORT).show();
+                        Toasty.error(Account.this, "กรุณากรอกรหัสผ่าน 6 ตัวอักษรขึ้นไป", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -247,10 +249,10 @@ public class Account extends AppCompatActivity {
 
 
                     } else {
-                        Toast.makeText(Account.this, "กรุณากรอก Username", Toast.LENGTH_SHORT).show();
+                        Toasty.error(Account.this, "กรุณากรอก Username", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -281,7 +283,7 @@ public class Account extends AppCompatActivity {
                                 .show();
                     }
                 } else {
-                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -374,14 +376,14 @@ public class Account extends AppCompatActivity {
                                                     deleteAccount();
                                                 } else {
                                                     progressDialog.dismiss();
-                                                    Toast.makeText(Account.this, "อีเมล์หรือรหัสผ่านไม่ถูกต้อง", Toast.LENGTH_SHORT).show();
+                                                    Toasty.error(Account.this, "อีเมล์หรือรหัสผ่านไม่ถูกต้อง", Toast.LENGTH_SHORT).show();
 
                                                 }
                                             }
                                         });
                             }
                             else {
-                                Toast.makeText(Account.this,"กรุณากรอกข้อมูลให้ถูกต้อง",Toast.LENGTH_SHORT).show();
+                                Toasty.warning(Account.this,"กรุณากรอกข้อมูลให้ถูกต้อง",Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -395,7 +397,7 @@ public class Account extends AppCompatActivity {
                     builder.show();
 
                 } else {
-                    Toast.makeText(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(Account.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -467,14 +469,14 @@ public class Account extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(Account.this, "แก้ไขที่อยู่ email เป็น" + emailEditText.getText().toString() + " เรียบร้อย", Toast.LENGTH_SHORT).show();
+                                Toasty.success(Account.this, "แก้ไขที่อยู่ email เป็น" + emailEditText.getText().toString() + " เรียบร้อย", Toast.LENGTH_SHORT).show();
                                 emailEditText.setHint(emailEditText.getText().toString());
 
                                 dbRef.child("email").setValue(emailEditText.getText().toString());
                                 emailEditText.setText("");
 
                             } else {
-                                Toast.makeText(Account.this, "ขออภัย กรุณา login ใหม่เพื่อใช้ฟังก์ชั่นนี้", Toast.LENGTH_LONG).show();
+                                Toasty.error(Account.this, "ขออภัย กรุณา login ใหม่เพื่อใช้ฟังก์ชั่นนี้", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -492,7 +494,7 @@ public class Account extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(Account.this, "ลบบัญชีเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                Toasty.success(Account.this, "ลบบัญชีเรียบร้อย", Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                                 finish();
                                 auth.signOut();
@@ -503,7 +505,7 @@ public class Account extends AppCompatActivity {
 
 
                             } else {
-                                Toast.makeText(Account.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                Toasty.error(Account.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -516,7 +518,7 @@ public class Account extends AppCompatActivity {
         if (user != null) {
             dbRef.child("username").setValue(usernameEditText.getText().toString());
             usernameEditText.setHint(usernameEditText.getText().toString());
-            Toast.makeText(Account.this, "แก้ไข username เป็น " + usernameEditText.getText().toString() + " เรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
+            Toasty.success(Account.this, "แก้ไข username เป็น " + usernameEditText.getText().toString() + " เรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
             usernameEditText.setText("");
         }
     }
@@ -531,9 +533,9 @@ public class Account extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
                                 passwordEditText.setText("");
-                                Toast.makeText(Account.this, "เปลี่ยนรหัสเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                Toasty.success(Account.this, "เปลี่ยนรหัสเรียบร้อย", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(Account.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                Toasty.error(Account.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                             progressDialog.dismiss();
                         }

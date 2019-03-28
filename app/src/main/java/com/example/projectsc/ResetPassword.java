@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+
+import es.dmoral.toasty.Toasty;
 
 public class ResetPassword extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -66,7 +69,7 @@ public class ResetPassword extends AppCompatActivity {
                 } else {
                     progressDialog = new ProgressDialog(ResetPassword.this);
                     progressDialog.setTitle("Please Wait ...");
-
+                    emailEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
                     new AlertDialog.Builder(ResetPassword.this)
                             .setTitle("ต้องการรีเซต password ใช่หรือไม่")
                             .setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
@@ -79,10 +82,10 @@ public class ResetPassword extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             progressDialog.dismiss();
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(ResetPassword.this, "ระบบได้ทำการส่ง email ไปที่ " + email + " โปรดตรวจสอบที่ email ของคุณ หากต้องการรีเซต password", Toast.LENGTH_LONG).show();
+                                                Toasty.info(ResetPassword.this, "ระบบได้ทำการส่ง email ไปที่ " + email + " โปรดตรวจสอบที่ email ของคุณ หากต้องการรีเซต password", Toast.LENGTH_LONG).show();
                                                 startActivity(new Intent(ResetPassword.this, login.class));
                                             } else {
-                                                Toast.makeText(ResetPassword.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                               Toasty.error(ResetPassword.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });

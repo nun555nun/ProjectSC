@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 import static com.example.projectsc.login.NODE_fcm;
 
 
@@ -275,13 +277,13 @@ public class BinFragment extends Fragment {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 deleteBin(userBinList.get(position).getBinID());
-                                                Toast.makeText(getContext(), "ลบถังเรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
+                                                Toasty.success(getContext(), "ลบถังเรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
                                             }
                                         })
                                         .setNegativeButton(R.string.no, null)
                                         .show();
                             } else {
-                                Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                             }
 
 

@@ -41,6 +41,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 import static android.graphics.Color.BLACK;
 import static com.example.projectsc.login.NODE_fcm;
 
@@ -111,7 +113,7 @@ public class Main extends AppCompatActivity
                                     .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            Toast.makeText(Main.this, "เมื่อคุณต้องการเพิ่มถังสามารถกดปุ่ม + ด้านขวามือเพื่อทำการเพิ่มถัง", Toast.LENGTH_LONG).show();
+                                            Toasty.info(Main.this, "เมื่อคุณต้องการเพิ่มถังสามารถกดปุ่ม + ด้านขวามือเพื่อทำการเพิ่มถัง", Toast.LENGTH_LONG).show();
                                         }
                                     })
                                     .show();
@@ -260,7 +262,7 @@ public class Main extends AppCompatActivity
                     setUserBin();
                 }
                 else {
-                    Toast.makeText(Main.this, "ไม่มี รหัสถังนี้ในระบบ หรือ ถังยังไม่ได้เปิดใช้", Toast.LENGTH_LONG).show();
+                    Toasty.error(Main.this, "ไม่มี รหัสถังนี้ในระบบ หรือ ถังยังไม่ได้เปิดใช้", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -334,7 +336,7 @@ public class Main extends AppCompatActivity
 
                     checkBinId();
                 } else {
-                    Toast.makeText(Main.this, "ไม่มี รหัสถังนี้ในระบบ หรือ ถังยังไม่ได้เปิดใช้", Toast.LENGTH_LONG).show();
+                    Toasty.error(Main.this, "ไม่มี รหัสถังนี้ในระบบ หรือ ถังยังไม่ได้เปิดใช้", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -369,7 +371,7 @@ public class Main extends AppCompatActivity
 
                 } else {
                     dbRef.removeEventListener(this);
-                    Toast.makeText(Main.this, "คุณเคยเพิ่มถังนี้ไปแล้ว", Toast.LENGTH_SHORT).show();
+                    Toasty.error(Main.this, "คุณเคยเพิ่มถังนี้ไปแล้ว", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -396,7 +398,7 @@ public class Main extends AppCompatActivity
                 }
 
                 dbRef.child("startDate").setValue(tvStartDate.getText().toString());
-                Toast.makeText(Main.this, "เพิ่มถังเรียบร้อย", Toast.LENGTH_SHORT).show();
+                Toasty.success(Main.this, "เพิ่มถังเรียบร้อย", Toast.LENGTH_SHORT).show();
                 dbRef.removeEventListener(this);
                 setUserToken();
             }

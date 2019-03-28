@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
+import es.dmoral.toasty.Toasty;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class QRMainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
@@ -41,7 +42,7 @@ public class QRMainActivity extends AppCompatActivity implements ZXingScannerVie
             scan();
         }
         else {
-            Toast.makeText(QRMainActivity.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+            Toasty.error(QRMainActivity.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -55,7 +56,7 @@ public class QRMainActivity extends AppCompatActivity implements ZXingScannerVie
                     scan();
                 }
                 else {
-                    Toast.makeText(QRMainActivity.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(QRMainActivity.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             } else {
@@ -82,7 +83,7 @@ public class QRMainActivity extends AppCompatActivity implements ZXingScannerVie
 
     @Override
     public void handleResult(Result result) {
-        Toast.makeText(getApplicationContext(), getString(R.string.ScanComplete), Toast.LENGTH_SHORT).show();
+        Toasty.success(getApplicationContext(), getString(R.string.ScanComplete), Toast.LENGTH_SHORT).show();
         resultString = result.getText();
         if(isNetworkConnected()){
            Intent i = new Intent(QRMainActivity.this, Main.class);
@@ -93,7 +94,7 @@ public class QRMainActivity extends AppCompatActivity implements ZXingScannerVie
             finish();
         }
         else {
-            Toast.makeText(QRMainActivity.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+            Toasty.error(QRMainActivity.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
             finish();
         }
 

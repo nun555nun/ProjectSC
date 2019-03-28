@@ -30,6 +30,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,13 +96,13 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonClose("statusAir");
-                                    Toast.makeText(getContext(), "ปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toasty.success(getContext(), "ปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
                             .show();
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -116,13 +118,13 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonClose("statusWater");
-                                    Toast.makeText(getContext(), "ปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toasty.success(getContext(), "ปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
                             .show();
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -138,13 +140,13 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonOpen("statusAir");
-                                    Toast.makeText(getContext(), "เปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toasty.success(getContext(), "เปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
                             .show();
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -160,13 +162,13 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonOpen("statusWater");
-                                    Toast.makeText(getContext(), "เปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toasty.success(getContext(), "เปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
                             .show();
                 } else {
-                    Toast.makeText(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 
