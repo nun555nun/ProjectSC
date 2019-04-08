@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,14 +26,17 @@ public class SaveNotificationAll extends AppCompatActivity {
     FirebaseAuth auth;
     String token;
     public ProgressDialog progressDialog;
+    public String lastSeen;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_notification_all);
         setTitle("กำลังโหลดข้อมูล");
+
         type = getResources().getStringArray(R.array.notitype2);
         token = FirebaseInstanceId.getInstance().getToken();
         auth = FirebaseAuth.getInstance();
+        getLassSeen();
         progressDialog = new ProgressDialog(SaveNotificationAll.this);
         progressDialog.setMessage("Loading.....");
         progressDialog.setTitle("กำลังโหลดข้อมูล");
@@ -136,7 +140,25 @@ public class SaveNotificationAll extends AppCompatActivity {
         super.onDestroy();
         Intent intent = new Intent(SaveNotificationAll.this, MainActivity.class);
         intent.putExtra("check","ok");
+        intent.putExtra("lastSeen",lastSeen);
         startActivity(intent);
 
+    }
+
+    private void getLassSeen() {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/notificationLastSeen");
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                lastSeen = (String) dataSnapshot.getValue();
+                Log.d("sadg",lastSeen);
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

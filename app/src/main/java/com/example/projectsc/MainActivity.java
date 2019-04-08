@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -26,6 +27,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -38,11 +40,25 @@ public class MainActivity extends AppCompatActivity {
     public ProgressDialog progressDialog;
     List<LogAllbinNotification> logDHTList;
     public FirebaseAuth auth;
+    String lastSeen;
+    private TextView tv_noti;
+    private int day, month, year;
+    private int hours, minute, second;
+    private Calendar mDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mai);
+
+        mDate = Calendar.getInstance();
+        day = mDate.get(Calendar.DAY_OF_MONTH);
+        month = mDate.get(Calendar.MONTH);
+        year = mDate.get(Calendar.YEAR);
+        hours = mDate.get(Calendar.HOUR_OF_DAY);
+        minute = mDate.get(Calendar.MINUTE);
+        second = mDate.get(Calendar.SECOND);
+
         Intent i = getIntent();
         setTitle(R.string.notification);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -51,26 +67,19 @@ public class MainActivity extends AppCompatActivity {
         dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
         String check = i.getStringExtra("check");
         listViewLogDHT = findViewById(R.id.list_all_noti);
+        tv_noti = findViewById(R.id.tv_noti);
         logDHTList = new ArrayList<>();
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("Loading.....");
         progressDialog.setTitle("กำลังโหลดข้อมูล");
+        lastSeen = i.getStringExtra("lastSeen");
+
+        Log.d("asdf", lastSeen);
         if (check.equals("ok")) {
             setAdaptor();
         }
 
     }
-   /* @Override
-    public void onStart() {
-        super.onStart();
-        setAdaptor();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setAdaptor();
-    }*/
 
     public void setAdaptor() {
         // dbRef.orderByChild("time").limitToLast(10).addValueEventListener(new ValueEventListener() {
@@ -84,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     logDHTList.add(logDHT);
 
                 }
-                if (logDHTList.size() > 0) {
+                if (logDHTList.size() > 0 && MainActivity.this != null) {
                     sortTime();
                     //Collections.reverse(logDHTList);
                     sortDate();
@@ -92,13 +101,16 @@ public class MainActivity extends AppCompatActivity {
                     if (logDHTList.size() >= 20) {
                         logDHTList = logDHTList.subList(0, 20);
                     }
-
+                    //getLassSeen();
                     progressDialog.cancel();
-                    LogAllbinNotificationList adapter = new LogAllbinNotificationList(MainActivity.this, logDHTList);
+                    LogAllbinNotificationList adapter = new LogAllbinNotificationList(MainActivity.this, logDHTList, lastSeen);
                     listViewLogDHT.setAdapter(adapter);
 
                     listViewLogDHT.setLayoutAnimation(controller);
                     listViewLogDHT.scheduleLayoutAnimation();
+                } else if (logDHTList.size() == 0 && MainActivity.this != null) {
+                    logDHTList.clear();
+                    tv_noti.setVisibility(View.VISIBLE);
                 }
                 dbRef.removeEventListener(this);
             }
@@ -150,5 +162,17 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        setLastSeen();
+        // Toast.makeText(MainActivity.this,day+"/"+(month+1)+"/"+(year+543)+" "+hours+":"+minute+":"+second,Toast.LENGTH_SHORT).show();
+    }
+
+    private void setLastSeen() {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/notificationLastSeen");
+        dbRef.setValue(day + "/" + (month + 1) + "/" + (year + 543) + " " + hours + ":" + minute + ":" + second);
     }
 }

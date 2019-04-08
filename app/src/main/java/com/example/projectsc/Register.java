@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Calendar;
+
 import es.dmoral.toasty.Toasty;
 
 import static com.example.projectsc.login.NODE_USER;
@@ -38,6 +40,10 @@ public class Register extends AppCompatActivity {
     EditText passwordEditText;
     TextView tv_pass;
 
+    private int day, month, year;
+    private int hours, minute, second;
+    private Calendar mDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +51,14 @@ public class Register extends AppCompatActivity {
         setTitle(R.string.register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mDate = Calendar.getInstance();
+        day = mDate.get(Calendar.DAY_OF_MONTH);
+        month = mDate.get(Calendar.MONTH);
+        year = mDate.get(Calendar.YEAR);
+        hours = mDate.get(Calendar.HOUR_OF_DAY);
+        minute = mDate.get(Calendar.MINUTE);
+        second = mDate.get(Calendar.SECOND);
 
         createToolbar();
 
@@ -202,6 +216,7 @@ public class Register extends AppCompatActivity {
                                     }
                                 }
                             });
+                            dbUser.child(firebaseAuth.getCurrentUser().getUid()).child("notificationLastSeen").setValue(day+"/"+(month+1)+"/"+(year+543)+" "+hours+":"+minute+":"+second);
                            /* dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
                             dbUser.child(token).child("token").setValue(token);*/
                             sendVerificationEmail();

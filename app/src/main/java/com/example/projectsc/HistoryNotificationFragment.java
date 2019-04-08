@@ -89,21 +89,21 @@ public class HistoryNotificationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (typeSpinner.getSelectedItem().toString().equals("-") && dateSpinner.getSelectedItem().toString().equals("-")) {
-                    /*setAdaptorAll();*/
-                    Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
+                    setAdaptorAll();
+                    //Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
                 } else if (!typeSpinner.getSelectedItem().toString().equals("-") && dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptorType();
                 } else if (typeSpinner.getSelectedItem().toString().equals("-") && !dateSpinner.getSelectedItem().toString().equals("-")) {
-                     /*String datePart = dateSpinner.getSelectedItem().toString();
-                    setAdaptorDate(datePart);*/
-                    Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
+                    String datePart = dateSpinner.getSelectedItem().toString();
+                    setAdaptorDate(datePart);
+                    //  Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
                 } else if (!typeSpinner.getSelectedItem().toString().equals("-") && !dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptor();
                 }
 
-                if(dateSpinner.getSelectedItem().toString().equals("-")){
-                    Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() , Toast.LENGTH_SHORT).show();
-                }else {
+                if (dateSpinner.getSelectedItem().toString().equals("-")) {
+                    Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                } else {
                     Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() + "' วันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
 
                 }
@@ -118,6 +118,145 @@ public class HistoryNotificationFragment extends Fragment {
         return view;
     }
 
+    private void setAdaptorDate(final String datePart) {
+
+        logNotiList = new ArrayList<>();
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading.....");
+        progressDialog.setTitle("กำลังโหลดข้อมูล");
+        progressDialog.show();
+
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getContext() == null) {
+                    dbRef.removeEventListener(this);
+                } else {
+                    LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
+                    logNotiList.clear();
+                    for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot notiSnapshot : logDHTSnapshot.getChildren()) {
+                            LogNotification logNotification = notiSnapshot.getValue(LogNotification.class);
+                            if (logNotification.getDate().equals(datePart)) {
+                                if (logDHTSnapshot.getKey().equals("1")) {
+                                    logNotification.setType("เริ่มทำการเติมน้ำ");
+                                } else if (logDHTSnapshot.getKey().equals("2")) {
+                                    logNotification.setType("เริ่มทำการเติมอากาศแล้ว");
+                                } else if (logDHTSnapshot.getKey().equals("3")) {
+                                    logNotification.setType("อุณหภูมิมากกว่าที่กำหนด");
+                                } else if (logDHTSnapshot.getKey().equals("4")) {
+                                    logNotification.setType("ความชื้นน้อยกว่าที่กำหนด");
+                                } else if (logDHTSnapshot.getKey().equals("5")) {
+                                    logNotification.setType("อุณหภูมิน้อยกว่าที่กำหนด");
+                                } else if (logDHTSnapshot.getKey().equals("6")) {
+                                    logNotification.setType("ความชื้นมากกว่าที่กำหนด");
+                                } else if (logDHTSnapshot.getKey().equals("7")) {
+                                    logNotification.setType("การเติมน้ำเสร็จเรียบร้อย");
+                                } else if (logDHTSnapshot.getKey().equals("8")) {
+                                    logNotification.setType("การเติมอากาศเสร็จเรียบร้อย");
+                                }
+                                logNotiList.add(logNotification);
+                            }
+
+                        }
+                    }
+                    Collections.reverse(logNotiList);
+                    if (logNotiList.size() > 0 && getContext() != null) {
+                        progressDialog.dismiss();
+                        LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
+                        tv.setVisibility(View.GONE);
+                        listViewLogDHT.setAdapter(adapter);
+                        listViewLogDHT.setLayoutAnimation(controller);
+                        listViewLogDHT.scheduleLayoutAnimation();
+                    }
+                    if (logNotiList.size() == 0 && getContext() != null) {
+                        logNotiList.clear();
+                        LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
+                        tv.setVisibility(View.VISIBLE);
+                        listViewLogDHT.setAdapter(adapter);
+                    }
+                    progressDialog.dismiss();
+                }
+
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setAdaptorAll() {
+        logNotiList = new ArrayList<>();
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading.....");
+        progressDialog.setTitle("กำลังโหลดข้อมูล");
+        progressDialog.show();
+
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getContext() == null) {
+                    dbRef.removeEventListener(this);
+                } else {
+                    LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
+                    logNotiList.clear();
+                    for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot notiSnapshot : logDHTSnapshot.getChildren()) {
+                            LogNotification logNotification = notiSnapshot.getValue(LogNotification.class);
+
+                            if (logDHTSnapshot.getKey().equals("1")) {
+                                logNotification.setType("เริ่มทำการเติมน้ำ");
+                            } else if (logDHTSnapshot.getKey().equals("2")) {
+                                logNotification.setType("เริ่มทำการเติมอากาศแล้ว");
+                            } else if (logDHTSnapshot.getKey().equals("3")) {
+                                logNotification.setType("อุณหภูมิมากกว่าที่กำหนด");
+                            } else if (logDHTSnapshot.getKey().equals("4")) {
+                                logNotification.setType("ความชื้นน้อยกว่าที่กำหนด");
+                            } else if (logDHTSnapshot.getKey().equals("5")) {
+                                logNotification.setType("อุณหภูมิน้อยกว่าที่กำหนด");
+                            } else if (logDHTSnapshot.getKey().equals("6")) {
+                                logNotification.setType("ความชื้นมากกว่าที่กำหนด");
+                            } else if (logDHTSnapshot.getKey().equals("7")) {
+                                logNotification.setType("การเติมน้ำเสร็จเรียบร้อย");
+                            } else if (logDHTSnapshot.getKey().equals("8")) {
+                                logNotification.setType("การเติมอากาศเสร็จเรียบร้อย");
+                            }
+                            logNotiList.add(logNotification);
+                        }
+                    }
+                    Collections.reverse(logNotiList);
+                    if (logNotiList.size() > 0 && getContext() != null) {
+                        progressDialog.dismiss();
+                        LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
+                        tv.setVisibility(View.GONE);
+                        listViewLogDHT.setAdapter(adapter);
+                        listViewLogDHT.setLayoutAnimation(controller);
+                        listViewLogDHT.scheduleLayoutAnimation();
+                    }
+                    if (logNotiList.size() == 0 && getContext() != null) {
+                        logNotiList.clear();
+                        LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
+                        tv.setVisibility(View.VISIBLE);
+                        listViewLogDHT.setAdapter(adapter);
+                    }
+                    progressDialog.dismiss();
+                }
+
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void setAdaptor() {
         logNotiList = new ArrayList<>();
         progressDialog = new ProgressDialog(getContext());
@@ -129,21 +268,21 @@ public class HistoryNotificationFragment extends Fragment {
 
         String timePart = String.valueOf(typeSpinner.getSelectedItemPosition());
 
-        if (timePart.equals("0")) {
+        if (timePart.equals("1")) {
             timePart = "5";
-        } else if (timePart.equals("1")) {
-            timePart = "3";
         } else if (timePart.equals("2")) {
-            timePart = "4";
+            timePart = "3";
         } else if (timePart.equals("3")) {
-            timePart = "6";
+            timePart = "4";
         } else if (timePart.equals("4")) {
-            timePart = "1";
+            timePart = "6";
         } else if (timePart.equals("5")) {
-            timePart = "2";
+            timePart = "1";
         } else if (timePart.equals("6")) {
-            timePart = "7";
+            timePart = "2";
         } else if (timePart.equals("7")) {
+            timePart = "7";
+        } else if (timePart.equals("8")) {
             timePart = "8";
         }
 
@@ -191,166 +330,21 @@ public class HistoryNotificationFragment extends Fragment {
         });
     }
 
-    private void setAdaptorDate(String datePart) {
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading.....");
-        progressDialog.setTitle("กำลังโหลดข้อมูล");
-        progressDialog.show();
-        final DatabaseReference dbRef;
-
-        logNotiList.clear();
-        for (int i = 1; i <= 8; i++) {
-            getDataDate(String.valueOf(i),datePart);
-        }
-        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
-
-        if (logNotiList.size() > 0 && getContext() != null) {
-            progressDialog.dismiss();
-            LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
-            tv.setVisibility(View.GONE);
-            listViewLogDHT.setAdapter(adapter);
-            listViewLogDHT.setLayoutAnimation(controller);
-            listViewLogDHT.scheduleLayoutAnimation();
-        }
-        else if (logNotiList.size() == 0 && getContext() != null) {
-
-            logNotiList.clear();
-            LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
-            tv.setVisibility(View.VISIBLE);
-            listViewLogDHT.setAdapter(adapter);
-        }
-        progressDialog.dismiss();
-
-    }
-
-    private void getDataDate(final String typePart, final String datePart) {
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID + "/" + typePart);
-        final String[] timePart = {typePart};
-
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
-                    LogNotification logNotification = logDHTSnapshot.getValue(LogNotification.class);
-                    String[] type = getResources().getStringArray(R.array.notitype);
-                    if (timePart[0].equals("5")) {
-                        timePart[0] = "1";
-                    } else if (timePart[0].equals("3")) {
-                        timePart[0] = "2";
-                    } else if (timePart[0].equals("4")) {
-                        timePart[0] = "3";
-                    } else if (timePart[0].equals("6")) {
-                        timePart[0] = "4";
-                    } else if (timePart[0].equals("1")) {
-                        timePart[0] = "5";
-                    } else if (timePart[0].equals("2")) {
-                        timePart[0] = "6";
-                    }
-                    logNotification.setType(type[Integer.parseInt(timePart[0])]);
-                    if(datePart.equals(logNotification.getDate())){
-                        logNotiList.add(logNotification);
-                    }
-
-                }
-                dbRef.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void setAdaptorAll() {
-
-        logNotiList = new ArrayList<>();
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading.....");
-        progressDialog.setTitle("กำลังโหลดข้อมูล");
-        progressDialog.show();
-        final DatabaseReference dbRef;
-        final String datePart = dateSpinner.getSelectedItem().toString();
-
-        String timePart = String.valueOf(typeSpinner.getSelectedItemPosition());
-
-        if (timePart.equals("1")) {
-            timePart = "5";
-        } else if (timePart.equals("2")) {
-            timePart = "3";
-        } else if (timePart.equals("3")) {
-            timePart = "4";
-        } else if (timePart.equals("4")) {
-            timePart = "6";
-        } else if (timePart.equals("5")) {
-            timePart = "1";
-        } else if (timePart.equals("6")) {
-            timePart = "2";
-        }
-
-        dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID + "/" + timePart);
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (getContext() == null) {
-                    dbRef.removeEventListener(this);
-                } else {
-                    LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_fall_down);
-                    logNotiList.clear();
-                    for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
-                        LogNotification logNotification = logDHTSnapshot.getValue(LogNotification.class);
-                        logNotification.setType(typeSpinner.getSelectedItem().toString());
-                        if (datePart.equals(logNotification.getDate())) {
-                            logNotiList.add(logNotification);
-                        }
-                    }
-                    Collections.reverse(logNotiList);
-                    if (logNotiList.size() > 0 && getContext() != null) {
-                        progressDialog.dismiss();
-                        LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
-                        tv.setVisibility(View.GONE);
-                        listViewLogDHT.setAdapter(adapter);
-                        listViewLogDHT.setLayoutAnimation(controller);
-                        listViewLogDHT.scheduleLayoutAnimation();
-                    }
-                    if (logNotiList.size() == 0 && getContext() != null) {
-                        logNotiList.clear();
-                        LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
-                        tv.setVisibility(View.VISIBLE);
-                        listViewLogDHT.setAdapter(adapter);
-                    }
-                    progressDialog.dismiss();
-                }
-
-                dbRef.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-
     private void getDate() {
         date = new ArrayList<>();
         date.add("-");
 
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date_time");
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/logDHT");
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
-                    String binPart = BinSnapshot.getKey();
-                    binPart = binPart.replace("_", "/");
-                    date.add(binPart);
-
-                    sortDate();
+                for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
+                    LogDHT logDHT = logDHTSnapshot.getValue(LogDHT.class);
+                    String dateString = logDHT.getDate();
+                    if (!date.get(date.size() - 1).equals(dateString)) {
+                        date.add(dateString);
+                    }
                 }
                 dbRef.removeEventListener(this);
             }
@@ -360,7 +354,6 @@ public class HistoryNotificationFragment extends Fragment {
 
             }
         });
-
 
     }
 
@@ -392,21 +385,21 @@ public class HistoryNotificationFragment extends Fragment {
 
         String timePart = String.valueOf(typeSpinner.getSelectedItemPosition());
 
-        if (timePart.equals("0")) {
+        if (timePart.equals("1")) {
             timePart = "5";
-        } else if (timePart.equals("1")) {
-            timePart = "3";
         } else if (timePart.equals("2")) {
-            timePart = "4";
+            timePart = "3";
         } else if (timePart.equals("3")) {
-            timePart = "6";
+            timePart = "4";
         } else if (timePart.equals("4")) {
-            timePart = "1";
+            timePart = "6";
         } else if (timePart.equals("5")) {
-            timePart = "2";
+            timePart = "1";
         } else if (timePart.equals("6")) {
-            timePart = "7";
+            timePart = "2";
         } else if (timePart.equals("7")) {
+            timePart = "7";
+        } else if (timePart.equals("8")) {
             timePart = "8";
         }
 

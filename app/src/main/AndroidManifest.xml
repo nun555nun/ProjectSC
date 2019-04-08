@@ -15,7 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SaveNotificationAll"></activity>
+        <activity android:name=".logDHTGraph"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.FullScreen"></activity>
+        <activity android:name=".SaveNotificationAll" />
         <activity android:name=".QRMainActivity" />
         <activity
             android:name=".SplashActivity"

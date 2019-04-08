@@ -39,6 +39,7 @@ public class TabHistory extends Fragment {
         ViewpagerAdapter adapter = new ViewpagerAdapter(getChildFragmentManager());
         adapter.AddTitle(getString(R.string.inside));
         adapter.AddTitle(getString(R.string.notification));
+        adapter.AddTitle("กราฟ");
         adapter.AddBinId(binID);
         adapter.AddBinDtartDate(startDate);
         viewPager.setAdapter(adapter);

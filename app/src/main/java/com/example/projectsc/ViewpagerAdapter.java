@@ -61,6 +61,14 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
                 b.putString("startDate",startDate);
                 fragment.setArguments(b);
                 break;
+            case 2:
+
+                fragment = new GraphFragment();
+                b = new Bundle();
+                b.putString("binID", binID);
+                b.putString("startDate",startDate);
+                fragment.setArguments(b);
+                break;
         }
         return fragment;
         //return fragmentList.get(i);
@@ -69,7 +77,7 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         //return fragmentListTitle.size();
-        return 2;
+        return 3;
     }
 
     public void AddBinId(String bin) {

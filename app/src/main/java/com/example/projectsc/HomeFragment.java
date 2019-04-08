@@ -78,8 +78,8 @@ public class HomeFragment extends Fragment {
         tvHumid = view.findViewById(R.id.tv_humid);
         tvDateCount = view.findViewById(R.id.tv_date_count);
         tvTime = view.findViewById(R.id.tv_time);
-        tvStatusAir = view.findViewById(R.id.tv_air_status);
-        tvStatusWater = view.findViewById(R.id.tv_water_status);
+        tvStatusAir = view.findViewById(R.id.tv_air_status2);
+        tvStatusWater = view.findViewById(R.id.tv_water_status3);
 
         buttonAirClose = view.findViewById(R.id.button_air_close);
         buttonWaterClose = view.findViewById(R.id.button_water_close);
@@ -97,6 +97,8 @@ public class HomeFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonClose("statusAir");
                                     Toasty.success(getContext(), "ปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    buttonAirClose.setBackgroundResource(R.drawable.button_gray);
+                                    buttonAirClose.setClickable(false);
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
@@ -119,6 +121,8 @@ public class HomeFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonClose("statusWater");
                                     Toasty.success(getContext(), "ปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    buttonWaterClose.setBackgroundResource(R.drawable.button_gray);
+                                    buttonWaterClose.setClickable(false);
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
@@ -141,6 +145,9 @@ public class HomeFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonOpen("statusAir");
                                     Toasty.success(getContext(), "เปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    buttonAirOpen.setBackgroundResource(R.drawable.button_gray);
+                                    buttonAirOpen.setClickable(false);
+
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
@@ -163,6 +170,8 @@ public class HomeFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonOpen("statusWater");
                                     Toasty.success(getContext(), "เปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    buttonWaterOpen.setBackgroundResource(R.drawable.button_gray);
+                                    buttonWaterOpen.setClickable(false);
                                 }
                             })
                             .setNegativeButton(R.string.no, null)
@@ -233,11 +242,19 @@ public class HomeFragment extends Fragment {
                 Map map = (Map) dataSnapshot.getValue();
 
                 String temp = String.valueOf(map.get("temp"));
+                String tempMax = String.valueOf(map.get("tempMax"));
+                String tempMin = String.valueOf(map.get("tempMin"));
+
                 String humid = String.valueOf(map.get("humid"));
+                String humidMax = String.valueOf(map.get("humidMax"));
+                String humidMin = String.valueOf(map.get("humidMin"));
 
                 String time = String.valueOf(map.get("time"));
-                String statusAir = String.valueOf(map.get("statusAirWork"));
-                String statusWater = String.valueOf(map.get("statusWaterWork"));
+                String statusAirWork = String.valueOf(map.get("statusAirWork"));
+                String statusWaterWork = String.valueOf(map.get("statusWaterWork"));
+
+                String statusAir = String.valueOf(map.get("statusAir"));
+                String statusWater = String.valueOf(map.get("statusWater"));
 
                 String startDate = String.valueOf(map.get("startDate"));
                 String endDate = String.valueOf(day + "/" + (month + 1) + "/" + (year + 543));
@@ -249,6 +266,14 @@ public class HomeFragment extends Fragment {
                     tvTemp.setText("-");
                 } else {
                     tvTemp.setText(temp);
+                    tvTemp.setTextColor(Color.parseColor("#4CAF50"));
+                    if (Float.parseFloat(temp.substring(0, temp.indexOf(" "))) < Float.parseFloat(tempMin.substring(0, tempMin.indexOf(" ")))) {
+                        tvTemp.setTextColor(Color.parseColor("#16B4FD"));
+                    }
+                    if (Float.parseFloat(temp.substring(0, temp.indexOf(" "))) > Float.parseFloat(tempMax.substring(0, tempMax.indexOf(" ")))) {
+                        tvTemp.setTextColor(Color.parseColor("#E91E63"));
+                    }
+
                 }
                 if (dateCount.equals("null")) {
                     tvDateCount.setText("-");
@@ -259,6 +284,13 @@ public class HomeFragment extends Fragment {
                     tvHumid.setText("-");
                 } else {
                     tvHumid.setText(humid);
+                    tvHumid.setTextColor(Color.parseColor("#4CAF50"));
+                    if (Float.parseFloat(humid.substring(0, humid.indexOf(" "))) < Float.parseFloat(humidMin.substring(0, humidMin.indexOf(" ")))) {
+                        tvHumid.setTextColor(Color.parseColor("#16B4FD"));
+                    }
+                    if (Float.parseFloat(humid.substring(0, humid.indexOf(" "))) > Float.parseFloat(humidMax.substring(0, humidMax.indexOf(" ")))) {
+                        tvHumid.setTextColor(Color.parseColor("#E91E63"));
+                    }
                 }
                 if (time.equals("null")) {
                     tvTime.setText("-");
@@ -266,26 +298,42 @@ public class HomeFragment extends Fragment {
                     tvTime.setText(time);
                 }
 
-                if (statusAir.equals("1")) {
+                if (statusAirWork.equals("1")) {
                     tvStatusAir.setText("กำลังทำงานอยู่");
+                    buttonAirOpen.setClickable(false);
+                    buttonAirOpen.setBackgroundResource(R.drawable.button_gray);
+                    buttonAirClose.setBackgroundResource(R.drawable.button_off);
+                    buttonAirClose.setClickable(true);
                     tvStatusAir.setTextColor(Color.parseColor("#97CA02"));
+
                 } else {
                     tvStatusAir.setText("ปิดอยู่");
+                    buttonAirOpen.setClickable(true);
+                    buttonAirClose.setClickable(false);
+                    buttonAirClose.setBackgroundResource(R.drawable.button_gray);
+                    buttonAirOpen.setBackgroundResource(R.drawable.button_on);
                     tvStatusAir.setTextColor(Color.LTGRAY);
                 }
 
-                if (statusWater.equals("1")) {
+                if (statusWaterWork.equals("1")) {
                     tvStatusWater.setText("กำลังทำงานอยู่");
+                    buttonWaterOpen.setClickable(false);
+                    buttonWaterOpen.setBackgroundResource(R.drawable.button_gray);
+                    buttonWaterClose.setBackgroundResource(R.drawable.button_off);
+                    buttonWaterClose.setClickable(true);
                     tvStatusWater.setTextColor(Color.parseColor("#97CA02"));
                 } else {
                     tvStatusWater.setText("ปิดอยู่");
+                    buttonWaterOpen.setClickable(true);
+                    buttonWaterClose.setClickable(false);
+                    buttonWaterClose.setBackgroundResource(R.drawable.button_gray);
+                    buttonWaterOpen.setBackgroundResource(R.drawable.button_on);
                     tvStatusWater.setTextColor(Color.LTGRAY);
                 }
                 String st = String.valueOf(map.get("boardTime"));
                 String sd = String.valueOf(map.get("boardDate"));
                 String lt = String.valueOf(map.get("loopTime"));
                 String ld = String.valueOf(map.get("loopDate"));
-
 
 
                 if (st.equals("null")) {
@@ -309,6 +357,53 @@ public class HomeFragment extends Fragment {
                     tvLD.setText(ld);
                 }
 
+                if(statusAir.equals("2")){
+                    buttonAirClose.setClickable(false);
+                    buttonAirClose.setBackgroundResource(R.drawable.button_gray);
+                }else if(statusAir.equals("3")){
+                    buttonAirOpen.setClickable(false);
+                    buttonAirOpen.setBackgroundResource(R.drawable.button_gray);
+                }else {
+                    if (statusAirWork.equals("1")) {
+                        tvStatusAir.setText("กำลังทำงานอยู่");
+                        buttonAirOpen.setClickable(false);
+                        buttonAirOpen.setBackgroundResource(R.drawable.button_gray);
+                        buttonAirClose.setBackgroundResource(R.drawable.button_off);
+                        buttonAirClose.setClickable(true);
+                        tvStatusAir.setTextColor(Color.parseColor("#97CA02"));
+
+                    } else {
+                        tvStatusAir.setText("ปิดอยู่");
+                        buttonAirOpen.setClickable(true);
+                        buttonAirClose.setClickable(false);
+                        buttonAirClose.setBackgroundResource(R.drawable.button_gray);
+                        buttonAirOpen.setBackgroundResource(R.drawable.button_on);
+                        tvStatusAir.setTextColor(Color.LTGRAY);
+                    }
+                }
+                if(statusWater.equals("2")){
+                    buttonWaterClose.setClickable(false);
+                    buttonWaterClose.setBackgroundResource(R.drawable.button_gray);
+                }else if(statusWater.equals("3")){
+                    buttonWaterOpen.setClickable(false);
+                    buttonWaterOpen.setBackgroundResource(R.drawable.button_gray);
+                }else {
+                    if (statusWaterWork.equals("1")) {
+                        tvStatusWater.setText("กำลังทำงานอยู่");
+                        buttonWaterOpen.setClickable(false);
+                        buttonWaterOpen.setBackgroundResource(R.drawable.button_gray);
+                        buttonWaterClose.setBackgroundResource(R.drawable.button_off);
+                        buttonWaterClose.setClickable(true);
+                        tvStatusWater.setTextColor(Color.parseColor("#97CA02"));
+                    } else {
+                        tvStatusWater.setText("ปิดอยู่");
+                        buttonWaterOpen.setClickable(true);
+                        buttonWaterClose.setClickable(false);
+                        buttonWaterClose.setBackgroundResource(R.drawable.button_gray);
+                        buttonWaterOpen.setBackgroundResource(R.drawable.button_on);
+                        tvStatusWater.setTextColor(Color.LTGRAY);
+                    }
+                }
             }
 
             @Override

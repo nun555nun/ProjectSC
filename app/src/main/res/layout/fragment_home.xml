@@ -13,7 +13,8 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:background="@drawable/bg_search"
+            android:orientation="vertical">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/constraintLayout10"
@@ -24,7 +25,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
@@ -98,6 +99,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="ทำงานอยู่"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/textView38"
                     app:layout_constraintStart_toStartOf="@+id/textView38"
@@ -109,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="ปิดอยู่"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/textView39"
                     app:layout_constraintStart_toStartOf="@+id/textView39"
                     app:layout_constraintTop_toBottomOf="@+id/textView39" />
@@ -129,9 +132,9 @@
                 android:id="@+id/constraintLayout5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -207,6 +210,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
@@ -292,6 +296,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="00 .c"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/textView31"
                     app:layout_constraintStart_toStartOf="@+id/textView31"
                     app:layout_constraintTop_toBottomOf="@+id/textView31" />
@@ -302,6 +307,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="00 %"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/textView32"
                     app:layout_constraintStart_toStartOf="@+id/textView32"
                     app:layout_constraintTop_toBottomOf="@+id/textView32" />
@@ -345,6 +351,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_block"
                 android:elevation="5dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout10">
@@ -433,12 +440,64 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout11">
 
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_margin="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_air_status2" />
+
+                <TextView
+                    android:id="@+id/tv_air_status2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="ปิดอยู่"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/textView"
+                    app:layout_constraintStart_toStartOf="@+id/textView"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:text="สถานะการทำงาน"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+
+                <ImageView
+                    android:id="@+id/imageView9"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/circle_bg_violet"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView10"
+                    app:srcCompat="@drawable/add_air" />
+
                 <Button
                     android:id="@+id/button_air_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/viewfinder_laser"
-                    android:text="ปิดปั้มลม"
+                    android:background="@drawable/button_off"
+                    android:text="ปิดเครื่องปั้มลม"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/button_air_open"
@@ -450,18 +509,18 @@
                 <Button
                     android:id="@+id/button_air_open"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="51dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@color/colorAccent"
-                    android:text="เปิดปั้มลม"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_on"
+                    android:text="เปิดเครื่องปั้มลม"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/button_air_close"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintTop_toBottomOf="@+id/view" />
 
                 <TextView
                     android:id="@+id/textView10"
@@ -470,7 +529,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="ปั้มลม"
+                    android:text="เครื่องจ่ายอากาศ"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -487,12 +547,62 @@
                 app:layout_constraintStart_toStartOf="@+id/constraintLayout12"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout12">
 
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_margin="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_water_status3" />
+
+                <TextView
+                    android:id="@+id/textView34"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:text="สถานะการทำงาน"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+
+                <TextView
+                    android:id="@+id/tv_water_status3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="ทำงานอยู่"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/textView34"
+                    app:layout_constraintStart_toStartOf="@+id/textView34"
+                    app:layout_constraintTop_toBottomOf="@+id/textView34" />
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/circle_bg_green"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView28"
+                    app:layout_constraintHorizontal_bias="0.531"
+                    app:layout_constraintStart_toStartOf="@+id/textView28"
+                    app:layout_constraintTop_toBottomOf="@+id/textView28"
+                    app:srcCompat="@drawable/add_water" />
+
                 <Button
                     android:id="@+id/button_water_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/viewfinder_laser"
-                    android:text="ปิดปั้มน้ำ"
+                    android:background="@drawable/button_off"
+                    android:text="ปิดเครื่องจ่ายน้ำ"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/button_water_open"
@@ -507,15 +617,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/colorAccent"
-                    android:text="เปิดปั้มน้ำ"
+                    android:background="@drawable/button_on"
+                    android:text="เปิดเครื่องจ่ายน้ำ"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/button_water_close"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView28" />
+                    app:layout_constraintTop_toBottomOf="@+id/view2" />
 
                 <TextView
                     android:id="@+id/textView28"
@@ -524,7 +634,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="ปั้มน้ำ"
+                    android:text="เครื่องจ่ายน้ำ"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

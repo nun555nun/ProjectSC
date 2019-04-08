@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -81,7 +82,7 @@ public class SettingBinFragment extends Fragment {
     ScrollView sv;
 
 
-    int countOn ;
+    int countOn;
     int countCheckOn;
 
     AnimationDrawable networkAnimation;
@@ -104,6 +105,7 @@ public class SettingBinFragment extends Fragment {
         networkAnimation = (AnimationDrawable) imageView.getBackground();
         networkAnimation.start();
 
+        c = view.findViewById(R.id.notify_constranlayout);
         cs = view.findViewById(R.id.not_connect_cl);
         sv = view.findViewById(R.id.scrollview_setting);
         if (isNetworkConnected()) {
@@ -131,7 +133,7 @@ public class SettingBinFragment extends Fragment {
         dbRef = database.getReference();
         token = FirebaseInstanceId.getInstance().getToken();
 
-        c = view.findViewById(R.id.notify_constranlayout);
+
 
         switchAll = view.findViewById(R.id.switch_all);
         switch1 = view.findViewById(R.id.switch_1);
@@ -510,7 +512,7 @@ public class SettingBinFragment extends Fragment {
         resetSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     new AlertDialog.Builder(getContext())
                             .setTitle("รีเซตการตั้งค่า ")
                             .setMessage("ต้องการรีเซตการตั้งค่า ใช่หรือไม่ ?")
@@ -522,8 +524,7 @@ public class SettingBinFragment extends Fragment {
                             })
                             .setNegativeButton(R.string.no, null)
                             .show();
-                }
-                else {
+                } else {
                     Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
@@ -533,9 +534,9 @@ public class SettingBinFragment extends Fragment {
         clearDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     clearData();
-                }else {
+                } else {
                     Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -763,7 +764,7 @@ public class SettingBinFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("status", "on");
@@ -781,8 +782,8 @@ public class SettingBinFragment extends Fragment {
                         switch8.setChecked(false);
                         c.setVisibility(View.GONE);
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
 
@@ -792,7 +793,7 @@ public class SettingBinFragment extends Fragment {
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("1", "on");
@@ -802,8 +803,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("1", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
 
                 }
@@ -813,7 +814,7 @@ public class SettingBinFragment extends Fragment {
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("2", "on");
@@ -823,8 +824,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("2", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
             }
@@ -833,7 +834,7 @@ public class SettingBinFragment extends Fragment {
         switch3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("3", "on");
@@ -843,8 +844,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("3", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
             }
@@ -853,7 +854,7 @@ public class SettingBinFragment extends Fragment {
         switch4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("4", "on");
@@ -863,8 +864,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("4", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
             }
@@ -873,7 +874,7 @@ public class SettingBinFragment extends Fragment {
         switch5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("5", "on");
@@ -883,8 +884,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("5", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
             }
@@ -893,7 +894,7 @@ public class SettingBinFragment extends Fragment {
         switch6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("6", "on");
@@ -903,8 +904,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("6", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
             }
@@ -913,7 +914,7 @@ public class SettingBinFragment extends Fragment {
         switch7.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("7", "on");
@@ -923,8 +924,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("7", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
             }
@@ -933,7 +934,7 @@ public class SettingBinFragment extends Fragment {
         switch8.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     if (isChecked) {
 
                         setStatus("8", "on");
@@ -943,8 +944,8 @@ public class SettingBinFragment extends Fragment {
                         setStatus("8", "off");
 
                     }
-                }else {
-                    countCheckOn+=1;
+                } else {
+                    countCheckOn += 1;
                     checkOn();
                 }
             }
@@ -952,7 +953,7 @@ public class SettingBinFragment extends Fragment {
     }
 
     private void checkOn() {
-        if(countCheckOn>countOn){
+        if (countCheckOn > countOn) {
             Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
         }
     }
@@ -1028,54 +1029,54 @@ public class SettingBinFragment extends Fragment {
                             c.setVisibility(View.GONE);
                         } else {
                             switchAll.setChecked(true);
-                            countOn+=1;
+                            countOn += 1;
                             if (notifyStatus1.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch1.setChecked(true);
                             } else {
                                 switch1.setChecked(false);
                             }
 
                             if (notifyStatus2.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch2.setChecked(true);
                             } else {
                                 switch2.setChecked(false);
                             }
 
                             if (notifyStatus3.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch3.setChecked(true);
                             } else {
                                 switch3.setChecked(false);
                             }
 
                             if (notifyStatus4.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch4.setChecked(true);
                             } else {
                                 switch4.setChecked(false);
                             }
                             if (notifyStatus5.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch5.setChecked(true);
                             } else {
                                 switch5.setChecked(false);
                             }
                             if (notifyStatus6.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch6.setChecked(true);
                             } else {
                                 switch6.setChecked(false);
                             }
                             if (notifyStatus7.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch7.setChecked(true);
                             } else {
                                 switch7.setChecked(false);
                             }
                             if (notifyStatus8.equals("on")) {
-                                countOn+=1;
+                                countOn += 1;
                                 switch8.setChecked(true);
                             } else {
                                 switch8.setChecked(false);
@@ -1229,9 +1230,19 @@ public class SettingBinFragment extends Fragment {
     }
 
     private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        return cm.getActiveNetworkInfo() != null;
+       /* ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;*/
+
+        ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 
