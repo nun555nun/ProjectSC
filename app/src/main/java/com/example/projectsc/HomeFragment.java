@@ -265,14 +265,17 @@ public class HomeFragment extends Fragment {
                 if (temp.equals("null")) {
                     tvTemp.setText("-");
                 } else {
-                    tvTemp.setText(temp);
-                    tvTemp.setTextColor(Color.parseColor("#4CAF50"));
-                    if (Float.parseFloat(temp.substring(0, temp.indexOf(" "))) < Float.parseFloat(tempMin.substring(0, tempMin.indexOf(" ")))) {
-                        tvTemp.setTextColor(Color.parseColor("#16B4FD"));
+                    if(!temp.equals("-")){
+                        tvTemp.setText(temp);
+                        tvTemp.setTextColor(Color.parseColor("#4CAF50"));
+                        if (Float.parseFloat(temp.substring(0, temp.indexOf(" "))) < Float.parseFloat(tempMin.substring(0, tempMin.indexOf(" ")))) {
+                            tvTemp.setTextColor(Color.parseColor("#16B4FD"));
+                        }
+                        if (Float.parseFloat(temp.substring(0, temp.indexOf(" "))) > Float.parseFloat(tempMax.substring(0, tempMax.indexOf(" ")))) {
+                            tvTemp.setTextColor(Color.parseColor("#E91E63"));
+                        }
                     }
-                    if (Float.parseFloat(temp.substring(0, temp.indexOf(" "))) > Float.parseFloat(tempMax.substring(0, tempMax.indexOf(" ")))) {
-                        tvTemp.setTextColor(Color.parseColor("#E91E63"));
-                    }
+
 
                 }
                 if (dateCount.equals("null")) {
@@ -283,13 +286,15 @@ public class HomeFragment extends Fragment {
                 if (humid.equals("null")) {
                     tvHumid.setText("-");
                 } else {
-                    tvHumid.setText(humid);
-                    tvHumid.setTextColor(Color.parseColor("#4CAF50"));
-                    if (Float.parseFloat(humid.substring(0, humid.indexOf(" "))) < Float.parseFloat(humidMin.substring(0, humidMin.indexOf(" ")))) {
-                        tvHumid.setTextColor(Color.parseColor("#16B4FD"));
-                    }
-                    if (Float.parseFloat(humid.substring(0, humid.indexOf(" "))) > Float.parseFloat(humidMax.substring(0, humidMax.indexOf(" ")))) {
-                        tvHumid.setTextColor(Color.parseColor("#E91E63"));
+                    if(!humid.equals("-")){
+                        tvHumid.setText(humid);
+                        tvHumid.setTextColor(Color.parseColor("#4CAF50"));
+                        if (Float.parseFloat(humid.substring(0, humid.indexOf(" "))) < Float.parseFloat(humidMin.substring(0, humidMin.indexOf(" ")))) {
+                            tvHumid.setTextColor(Color.parseColor("#16B4FD"));
+                        }
+                        if (Float.parseFloat(humid.substring(0, humid.indexOf(" "))) > Float.parseFloat(humidMax.substring(0, humidMax.indexOf(" ")))) {
+                            tvHumid.setTextColor(Color.parseColor("#E91E63"));
+                        }
                     }
                 }
                 if (time.equals("null")) {

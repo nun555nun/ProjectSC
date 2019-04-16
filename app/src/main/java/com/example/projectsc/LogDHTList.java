@@ -59,8 +59,8 @@ public class LogDHTList extends ArrayAdapter<LogDHT> {
         } else {
             tv_date.setVisibility(View.GONE);
         }
-int count =0;
-        //Toast.makeText(getContext(),tempMax+"  "+tempMin,Toast.LENGTH_SHORT).show();
+        int count = 0;
+
         if (!tempMax.equals(tempMin)) {
             if (logDHT.getTemperature().equals(tempMax)) {
                 tv_temp.setTextColor(Color.parseColor("#ffcc0000"));
@@ -70,11 +70,11 @@ int count =0;
                 tv_temp.setTextColor(Color.parseColor("#FF74BC59"));
 
                 count++;
-            }else {
+            } else {
                 tv_temp.setTextColor(Color.GRAY);
 
             }
-        }else {
+        } else {
             tv_temp.setTextColor(Color.GRAY);
 
         }
@@ -88,25 +88,21 @@ int count =0;
                 tv_humid.setTextColor(Color.parseColor("#FF74BC59"));
 
                 count++;
-            }else {
+            } else {
                 tv_humid.setTextColor(Color.GRAY);
 
             }
-        }else {
+        } else {
             tv_humid.setTextColor(Color.GRAY);
 
         }
 
-        if(count>0){
+        if (count > 0) {
             c.setBackgroundColor(Color.parseColor("#C8F7ED7A"));
-        }else {
+        } else {
             c.setBackgroundColor(Color.parseColor("#ffffff"));
         }
         return convertView;
     }
 
-   /* @Override
-    public boolean isEnabled(int position) {
-        return false;
-    }*/
 }

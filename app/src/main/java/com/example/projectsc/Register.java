@@ -217,8 +217,7 @@ public class Register extends AppCompatActivity {
                                 }
                             });
                             dbUser.child(firebaseAuth.getCurrentUser().getUid()).child("notificationLastSeen").setValue(day+"/"+(month+1)+"/"+(year+543)+" "+hours+":"+minute+":"+second);
-                           /* dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
-                            dbUser.child(token).child("token").setValue(token);*/
+
                             sendVerificationEmail();
 
                             Register.this.getSupportFragmentManager().popBackStack();

@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,13 +26,22 @@ public class SaveNotificationAll extends AppCompatActivity {
     String[] type;
     FirebaseAuth auth;
     String token;
+
     public ProgressDialog progressDialog;
     public String lastSeen;
+    private int day, month, year;
+    private Calendar mDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_notification_all);
         setTitle("กำลังโหลดข้อมูล");
+
+        mDate = Calendar.getInstance();
+        day = mDate.get(Calendar.DAY_OF_MONTH);
+        month = mDate.get(Calendar.MONTH);
+        year = mDate.get(Calendar.YEAR);
 
         type = getResources().getStringArray(R.array.notitype2);
         token = FirebaseInstanceId.getInstance().getToken();
@@ -50,7 +60,7 @@ public class SaveNotificationAll extends AppCompatActivity {
 
     private void findLogNotification(final String bin) {
         getbinName(bin);
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= 9; i++) {
 
             final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("notification/" + bin + "/" + String.valueOf(i));
 
@@ -62,17 +72,17 @@ public class SaveNotificationAll extends AppCompatActivity {
                     for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
                         LogNotification logNotification = logDHTSnapshot.getValue(LogNotification.class);
 
-                        Map binId = new HashMap();
-                        binId.put("binName", binN);
-                        binId.put("binId", bin);
-                        binId.put("date", logNotification.getDate());
-                        binId.put("time", logNotification.getTime());
-                        binId.put("type", type[finalI - 1]);
-
-                        saveLogNotification(binId);
+                        if(logNotification.getDate().equals(day+"/"+(month+1)+"/"+(year+543))){
+                            Map binId = new HashMap();
+                            binId.put("binName", binN);
+                            binId.put("binId", bin);
+                            binId.put("date", logNotification.getDate());
+                            binId.put("time", logNotification.getTime());
+                            binId.put("type", type[finalI - 1]);
+                            saveLogNotification(binId);
+                        }
 
                     }
-
                     //dbRef.removeEventListener(this);
                 }
 
@@ -125,7 +135,7 @@ public class SaveNotificationAll extends AppCompatActivity {
                     findLogNotification(bin);
                 }
 
-                dbRef.removeEventListener(this);
+                //dbRef.removeEventListener(this);
             }
 
             @Override
@@ -151,7 +161,7 @@ public class SaveNotificationAll extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lastSeen = (String) dataSnapshot.getValue();
-                Log.d("sadg",lastSeen);
+                
                 dbRef.removeEventListener(this);
             }
 

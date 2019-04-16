@@ -127,27 +127,10 @@ public class HistoryFragment extends Fragment {
 
         listViewLogDHT = view.findViewById(R.id.list_view_logDHT);
 
-        //progressDialog.show();
-        //setAdaptor();
         return view;
     }
 
-    private void sortDate() {
 
-        Collections.sort(date, new Comparator<String>() {
-            DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
-
-            @Override
-            public int compare(String o1, String o2) {
-                try {
-                    return f.parse(o1).compareTo(f.parse(o2));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-        });
-    }
 
     public void setAdaptor() {
         logDHTList = new ArrayList<>();
@@ -156,15 +139,7 @@ public class HistoryFragment extends Fragment {
         progressDialog.setTitle("กำลังโหลดข้อมูล");
         progressDialog.show();
         final DatabaseReference dbRef;
-        String datePart = dateSpinner.getSelectedItem().toString();
-        datePart = datePart.replace("/", "_");
 
-        final String timePart = timeSpinner.getSelectedItem().toString();
-        /*if (timePart.equals("-")) {
-            dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date/" + datePart + "/" + logDHTType);
-        } else {
-            dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date_time/" + datePart + "/" + timePart + "/" + logDHTType);
-        }*/
         dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/logDHT");
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -204,7 +179,7 @@ public class HistoryFragment extends Fragment {
 
                         }
                         type=0;
-                        //Toast.makeText(getContext(),"ok",Toast.LENGTH_SHORT).show();
+
                     }
                     else if(!dateSpinner.getSelectedItem().toString().equals("-")&&timeSpinner.getSelectedItem().toString().equals("-")){
                         for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
@@ -229,7 +204,7 @@ public class HistoryFragment extends Fragment {
                                     humidMin = humid;
                                 }
                             }
-                           // Toast.makeText(getContext(),"ok2",Toast.LENGTH_SHORT).show();
+
                         }
                         type=1;
                     }else if(!dateSpinner.getSelectedItem().toString().equals("-")&&!timeSpinner.getSelectedItem().toString().equals("-")){
@@ -260,7 +235,7 @@ public class HistoryFragment extends Fragment {
 
                         }
                         type=2;
-                       // Toast.makeText(getContext(),"ok3",Toast.LENGTH_SHORT).show();
+
                     }
 
                     if (logDHTList.size() > 0 && getContext() != null) {
@@ -290,37 +265,6 @@ public class HistoryFragment extends Fragment {
             }
         });
     }
-
-    /*private void getTime() {
-        time = new ArrayList<>();
-        time.add("-");
-        String datePart = dateSpinner.getSelectedItem().toString();
-        datePart = datePart.replace("/", "_");
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date_time/" + datePart);
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
-                    String binPart = BinSnapshot.getKey();
-
-                    time.add(binPart);
-
-
-                    Log.d("asdf", binPart);
-                }
-                Log.d("asdf", "_________________");
-
-                dbRef.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }*/
 
     private void getTime() {
         time = new ArrayList<>();
@@ -371,7 +315,7 @@ public class HistoryFragment extends Fragment {
                         date.add(dateString);
                     }
                 }
-                dbRef.removeEventListener(this);
+                //dbRef.removeEventListener(this);
             }
 
             @Override

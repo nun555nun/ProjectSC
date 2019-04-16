@@ -57,7 +57,7 @@ public class logDHTGraph extends AppCompatActivity {
         toDate = i.getStringExtra("todate");
         type = i.getIntExtra("type", 0);
         binID = i.getStringExtra("binID");
-        //Toasty.success(logDHTGraph.this, "แสดงกราฟวันที่ " + date + " ถึง " + toDate + " " + type + " " + binID, Toasty.LENGTH_SHORT).show();
+
 
         rangeD = new ArrayList<>();
         dataTemp = new ArrayList<>();

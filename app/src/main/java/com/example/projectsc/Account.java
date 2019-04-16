@@ -295,17 +295,6 @@ public class Account extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isNetworkConnected()) {
-                    /*new AlertDialog.Builder(Account.this)
-                            .setTitle("ต้องการลบบัญชีนี้ออกจากระบบใช่หรือไม่")
-                            .setMessage("เมื่อกดปุ่ม ใช่ แล้วจะไม่สามารถกู้คืนบัญชีของท่านได้")
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    deleteAccount();
-                                }
-                            })
-                            .setNegativeButton(R.string.no, null)
-                            .show();*/
 
                     AlertDialog.Builder builder =
                             new AlertDialog.Builder(Account.this);
@@ -574,7 +563,7 @@ public class Account extends AppCompatActivity {
 
     private void removeToken(String binID) {
         String token = FirebaseInstanceId.getInstance().getToken();
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= 9; i++) {
             DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID + "/" + i).child(token);
             dbRef.removeValue();
         }

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
@@ -51,7 +52,6 @@ public class HistoryNotificationFragment extends Fragment {
     private Spinner dateSpinner;
     private Spinner typeSpinner;
 
-    //String[] type;
     ArrayList<String> date;
 
     public HistoryNotificationFragment() {
@@ -90,21 +90,30 @@ public class HistoryNotificationFragment extends Fragment {
             public void onClick(View v) {
                 if (typeSpinner.getSelectedItem().toString().equals("-") && dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptorAll();
-                    //Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
                 } else if (!typeSpinner.getSelectedItem().toString().equals("-") && dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptorType();
                 } else if (typeSpinner.getSelectedItem().toString().equals("-") && !dateSpinner.getSelectedItem().toString().equals("-")) {
                     String datePart = dateSpinner.getSelectedItem().toString();
                     setAdaptorDate(datePart);
-                    //  Toasty.warning(getContext(),"โปรดเลือกรูปแบบการแจ้งเตือน",Toast.LENGTH_SHORT).show();
                 } else if (!typeSpinner.getSelectedItem().toString().equals("-") && !dateSpinner.getSelectedItem().toString().equals("-")) {
                     setAdaptor();
                 }
 
                 if (dateSpinner.getSelectedItem().toString().equals("-")) {
-                    Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                    String typ= typeSpinner.getSelectedItem().toString();
+                    if (typ.equals("-")){
+                        Toast.makeText(getContext(), "ค้นหา การแจ้งเตือนทั้งหมด" , Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() + "'", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
-                    Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() + "' วันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                    String ty= typeSpinner.getSelectedItem().toString();
+                    if (ty.equals("-")){
+                        Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน วันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getContext(), "ค้นหา การแจ้งเตือน '" + typeSpinner.getSelectedItem().toString() + "' วันที่ " + dateSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             }
@@ -155,14 +164,19 @@ public class HistoryNotificationFragment extends Fragment {
                                     logNotification.setType("การเติมน้ำเสร็จเรียบร้อย");
                                 } else if (logDHTSnapshot.getKey().equals("8")) {
                                     logNotification.setType("การเติมอากาศเสร็จเรียบร้อย");
+                                }else if (logDHTSnapshot.getKey().equals("9")) {
+                                    logNotification.setType("เซนเซอร์มีปัญหา");
                                 }
                                 logNotiList.add(logNotification);
                             }
 
                         }
                     }
-                    Collections.reverse(logNotiList);
+
                     if (logNotiList.size() > 0 && getContext() != null) {
+                        sortTime();
+                        sortDate();
+                        Collections.reverse(logNotiList);
                         progressDialog.dismiss();
                         LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
                         tv.setVisibility(View.GONE);
@@ -225,12 +239,17 @@ public class HistoryNotificationFragment extends Fragment {
                                 logNotification.setType("การเติมน้ำเสร็จเรียบร้อย");
                             } else if (logDHTSnapshot.getKey().equals("8")) {
                                 logNotification.setType("การเติมอากาศเสร็จเรียบร้อย");
+                            }else if (logDHTSnapshot.getKey().equals("9")) {
+                                logNotification.setType("เซนเซอร์มีปัญหา");
                             }
                             logNotiList.add(logNotification);
                         }
                     }
-                    Collections.reverse(logNotiList);
+
                     if (logNotiList.size() > 0 && getContext() != null) {
+                        sortTime();
+                        sortDate();
+                        Collections.reverse(logNotiList);
                         progressDialog.dismiss();
                         LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
                         tv.setVisibility(View.GONE);
@@ -247,7 +266,7 @@ public class HistoryNotificationFragment extends Fragment {
                     progressDialog.dismiss();
                 }
 
-                dbRef.removeEventListener(this);
+               // dbRef.removeEventListener(this);
             }
 
             @Override
@@ -284,6 +303,8 @@ public class HistoryNotificationFragment extends Fragment {
             timePart = "7";
         } else if (timePart.equals("8")) {
             timePart = "8";
+        }else if (timePart.equals("9")) {
+            timePart = "9";
         }
 
         dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID + "/" + timePart);
@@ -302,8 +323,11 @@ public class HistoryNotificationFragment extends Fragment {
                             logNotiList.add(logNotification);
                         }
                     }
-                    Collections.reverse(logNotiList);
+
                     if (logNotiList.size() > 0 && getContext() != null) {
+                        sortTime();
+                        sortDate();
+                        Collections.reverse(logNotiList);
                         progressDialog.dismiss();
                         LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
                         tv.setVisibility(View.GONE);
@@ -320,7 +344,7 @@ public class HistoryNotificationFragment extends Fragment {
                     progressDialog.dismiss();
                 }
 
-                dbRef.removeEventListener(this);
+               // dbRef.removeEventListener(this);
             }
 
             @Override
@@ -330,23 +354,56 @@ public class HistoryNotificationFragment extends Fragment {
         });
     }
 
-    private void getDate() {
+    private void getDate(){
+
         date = new ArrayList<>();
         date.add("-");
 
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/logDHT");
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID);
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getContext() == null) {
+                    dbRef.removeEventListener(this);
+                } else {
 
-                for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
-                    LogDHT logDHT = logDHTSnapshot.getValue(LogDHT.class);
-                    String dateString = logDHT.getDate();
-                    if (!date.get(date.size() - 1).equals(dateString)) {
-                        date.add(dateString);
+                    for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot notiSnapshot : logDHTSnapshot.getChildren()) {
+                            LogNotification logNotification = notiSnapshot.getValue(LogNotification.class);
+
+                            String dateString = logNotification.getDate();
+
+                            int count =0;
+                            for(int i=0;i<date.size()-1;i++){
+                                if (date.get(i).equals(dateString)) {
+                                   count++;
+                                }
+                                if(count==1){
+                                    break;
+                                }
+                            }
+                            if(count==0){
+                                if (!date.get(date.size() - 1).equals(dateString)) {
+                                    date.add(dateString);
+                                }
+                            }
+                        }
                     }
+                    Collections.sort(date, new Comparator<String>() {
+                        DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+                        @Override
+                        public int compare(String o1, String o2) {
+                            try {
+                                return f.parse(o1).compareTo(f.parse(o2));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            return 0;
+                        }
+                    });
                 }
-                dbRef.removeEventListener(this);
+
+                // dbRef.removeEventListener(this);
             }
 
             @Override
@@ -354,25 +411,8 @@ public class HistoryNotificationFragment extends Fragment {
 
             }
         });
-
     }
 
-    private void sortDate() {
-
-        Collections.sort(date, new Comparator<String>() {
-            DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
-
-            @Override
-            public int compare(String o1, String o2) {
-                try {
-                    return f.parse(o1).compareTo(f.parse(o2));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-        });
-    }
 
     public void setAdaptorType() {
         logNotiList = new ArrayList<>();
@@ -401,6 +441,8 @@ public class HistoryNotificationFragment extends Fragment {
             timePart = "7";
         } else if (timePart.equals("8")) {
             timePart = "8";
+        } else if (timePart.equals("9")) {
+            timePart = "9";
         }
 
         dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID + "/" + timePart);
@@ -417,8 +459,11 @@ public class HistoryNotificationFragment extends Fragment {
                         logNotification.setType(typeSpinner.getSelectedItem().toString());
                         logNotiList.add(logNotification);
                     }
-                    Collections.reverse(logNotiList);
+
                     if (logNotiList.size() > 0 && getContext() != null) {
+                        sortTime();
+                        sortDate();
+                        Collections.reverse(logNotiList);
                         progressDialog.dismiss();
                         LogNotificationList adapter = new LogNotificationList(getContext(), logNotiList);
                         tv.setVisibility(View.GONE);
@@ -435,7 +480,7 @@ public class HistoryNotificationFragment extends Fragment {
                     progressDialog.dismiss();
                 }
 
-                dbRef.removeEventListener(this);
+               // dbRef.removeEventListener(this);
             }
 
             @Override
@@ -445,4 +490,37 @@ public class HistoryNotificationFragment extends Fragment {
         });
     }
 
+    private void sortDate() {
+
+        Collections.sort(logNotiList, new Comparator<LogNotification>() {
+            DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+
+            @Override
+            public int compare(LogNotification o1, LogNotification o2) {
+                try {
+                    return f.parse(o1.getDate()).compareTo(f.parse(o2.getDate()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
+    }
+
+    private void sortTime() {
+
+        Collections.sort(logNotiList, new Comparator<LogNotification>() {
+            DateFormat f = new SimpleDateFormat("HH:mm:ss");
+
+            @Override
+            public int compare(LogNotification o1, LogNotification o2) {
+                try {
+                    return f.parse(o1.getTime()).compareTo(f.parse(o2.getTime()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
+    }
 }

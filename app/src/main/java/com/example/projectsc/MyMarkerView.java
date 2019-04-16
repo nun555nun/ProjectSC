@@ -20,14 +20,13 @@ public class MyMarkerView extends MarkerView {
     public MyMarkerView(Context context, int layoutResource, ArrayList<String> s, int i) {
         super(context, layoutResource);
 
-        tvContent = (TextView) findViewById(R.id.tvContent);
-        tv = (TextView) findViewById(R.id.textView);
+        tvContent = findViewById(R.id.tvContent);
+        tv =  findViewById(R.id.textView);
         str= s;
         type=i;
     }
 
-    // callbacks everytime the MarkerView is redrawn, can be used to update the
-    // content (user-interface)
+
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
         String a = "";

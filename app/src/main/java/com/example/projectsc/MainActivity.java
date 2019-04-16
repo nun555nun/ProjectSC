@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mai);
+
 
         mDate = Calendar.getInstance();
         day = mDate.get(Calendar.DAY_OF_MONTH);
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("asdf", lastSeen);
         if (check.equals("ok")) {
-            setAdaptor();
+           setAdaptor();
         }
 
     }
@@ -175,4 +177,6 @@ public class MainActivity extends AppCompatActivity {
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/notificationLastSeen");
         dbRef.setValue(day + "/" + (month + 1) + "/" + (year + 543) + " " + hours + ":" + minute + ":" + second);
     }
+
+
 }

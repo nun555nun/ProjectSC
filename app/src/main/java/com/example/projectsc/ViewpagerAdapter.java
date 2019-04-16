@@ -24,18 +24,7 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return fragmentListTitle.get(position);
-      /*  switch (position) {
-            case 0:
-                return "ในถัง";
 
-            case 1:
-                return "นอกถัง";
-
-            case 2:
-                return "การแจ้งเตือน";
-
-        }
-        return null;*/
     }
 
     @Override
@@ -71,12 +60,12 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
                 break;
         }
         return fragment;
-        //return fragmentList.get(i);
+
     }
 
     @Override
     public int getCount() {
-        //return fragmentListTitle.size();
+
         return 3;
     }
 
@@ -91,7 +80,7 @@ public class ViewpagerAdapter extends FragmentPagerAdapter {
     public void AddFragment(Fragment fragment, String title) {
         fragmentListTitle.add(title);
         fragmentList.add(fragment);
-        // binID.add(bin);
+
     }
 
     public void AddTitle(String title) {

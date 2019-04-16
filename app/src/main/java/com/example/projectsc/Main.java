@@ -89,6 +89,7 @@ public class Main extends AppCompatActivity
         setSupportActionBar(toolbar);
         if (auth.getCurrentUser() != null) {
             dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/bin");
+            setCurrentDeviceToken();
         }
         // dbRef.keepSynced(true);
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -426,6 +427,7 @@ public class Main extends AppCompatActivity
                 dbRef.child("6").child(token).child("token").setValue(token);
                 dbRef.child("7").child(token).child("token").setValue(token);
                 dbRef.child("8").child(token).child("token").setValue(token);
+                dbRef.child("9").child(token).child("token").setValue(token);
 
                 dbRef.removeEventListener(this);
                 setNotificationStatus();
@@ -449,7 +451,7 @@ public class Main extends AppCompatActivity
                     final String binid = String.valueOf(map.get("binid"));
                     String binPart = BinSnapshot.getKey();
                     if (binid.equals(binID)) {
-                        for (int i = 1; i <= 8; i++) {
+                        for (int i = 1; i <= 9; i++) {
                             dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("on");
                         }
                         break;
@@ -580,7 +582,7 @@ public class Main extends AppCompatActivity
     }
 
     private void removeToken(String binID) {
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= 9; i++) {
             DatabaseReference dbRef = database.getReference(NODE_fcm + "/" + binID + "/" + i).child(token);
             dbRef.removeValue();
         }
@@ -590,5 +592,9 @@ public class Main extends AppCompatActivity
         ConnectivityManager cm = (ConnectivityManager) Main.this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
+    }
+    private void setCurrentDeviceToken(){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid()).child("token");
+        dbRef.setValue(token);
     }
 }

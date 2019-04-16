@@ -2,9 +2,12 @@ package com.example.projectsc;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -49,6 +53,10 @@ public class login extends AppCompatActivity {
     TextView tv_pass;
     public ProgressDialog progressDialog;
 
+    TextView tv_verify;
+    TextView tv_reVerify;
+    ConstraintLayout cl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +73,11 @@ public class login extends AppCompatActivity {
 
         tv_pass = findViewById(R.id.pass_show);
         tv_pass.setVisibility(View.GONE);
+
+        tv_verify = findViewById(R.id.tv_verify);
+        tv_reVerify = findViewById(R.id.tv_re_verify);
+
+        cl = findViewById(R.id.cl_verify);
 
         editTextemail.setAnimation(fromBottom);
         editTextpass.setAnimation(fromBottom);
@@ -84,17 +97,12 @@ public class login extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         token = FirebaseInstanceId.getInstance().getToken();
         if (auth.getCurrentUser() != null) {
-            //Toast.makeText(getApplicationContext(), "OK, you already logged in!", Toast.LENGTH_SHORT).show();
-           // saveToken(token);
             if (auth.getCurrentUser().isEmailVerified()) {
                 Intent intent = new Intent(login.this, Main.class);
                 startActivity(intent);
                 finish();
 
             }
-           /* else{
-                Toasty.warning(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน"+auth.getCurrentUser().getEmail(),Toast.LENGTH_SHORT).show();
-            }*/
 
         }
 
@@ -102,7 +110,7 @@ public class login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editTextemail.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                if (isNetworkConnected()){
+                if (isNetworkConnected()) {
                     final String email = editTextemail.getText().toString();
                     final String password = editTextpass.getText().toString();
 
@@ -131,27 +139,27 @@ public class login extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                                         progressDialog.cancel();
+
                                         if (!task.isSuccessful()) {
                                             Toasty.error(login.this, "รหัสผ่าน หรือ  อีเมล์ ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
                                         } else {
-
+                                            auth.getCurrentUser().reload();
                                             if (auth.getCurrentUser().isEmailVerified()) {
                                                 //saveToken(token);
                                                 Intent intent = new Intent(login.this, Main.class);
                                                 startActivity(intent);
                                                 overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out);
                                                 finish();
-                                            }
-                                            else{
-                                                Toasty.warning(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                // Toasty.warning(login.this,"โปรดยืนยันตัวตนก่อนเข้าใช้งาน",Toast.LENGTH_SHORT).show();
+                                                cl.setVisibility(View.VISIBLE);
                                             }
 
                                         }
                                     }
                                 });
                     }
-                }
-                else {
+                } else {
                     Toasty.warning(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
@@ -162,11 +170,11 @@ public class login extends AppCompatActivity {
         regiter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     Intent intent = new Intent(login.this, Register.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                }else {
+                } else {
                     Toasty.warning(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
@@ -178,18 +186,23 @@ public class login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(isNetworkConnected()){
+                if (isNetworkConnected()) {
                     Intent i = new Intent(login.this, ResetPassword.class);
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }else {
+                } else {
                     Toasty.warning(login.this, "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
 
 
             }
         });
-
+        cl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendVerificationEmail();
+            }
+        });
 
     }
 
@@ -230,13 +243,6 @@ public class login extends AppCompatActivity {
         });
     }
 
-    private void saveToken(String token) {
-
-        DatabaseReference dbUser = FirebaseDatabase.getInstance().getReference(NODE_fcm + "/bin1");
-        dbUser.child(token).child("token").setValue(token);
-        dbUser = FirebaseDatabase.getInstance().getReference(NODE_USER + "/" + auth.getUid());
-        dbUser.child("token").setValue(token);
-    }
 
     private void hideKeybord() {
 
@@ -263,9 +269,41 @@ public class login extends AppCompatActivity {
         });
 
     }
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) login.this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    private void sendVerificationEmail() {
+        new AlertDialog.Builder(login.this)
+                .setTitle("ส่งอีเมล์ยืนยันตัวตน")
+                .setMessage("ต้องการส่งอีเมล์ยืนยันตัวตน ใช่หรือไม่ ?")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            user.reload();
+                            user.sendEmailVerification()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toasty.info(login.this, "ระบบได้ส่งอีเมล์ยืนตัวตนไปที่อีเมล์ " + user.getEmail() + " เรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toasty.error(login.this, "ระบบผิดพลาดกรุณารอสักครู่และโปรดลองใหม่อีกครั้ง", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        }
+                                    });
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
+
+
     }
 }

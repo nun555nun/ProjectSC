@@ -18,11 +18,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
@@ -55,6 +58,7 @@ public class SettingBinFragment extends Fragment {
     Switch switch6;
     Switch switch7;
     Switch switch8;
+    Switch switch9;
 
     ConstraintLayout c;
     public DatabaseReference dbRef;
@@ -69,6 +73,7 @@ public class SettingBinFragment extends Fragment {
     EditText editTextTempMin;
     EditText editTextHumidMax;
     EditText editTextHumidMin;
+    EditText editTextBinName;
 
     Button waterSettingButton;
     Button airSettingButton;
@@ -76,6 +81,9 @@ public class SettingBinFragment extends Fragment {
     Button humidSettingButton;
     Button resetSettingButton;
     Button clearDataButton;
+    Button binNameButton;
+    Button timeButton;
+    Button restartButton;
 
 
     ConstraintLayout cs;
@@ -84,6 +92,11 @@ public class SettingBinFragment extends Fragment {
 
     int countOn;
     int countCheckOn;
+
+    private int day, month, year;
+    private Calendar mDate;
+    private Spinner s;
+    private String[] type;
 
     AnimationDrawable networkAnimation;
 
@@ -99,6 +112,18 @@ public class SettingBinFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setting_bin, container, false);
         binID = getArguments().getString("binID");
         Log.d("binID", binID);
+
+        s = view.findViewById(R.id.spinner_time_fre);
+        type = new String[]{"3", "5", "10"};
+        ArrayAdapter<String> adapterTimeF = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_dropdown_item, type);
+        s.setAdapter(adapterTimeF);
+
+        mDate = Calendar.getInstance();
+
+        day = mDate.get(Calendar.DAY_OF_MONTH);
+        month = mDate.get(Calendar.MONTH);
+        year = mDate.get(Calendar.YEAR);
 
         ImageView imageView = view.findViewById(R.id.iv_wifi);
         imageView.setBackgroundResource(R.drawable.animation);
@@ -134,7 +159,6 @@ public class SettingBinFragment extends Fragment {
         token = FirebaseInstanceId.getInstance().getToken();
 
 
-
         switchAll = view.findViewById(R.id.switch_all);
         switch1 = view.findViewById(R.id.switch_1);
         switch2 = view.findViewById(R.id.switch_2);
@@ -144,6 +168,7 @@ public class SettingBinFragment extends Fragment {
         switch6 = view.findViewById(R.id.switch_6);
         switch7 = view.findViewById(R.id.switch_7);
         switch8 = view.findViewById(R.id.switch_8);
+        switch9 = view.findViewById(R.id.switch_9);
 
         editTextFillAir = view.findViewById(R.id.et_fill_air);
         editTextFillWater = view.findViewById(R.id.et_fill_water);
@@ -151,6 +176,7 @@ public class SettingBinFragment extends Fragment {
         editTextTempMin = view.findViewById(R.id.et_temp_min);
         editTextHumidMax = view.findViewById(R.id.et_humid_max);
         editTextHumidMin = view.findViewById(R.id.et_humid_min);
+        editTextBinName = view.findViewById(R.id.bin_name_et);
 
         airSettingButton = view.findViewById(R.id.air_setting_button);
         waterSettingButton = view.findViewById(R.id.water_setting_button);
@@ -158,6 +184,9 @@ public class SettingBinFragment extends Fragment {
         humidSettingButton = view.findViewById(R.id.humid_setting_button);
         resetSettingButton = view.findViewById(R.id.reset_setting);
         clearDataButton = view.findViewById(R.id.clear_bin_data);
+        binNameButton = view.findViewById(R.id.bin_name_button);
+        timeButton = view.findViewById(R.id.time_fre_button);
+        restartButton = view.findViewById(R.id.restart_bin);
 
         hideKeyBord();
 
@@ -201,8 +230,6 @@ public class SettingBinFragment extends Fragment {
                                     })
                                     .setNegativeButton(R.string.no, null)
                                     .show();
-
-
                         } else {
                             editTextFillAir.setText("");
                             editTextFillAir.onEditorAction(EditorInfo.IME_ACTION_DONE);
@@ -223,34 +250,39 @@ public class SettingBinFragment extends Fragment {
             public void onClick(View v) {
                 if (isNetworkConnected()) {
                     if (editTextFillWater.getText().length() > 0 && Integer.parseInt(editTextFillWater.getText().toString()) > 0) {
-                        if (!editTextFillWater.getText().toString().equals(editTextFillWater.getHint().toString())) {
-                            editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                            new AlertDialog.Builder(getContext())
-                                    .setTitle("แก้ไข ระยะเวลาในการเติมน้ำ")
-                                    .setMessage("ต้องการเปลี่ยน จาก " + editTextFillWater.getHint() + " นาที เป็น " + Integer.parseInt(editTextFillWater.getText().toString()) + " นาที ใช่หรือไม่")
-                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dbRef.child("delayWater").setValue(Integer.parseInt(editTextFillWater.getText().toString()));
+                        if (Integer.parseInt(editTextFillWater.getText().toString()) <= 20) {
+                            if (!editTextFillWater.getText().toString().equals(editTextFillWater.getHint().toString())) {
+                                editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle("แก้ไข ระยะเวลาในการเติมน้ำ")
+                                        .setMessage("ต้องการเปลี่ยน จาก " + editTextFillWater.getHint() + " วินาที เป็น " + Integer.parseInt(editTextFillWater.getText().toString()) + " วินาที ใช่หรือไม่")
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dbRef.child("delayWater").setValue(Integer.parseInt(editTextFillWater.getText().toString()));
 
-                                            dbRef.child("statusWater").setValue(1);
+                                                dbRef.child("statusWater").setValue(1);
 
-                                            editTextFillWater.setHint(String.valueOf(Integer.parseInt(editTextFillWater.getText().toString())));
-                                            editTextFillWater.setText("");
-                                            editTextFillWater.setFocusable(false);
-                                            Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                        }
-                                    })
-                                    .setNegativeButton(R.string.no, null)
-                                    .show();
+                                                editTextFillWater.setHint(String.valueOf(Integer.parseInt(editTextFillWater.getText().toString())));
+                                                editTextFillWater.setText("");
+                                                editTextFillWater.setFocusable(false);
+                                                Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.no, null)
+                                        .show();
 
 
+                            } else {
+                                editTextFillWater.setText("");
+
+                                editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+                            }
                         } else {
-                            editTextFillWater.setText("");
-
-                            editTextFillWater.onEditorAction(EditorInfo.IME_ACTION_DONE);
-
+                            Toasty.warning(getContext(), "จำกัดเวลาเติมน้ำมากสุด 20 วินาที", Toast.LENGTH_SHORT).show();
                         }
+
                     } else {
                         Toasty.error(getContext(), "กรุณากรอกตัวเลขจำนวนเต็มที่มากกว่า 0", Toast.LENGTH_SHORT).show();
                     }
@@ -541,13 +573,137 @@ public class SettingBinFragment extends Fragment {
                 }
             }
         });
+
+        binNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isNetworkConnected()) {
+                    if (editTextBinName.getText().toString().length() == 0) {
+                        Toasty.error(getContext(), "กรุณากรอกชื่อถัง", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (!editTextBinName.getText().toString().equals(editTextBinName.getHint().toString())) {
+                            changeBinName();
+                        } else {
+                            editTextBinName.setText("");
+                        }
+                    }
+
+                } else {
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    changeTime();
+                } else {
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isNetworkConnected()) {
+                    restartBin();
+                } else {
+                    Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void restartBin() {
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("ต้องการเปิดถังใหม่ใช่หรือไม่")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+                        dbRef.child("statusTurnback").setValue(1);
+                        Toasty.success(getContext(), "เริ่มใหม่เรียบร้อย", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
+    }
+
+    private void changeTime() {
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Map map = (Map) dataSnapshot.getValue();
+                String time = String.valueOf(map.get("timesensor"));
+
+                if (time.equals(s.getSelectedItem().toString())) {
+                    Toasty.warning(getContext(), "ขณะนี้ได้ตั้งค่าไว้ที่ " + time + " นาที อยู่แล้ว", Toasty.LENGTH_SHORT).show();
+                } else {
+
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("แก้ไขความถี่ในการเก็บข้อมูล")
+                            .setMessage("ต้องการเปลี่ยนความถี่ในการเก็บข้อมูลจาก " + time + " นาทีเป็น " + s.getSelectedItem().toString() + " นาทีใช่หรือไม่")
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dbRef.child("timesensor").setValue(Integer.parseInt(s.getSelectedItem().toString()));
+                                    dbRef.child("statustime").setValue(1);
+
+                                    Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton(R.string.no, null)
+                            .show();
+                }
+                dbRef.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void changeBinName() {
+
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
+        editTextBinName.onEditorAction(EditorInfo.IME_ACTION_DONE);
+        new AlertDialog.Builder(getContext())
+                .setTitle("แก้ไขชื่อถัง")
+                .setMessage("ต้องการเปลี่ยนชื่อถังจาก " + editTextBinName.getHint().toString() + " เป็น " + editTextBinName.getText().toString() + " ใช่หรือไม่")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dbRef.child("binName").setValue(editTextBinName.getText().toString());
+                        editTextBinName.setHint(editTextBinName.getText().toString());
+
+                        editTextBinName.setText("");
+
+                        editTextBinName.setFocusable(false);
+
+                        Toasty.success(getContext(), "แก้ไขเรียบร้อย", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
+
     }
 
     private void clearData() {
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID);
         new AlertDialog.Builder(getContext())
                 .setTitle("เริ่มการหมักใหม่")
-                .setMessage("ต้องการรีเซตการตั้งค่าทั้งหมด และ ล้างประวัติทั้งหมด ใช่หรือไม่ ?")
+                .setMessage("ต้องการล้างประวัติทั้งหมด ใช่หรือไม่ ?")
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -561,12 +717,28 @@ public class SettingBinFragment extends Fragment {
                         dbRef.child("time").setValue("-");
 
                         removeHistory();
-                        setDefault();
+                        changeStartDate();
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("รีเซตการตั้งค่า")
+                                .setMessage("ต้องการรีเซตการตั้งค่า หรือไม่ ?")
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        setDefault();
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null)
+                                .show();
                         Toasty.success(getContext(), "รีเซตถังเรียบร้อย", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.no, null)
                 .show();
+    }
+
+    private void changeStartDate() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/startDate");
+        dbRef.setValue(day + "/" + (month + 1) + "/" + (year + 543));
     }
 
     private void removeHistory() {
@@ -575,6 +747,8 @@ public class SettingBinFragment extends Fragment {
         dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/date_time");
         dbRef.removeValue();
         dbRef = FirebaseDatabase.getInstance().getReference("notification/" + binID);
+        dbRef.removeValue();
+        dbRef = FirebaseDatabase.getInstance().getReference("bin/" + binID + "/logDHT");
         dbRef.removeValue();
     }
 
@@ -619,6 +793,7 @@ public class SettingBinFragment extends Fragment {
         switch6.setChecked(true);
         switch7.setChecked(true);
         switch8.setChecked(true);
+        switch9.setChecked(true);
 
         Toasty.success(getContext(), "รีเซตการตั้งค่าเรียบร้อย", Toast.LENGTH_SHORT).show();
 
@@ -780,6 +955,7 @@ public class SettingBinFragment extends Fragment {
                         switch6.setChecked(false);
                         switch7.setChecked(false);
                         switch8.setChecked(false);
+                        switch9.setChecked(false);
                         c.setVisibility(View.GONE);
                     }
                 } else {
@@ -950,6 +1126,26 @@ public class SettingBinFragment extends Fragment {
                 }
             }
         });
+
+        switch9.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isNetworkConnected()) {
+                    if (isChecked) {
+
+                        setStatus("9", "on");
+
+                    } else {
+
+                        setStatus("9", "off");
+
+                    }
+                } else {
+                    countCheckOn += 1;
+                    checkOn();
+                }
+            }
+        });
     }
 
     private void checkOn() {
@@ -968,6 +1164,7 @@ public class SettingBinFragment extends Fragment {
 
                 editTextFillAir.setHint(String.valueOf(dataSnapshot.child("delayAir").getValue()));
                 editTextFillWater.setHint(String.valueOf(dataSnapshot.child("delayWater").getValue()));
+                editTextBinName.setHint(String.valueOf(dataSnapshot.child("binName").getValue()));
 
                 String tempMax = String.valueOf(dataSnapshot.child("tempMax").getValue());
                 String tempMin = String.valueOf(dataSnapshot.child("tempMin").getValue());
@@ -1015,14 +1212,15 @@ public class SettingBinFragment extends Fragment {
                         String notifyStatus6 = String.valueOf(BinSnapshot.child("notificationStatus").child("6").getValue());
                         String notifyStatus7 = String.valueOf(BinSnapshot.child("notificationStatus").child("7").getValue());
                         String notifyStatus8 = String.valueOf(BinSnapshot.child("notificationStatus").child("8").getValue());
+                        String notifyStatus9 = String.valueOf(BinSnapshot.child("notificationStatus").child("9").getValue());
 
 
-                        if (notifyStatusAll.equals("off") || (notifyStatus1.equals("off") && notifyStatus2.equals("off") && notifyStatus3.equals("off") && notifyStatus4.equals("off"))) {
+                        if (notifyStatusAll.equals("off") || (notifyStatus1.equals("off") && notifyStatus2.equals("off") && notifyStatus3.equals("off") && notifyStatus4.equals("off")&&notifyStatus5.equals("off") &&notifyStatus6.equals("off") &&notifyStatus7.equals("off") &&notifyStatus8.equals("off") &&notifyStatus9.equals("off") )) {
                             Log.d("notista", notifyStatusAll);
                             dbRef.child(binPart).child("notificationStatus").child("status").setValue("off");
                             switchAll.setChecked(false);
 
-                            for (int i = 1; i <= 8; i++) {
+                            for (int i = 1; i <= 9; i++) {
                                 Log.d("notistaz", binPart);
                                 dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("off");
                             }
@@ -1081,6 +1279,12 @@ public class SettingBinFragment extends Fragment {
                             } else {
                                 switch8.setChecked(false);
                             }
+                            if (notifyStatus9.equals("on")) {
+                                countOn += 1;
+                                switch9.setChecked(true);
+                            } else {
+                                switch9.setChecked(false);
+                            }
                         }
                         break;
                     }
@@ -1114,7 +1318,7 @@ public class SettingBinFragment extends Fragment {
                         } else if (typeNotify.equals("status") && status.equals("off")) {
 
                             // dbRef.child(binPart).child("notification").setValue("off");
-                            for (int i = 1; i <= 8; i++) {
+                            for (int i = 1; i <= 9; i++) {
                                 removeToken(binID, i + "");
                                 dbRef.child(binPart).child("notificationStatus").child(String.valueOf(i)).setValue("off");
                             }
@@ -1162,6 +1366,18 @@ public class SettingBinFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void hideKeyBord() {
+
+        editTextBinName.setFocusable(false);
+        editTextBinName.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                editTextBinName.setFocusableInTouchMode(true);
+
+                return false;
+            }
+        });
+
         editTextFillWater.setFocusable(false);
         editTextFillWater.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -1231,11 +1447,7 @@ public class SettingBinFragment extends Fragment {
 
     private boolean isNetworkConnected() {
 
-       /* ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null;*/
-
-        ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
             return true;
@@ -1244,6 +1456,5 @@ public class SettingBinFragment extends Fragment {
         }
 
     }
-
 
 }

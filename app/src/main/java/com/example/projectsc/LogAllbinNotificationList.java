@@ -52,11 +52,13 @@ public class LogAllbinNotificationList extends ArrayAdapter<LogAllbinNotificatio
         ImageView iv_type = convertView.findViewById(R.id.iv_type);
         LogAllbinNotification logNotification = notiList.get(position);
         ConstraintLayout c = convertView.findViewById(R.id.constraintLayout4);
+
         tv_type.setText(logNotification.getType());
         tv_time.setText(logNotification.getTime());
         tv_date.setText(logNotification.getDate());
         tv_binId.setText(logNotification.getBinID());
         tv_binName.setText("( " + logNotification.getBinName() + " )");
+
         String notiTime = logNotification.getDate() + " " + logNotification.getTime();
         if (logNotification.getType().equals("อุณหภูมิน้อยกว่าที่กำหนด") || logNotification.getType().equals("ความชื้นน้อยกว่าที่กำหนด")) {
             tv_type.setTextColor(Color.parseColor("#33B4E4"));
@@ -104,7 +106,14 @@ public class LogAllbinNotificationList extends ArrayAdapter<LogAllbinNotificatio
                 // iv_type.setBackgroundColor(Color.parseColor("#32CD32"));
                 iv_type.setBackgroundResource(R.drawable.circle_bg_green);
             }
+        }else if (logNotification.getType().equals("เซนเซอร์มีปัญหา")) {
+            tv_type.setTextColor(Color.RED);
+                iv_type.setImageResource(R.drawable.ic_warning_24dp);
+                //  iv_type.setBackgroundColor(Color.parseColor("#32CD32"));
+            iv_type.setBackgroundResource(R.drawable.circle_bg_red);
+
         }
+
 
         if (dateDiff(lastSeen, logNotification.getDate(), logNotification.getTime())) {
             c.setBackgroundResource(R.drawable.bg_block);
