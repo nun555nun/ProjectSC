@@ -515,10 +515,14 @@ public class Main extends AppCompatActivity
 
                                                 String s = auth.getUid();
 
-                                                Intent intent = new Intent(Main.this, login.class);
                                                 auth.signOut();
                                                 finish();
+                                                /*Intent intent = new Intent(Main.this, login.class);
+                                                startActivity(intent);*/
+                                                Intent intent = new Intent(getApplicationContext(), login.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intent);
+
                                                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                                             }
@@ -593,6 +597,7 @@ public class Main extends AppCompatActivity
 
         return cm.getActiveNetworkInfo() != null;
     }
+
     private void setCurrentDeviceToken(){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid()).child("token");
         dbRef.setValue(token);

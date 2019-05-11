@@ -162,8 +162,8 @@ public class LogAllbinNotificationList extends ArrayAdapter<LogAllbinNotificatio
                    }else if(ntDH==lsDH){
                        if(ntDm<lsDm){
                            return false;
-                       }else if(ntDm<lsDm){
-                           if(ntDs<lsDs){
+                       }else if(ntDm==lsDm){
+                           if(ntDs<=lsDs){
                                return false;
                            }else {
                                return true;

@@ -278,8 +278,8 @@ public class login extends AppCompatActivity {
 
     private void sendVerificationEmail() {
         new AlertDialog.Builder(login.this)
-                .setTitle("ส่งอีเมล์ยืนยันตัวตน")
-                .setMessage("ต้องการส่งอีเมล์ยืนยันตัวตน ใช่หรือไม่ ?")
+                .setTitle("ส่งอีเมล์เพื่อยืนยันที่อยู่อีเมล์")
+                .setMessage("ต้องการส่งอีเมล์เพื่อยืนยันที่อยู่อีเมล์ ใช่หรือไม่ ?")
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -291,7 +291,7 @@ public class login extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toasty.info(login.this, "ระบบได้ส่งอีเมล์ยืนตัวตนไปที่อีเมล์ " + user.getEmail() + " เรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
+                                                Toasty.info(login.this, "ระบบได้ส่งอีเมล์เพื่อยืนยันที่อยู่อีเมล์ไปที่อีเมล์ " + user.getEmail() + " เรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
                                             } else {
                                                 Toasty.error(login.this, "ระบบผิดพลาดกรุณารอสักครู่และโปรดลองใหม่อีกครั้ง", Toast.LENGTH_SHORT).show();
                                             }

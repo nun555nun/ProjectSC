@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private int day, month, year;
     private int hours, minute, second;
     private Calendar mDate;
+    private String newLastSeen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("asdf", lastSeen);
         if (check.equals("ok")) {
-           setAdaptor();
+            setAdaptor();
         }
 
     }
@@ -100,16 +101,19 @@ public class MainActivity extends AppCompatActivity {
                     //Collections.reverse(logDHTList);
                     sortDate();
                     Collections.reverse(logDHTList);
+                    newLastSeen= logDHTList.get(0).getDate()+" "+logDHTList.get(0).getTime();
+
                     if (logDHTList.size() >= 20) {
                         logDHTList = logDHTList.subList(0, 20);
                     }
-                    //getLassSeen();
+
                     progressDialog.cancel();
                     LogAllbinNotificationList adapter = new LogAllbinNotificationList(MainActivity.this, logDHTList, lastSeen);
                     listViewLogDHT.setAdapter(adapter);
 
                     listViewLogDHT.setLayoutAnimation(controller);
                     listViewLogDHT.scheduleLayoutAnimation();
+                    setLastSeen();
                 } else if (logDHTList.size() == 0 && MainActivity.this != null) {
                     logDHTList.clear();
                     tv_noti.setVisibility(View.VISIBLE);
@@ -169,13 +173,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        setLastSeen();
+       // setLastSeen();
         // Toast.makeText(MainActivity.this,day+"/"+(month+1)+"/"+(year+543)+" "+hours+":"+minute+":"+second,Toast.LENGTH_SHORT).show();
     }
 
     private void setLastSeen() {
+
+        if(newLastSeen!=null){
+            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/notificationLastSeen");
+            dbRef.setValue(newLastSeen);
+        }
+    /*
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/notificationLastSeen");
-        dbRef.setValue(day + "/" + (month + 1) + "/" + (year + 543) + " " + hours + ":" + minute + ":" + second);
+        dbRef.setValue(day + "/" + (month + 1) + "/" + (year + 543) + " " + hours + ":" + minute + ":" + second);*/
     }
 
 

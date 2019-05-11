@@ -148,7 +148,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:gravity="center"
-                android:text="กรุณายืนยันตัวตนก่อนเข้าใช้งาน หากท่านไม่ได้รับอีเมล์ยืนยันโปรดกด"
+                android:text="กรุณายืนยันที่อยู่อีเมล์ก่อนเข้าใช้งาน หากท่านไม่ได้รับอีเมล์ยืนยันโปรดกด"
                 android:textColor="@color/errorColor"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"

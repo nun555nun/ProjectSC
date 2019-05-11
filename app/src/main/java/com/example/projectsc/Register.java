@@ -243,7 +243,7 @@ public class Register extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toasty.success(Register.this, "ลงทะเบียนเรียบร้อย", Toast.LENGTH_SHORT).show();
-                                Toasty.info(Register.this, "ระบบได้ส่งอีเมล์ยืนตัวตนไปที่อีเมล์ "+user.getEmail()+" เรียบร้อยแล้ว โปรดยืนยันตัวตนเพื่อเข้าใช้งาน", Toast.LENGTH_LONG).show();
+                                Toasty.info(Register.this, "ระบบได้ส่งอีเมล์เพื่อยืนยันที่อยู่อีเมล์ไปที่อีเมล์ "+user.getEmail()+" เรียบร้อยแล้ว โปรดยืนยันอีเมล์เพื่อเข้าใช้งาน", Toast.LENGTH_LONG).show();
                             } else {
                                 Toasty.error(Register.this, "ระบบผิดพลาดโปรดลองใหม่อีกครั้ง", Toast.LENGTH_SHORT).show();
                             }

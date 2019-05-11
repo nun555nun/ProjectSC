@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonClose("statusAir");
-                                    Toasty.success(getContext(), "ปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "กำลังปิดปั้มลม", Toast.LENGTH_SHORT).show();
                                     buttonAirClose.setBackgroundResource(R.drawable.button_gray);
                                     buttonAirClose.setClickable(false);
                                 }
@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonClose("statusWater");
-                                    Toasty.success(getContext(), "ปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "กำลังปิดปั้มน้ำ", Toast.LENGTH_SHORT).show();
                                     buttonWaterClose.setBackgroundResource(R.drawable.button_gray);
                                     buttonWaterClose.setClickable(false);
                                 }
@@ -144,7 +144,7 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonOpen("statusAir");
-                                    Toasty.success(getContext(), "เปิดปั้มลมเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toasty.success(getContext(), "กำลังทำการเปิดปั๊มลม", Toast.LENGTH_SHORT).show();
                                     buttonAirOpen.setBackgroundResource(R.drawable.button_gray);
                                     buttonAirOpen.setClickable(false);
 
@@ -164,12 +164,12 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 if (isNetworkConnected()) {
                     new AlertDialog.Builder(getContext())
-                            .setTitle("ต้องการเปิดปั้มอากาศใช่หรือไม่")
+                            .setTitle("ต้องการเปิดปั้มน้ำใช่หรือไม่")
                             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     setStatusButtonOpen("statusWater");
-                                    Toasty.success(getContext(), "เปิดปั้มน้ำเรียบร้อย", Toast.LENGTH_SHORT).show();
+                                    Toasty.success(getContext(), "กำลังทำการเปิดปั๊มน้ำ", Toast.LENGTH_SHORT).show();
                                     buttonWaterOpen.setBackgroundResource(R.drawable.button_gray);
                                     buttonWaterOpen.setClickable(false);
                                 }
@@ -179,8 +179,6 @@ public class HomeFragment extends Fragment {
                 } else {
                     Toasty.error(getContext(), "โปรดเชื่อมต่ออินเตอร์เน็ตก่อนใช้งาน", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -204,6 +202,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 dbRef.child(status).setValue(3);
+                dbRef.child("statuswork").setValue(1);
                 dbRef.removeEventListener(this);
             }
 
@@ -221,6 +220,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 dbRef.child(status).setValue(2);
+                dbRef.child("statuswork").setValue(1);
                 dbRef.removeEventListener(this);
             }
 

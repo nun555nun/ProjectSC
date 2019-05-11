@@ -489,7 +489,10 @@ public class Account extends AppCompatActivity {
                                 auth.signOut();
                                 dbRef = database.getReference("users").child(uid);
                                 dbRef.removeValue();
-                                Intent intent = new Intent(Account.this, login.class);
+                                /*Intent intent = new Intent(Account.this, login.class);
+                                startActivity(intent);*/
+                                Intent intent = new Intent(getApplicationContext(), login.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
 
 

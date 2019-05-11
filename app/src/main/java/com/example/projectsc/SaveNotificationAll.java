@@ -7,8 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +23,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import es.dmoral.toasty.Toasty;
 
 public class SaveNotificationAll extends AppCompatActivity {
     DatabaseReference dbRef;
@@ -53,9 +59,13 @@ public class SaveNotificationAll extends AppCompatActivity {
         progressDialog.show();
         findUserBinNotification();
     }
+
     private void removeLogNotification() {
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
-        dbRef.removeValue();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users/" + auth.getCurrentUser().getUid() + "/logNotification");
+            dbRef.removeValue();
+        }
     }
 
     private void findLogNotification(final String bin) {
@@ -72,7 +82,7 @@ public class SaveNotificationAll extends AppCompatActivity {
                     for (DataSnapshot logDHTSnapshot : dataSnapshot.getChildren()) {
                         LogNotification logNotification = logDHTSnapshot.getValue(LogNotification.class);
 
-                        if(logNotification.getDate().equals(day+"/"+(month+1)+"/"+(year+543))){
+                        if (logNotification.getDate().equals(day + "/" + (month + 1) + "/" + (year + 543))) {
                             Map binId = new HashMap();
                             binId.put("binName", binN);
                             binId.put("binId", bin);
@@ -128,13 +138,17 @@ public class SaveNotificationAll extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 removeLogNotification();
-
+                int count = 0;
                 for (DataSnapshot BinSnapshot : dataSnapshot.getChildren()) {
                     Map map = (Map) BinSnapshot.getValue();
                     final String bin = String.valueOf(map.get("binid"));
                     findLogNotification(bin);
+                    count++;
                 }
-
+                if (count == 0) {
+                    finish();
+                    progressDialog.dismiss();
+                }
                 //dbRef.removeEventListener(this);
             }
 
@@ -149,8 +163,8 @@ public class SaveNotificationAll extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Intent intent = new Intent(SaveNotificationAll.this, MainActivity.class);
-        intent.putExtra("check","ok");
-        intent.putExtra("lastSeen",lastSeen);
+        intent.putExtra("check", "ok");
+        intent.putExtra("lastSeen", lastSeen);
         startActivity(intent);
 
     }
@@ -161,7 +175,7 @@ public class SaveNotificationAll extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lastSeen = (String) dataSnapshot.getValue();
-                
+
                 dbRef.removeEventListener(this);
             }
 
